@@ -168,6 +168,15 @@ CREATE TABLE IF NOT EXISTS enquiries (
 );
 
 -- ------------------------------------------------------------------------------
+-- 11. CLIENTS
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS clients (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  logo_url TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------------------------
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ------------------------------------------------------------------------------
 
@@ -181,6 +190,7 @@ ALTER TABLE strengths ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_page ENABLE ROW LEVEL SECURITY;
 ALTER TABLE enquiries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
 
 -- Public Read Policies
 CREATE POLICY "Public Read Site Settings" ON site_settings FOR SELECT USING (true);
@@ -192,6 +202,7 @@ CREATE POLICY "Public Read Services" ON services FOR SELECT USING (true);
 CREATE POLICY "Public Read Strengths" ON strengths FOR SELECT USING (true);
 CREATE POLICY "Public Read Testimonials" ON testimonials FOR SELECT USING (true);
 CREATE POLICY "Public Read Contact Page" ON contact_page FOR SELECT USING (true);
+CREATE POLICY "Public Read Clients" ON clients FOR SELECT USING (true);
 
 -- Public Insert Enquiries
 CREATE POLICY "Public Insert Enquiries" ON enquiries FOR INSERT WITH CHECK (true);
@@ -207,6 +218,7 @@ CREATE POLICY "Admin All Strengths" ON strengths FOR ALL TO authenticated USING 
 CREATE POLICY "Admin All Testimonials" ON testimonials FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin All Contact Page" ON contact_page FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin All Enquiries" ON enquiries FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin All Clients" ON clients FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- ------------------------------------------------------------------------------
 -- SCHEMA & TABLE PERMISSIONS (Required for Supabase API Gateway & RLS)

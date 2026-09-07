@@ -25,7 +25,7 @@ export async function uploadToCloudinary(
             reject(error || new Error('Cloudinary upload returned no result'));
           } else {
             resolve({
-              url: result.url,
+              url: result.secure_url || result.url,
               public_id: result.public_id,
               secure_url: result.secure_url,
             });

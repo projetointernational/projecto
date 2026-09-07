@@ -1,13 +1,15 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EnquiryForm } from '@/components/forms/EnquiryForm';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ShieldCheck, Clock, FileText, CheckCircle2 } from 'lucide-react';
+import { SiteSettings } from '@/lib/supabase/types';
 
 function EnquiryContent() {
   const searchParams = useSearchParams();
@@ -18,7 +20,7 @@ function EnquiryContent() {
       {/* Information & Reassurance */}
       <div className="lg:col-span-5 space-y-8">
         <div>
-          <span className="text-xs uppercase tracking-[0.2em] font-medium text-warm-grey block mb-2">
+          <span className="text-xs uppercase text-warm-grey block mb-2">
             Project Initiation
           </span>
           <h2 className="font-serif text-3xl text-near-black font-normal mb-4">
@@ -96,13 +98,36 @@ function EnquiryContent() {
 }
 
 export default function EnquirePage() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const supabase = createClient();
+        const { data } = await supabase
+          .from('site_settings')
+          .select('*')
+          .limit(1)
+          .maybeSingle();
+        if (data) setSettings(data);
+      } catch (err) {
+        console.error('[EnquirePage] Failed to fetch settings:', err);
+      }
+    }
+    loadSettings();
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar
+        companyName={settings?.company_name}
+        logoUrl={settings?.logo_url}
+        navLabels={settings?.navigation_labels}
+      />
 
       <main className="flex-1">
         {/* Banner */}
-        <section className="bg-sand/30 py-20 sm:py-28">
+        <section className=" py-20 sm:py-8">
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <SectionHeading
               subtitle="Project Consultation"
@@ -122,7 +147,7 @@ export default function EnquirePage() {
         </section>
       </main>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }

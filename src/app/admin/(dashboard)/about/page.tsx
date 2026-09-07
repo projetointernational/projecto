@@ -119,7 +119,7 @@ export default function AdminAboutPage() {
           Editorial Story
         </span>
         <h1 className="font-serif text-3xl text-near-black font-normal mt-1">
-          About & Ethos Management
+          About And Ethos Management
         </h1>
       </div>
 

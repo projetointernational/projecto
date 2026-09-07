@@ -148,3 +148,9 @@ export interface Enquiry {
   created_at: string;
   updated_at?: string;
 }
+
+export interface Client {
+  id: string;
+  logo_url: string;
+  created_at?: string;
+}

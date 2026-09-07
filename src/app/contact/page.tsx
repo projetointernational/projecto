@@ -6,7 +6,8 @@ import { EnquiryForm } from '@/components/forms/EnquiryForm';
 import { MapPin, Mail, Phone, Clock } from 'lucide-react';
 import { SiteSettings, ContactPageContent } from '@/lib/supabase/types';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ContactPage() {
   let settings: SiteSettings | null = null;
@@ -42,12 +43,13 @@ export default async function ContactPage() {
     <div className="flex flex-col min-h-screen">
       <Navbar
         companyName={settings?.company_name}
+        logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
       />
 
       <main className="flex-1">
         {/* Banner */}
-        <section className="bg-sand/30 py-20 sm:py-28">
+        <section className=" py-20 sm:py-8">
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <SectionHeading
               subtitle="Contact Directory"
@@ -67,7 +69,7 @@ export default async function ContactPage() {
               {/* Left Contact Directory */}
               <div className="lg:col-span-5 space-y-10">
                 <div>
-                  <span className="text-xs uppercase tracking-[0.2em] font-medium text-warm-grey block mb-2">
+                  <span className="text-xs uppercase text-warm-grey block mb-2">
                     Executive Headquarters
                   </span>
                   <h3 className="font-serif text-2xl text-near-black font-normal mb-4">

@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Mail, Phone, MapPin, Instagram, Linkedin, Twitter } from 'lucide-react';
 import { SiteSettings } from '@/lib/supabase/types';
+import Image from 'next/image';
 
 interface FooterProps {
   settings?: SiteSettings | null;
@@ -25,13 +26,8 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
           {/* Brand & Narrative */}
           <div className="md:col-span-5 space-y-6">
-            <Link href="/" className="inline-block">
-              <span className="font-serif text-3xl tracking-[0.2em] font-normal text-off-white uppercase">
-                {companyName}
-              </span>
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-warm-beige mt-1 font-sans">
-                Construction & Structural Engineering
-              </span>
+            <Link href="/" className="inline-block group">
+              <Image src="/logo/logo-footer.png" alt='Projecto' width={80} height={80} />
             </Link>
             <p className="text-sm text-warm-grey font-light leading-relaxed max-w-sm">
               {description}

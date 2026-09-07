@@ -6,10 +6,12 @@ import { IntroSection } from '@/components/home/IntroSection';
 import { FeaturedServices } from '@/components/home/FeaturedServices';
 import { FeaturedProjects } from '@/components/home/FeaturedProjects';
 import { StrengthsSection } from '@/components/home/StrengthsSection';
+import { ClientsSection } from '@/components/home/ClientsSection';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
-import { SiteSettings, HeroContent, AboutContent, Service, Project, Strength } from '@/lib/supabase/types';
+import { SiteSettings, HeroContent, AboutContent, Service, Project, Strength, Client } from '@/lib/supabase/types';
 
-export const revalidate = 60; // ISR revalidation every 60 seconds
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function HomePage() {
   let settings: SiteSettings | null = null;
@@ -18,6 +20,7 @@ export default async function HomePage() {
   let services: Service[] = [];
   let projects: Project[] = [];
   let strengths: Strength[] = [];
+  let clients: Client[] = [];
 
   try {
     const supabase = createPublicServerClient();
@@ -68,6 +71,15 @@ export default async function HomePage() {
       .select('*')
       .order('display_order', { ascending: true });
     strengths = strengthsData || [];
+
+    // Fetch clients
+    const { data: clientsData, error: clientsError } = await supabase
+      .from('clients')
+      .select('*')
+      .order('created_at', { ascending: true });
+    if (!clientsError && clientsData) {
+      clients = clientsData;
+    }
   } catch (error) {
     console.error('[HomePage] Supabase fetch warning:', error);
   }
@@ -76,6 +88,7 @@ export default async function HomePage() {
     <div className="flex flex-col min-h-screen">
       <Navbar
         companyName={settings?.company_name}
+        logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
       />
       <main className="flex-1">
@@ -84,6 +97,7 @@ export default async function HomePage() {
         <FeaturedServices services={services} />
         <FeaturedProjects projects={projects} />
         {strengths.length > 0 && <StrengthsSection strengths={strengths} />}
+        {clients.length > 0 && <ClientsSection clients={clients} />}
         <EnquiryCta />
       </main>
       <Footer settings={settings} />

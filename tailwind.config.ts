@@ -22,7 +22,7 @@ const config: Config = {
         "dark-surface": "#1C1C18",
       },
       fontFamily: {
-        serif: ["var(--font-playfair)", "Playfair Display", "Georgia", "serif"],
+        serif: ["var(--font-montserrat)", "Montserrat", "system-ui", "sans-serif"],
         sans: ["var(--font-montserrat)", "Montserrat", "system-ui", "sans-serif"],
       },
       borderRadius: {
