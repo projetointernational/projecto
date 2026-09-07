@@ -8,7 +8,8 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Wrench } from 'lucide-react';
 import { SiteSettings, Service } from '@/lib/supabase/types';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ServicesPage() {
   let settings: SiteSettings | null = null;
@@ -37,12 +38,13 @@ export default async function ServicesPage() {
     <div className="flex flex-col min-h-screen">
       <Navbar
         companyName={settings?.company_name}
+        logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
       />
 
       <main className="flex-1">
         {/* Banner */}
-        <section className="bg-sand/30 py-20 sm:py-28">
+        <section className=" py-20 sm:py-6">
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <SectionHeading
               subtitle="Disciplines & Capabilities"
@@ -53,7 +55,7 @@ export default async function ServicesPage() {
         </section>
 
         {/* Services List */}
-        <section className="py-24 sm:py-32 bg-off-white">
+        <section className="py-24 sm:py-16 bg-off-white">
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             {services.length === 0 ? (
               <EmptyState

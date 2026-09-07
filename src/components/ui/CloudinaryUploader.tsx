@@ -22,7 +22,13 @@ export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentImageUrl || null);
+  const [imageError, setImageError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    setPreviewUrl(currentImageUrl || null);
+    setImageError(false);
+  }, [currentImageUrl]);
 
   const aspectClasses = {
     square: 'aspect-square',
@@ -96,13 +102,23 @@ export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
 
         {previewUrl ? (
           <div className="relative w-full h-full">
-            <Image
-              src={previewUrl}
-              alt="Uploaded visual"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
+            {imageError ? (
+              <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-sand/50 text-center">
+                <ImageIcon className="w-8 h-8 text-warm-grey mb-1" />
+                <span className="text-xs text-near-black font-medium">Image preview unavailable</span>
+                <span className="text-[10px] text-warm-grey truncate max-w-full px-2">{previewUrl}</span>
+              </div>
+            ) : (
+              <Image
+                src={previewUrl}
+                alt="Uploaded visual"
+                fill
+                unoptimized
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                onError={() => setImageError(true)}
+              />
+            )}
             <div className="absolute inset-0 bg-near-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-3">
               <span className="text-xs uppercase tracking-wider text-white bg-near-black/80 px-3 py-1.5 rounded-sm flex items-center space-x-1">
                 <UploadCloud className="w-3.5 h-3.5 mr-1" strokeWidth={1.5} /> Replace

@@ -8,6 +8,7 @@ interface EmptyStateProps {
   icon?: LucideIcon;
   actionHref?: string;
   actionLabel?: string;
+  onAction?: () => void;
   className?: string;
   compact?: boolean;
 }
@@ -18,6 +19,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   icon: Icon,
   actionHref,
   actionLabel,
+  onAction,
   className = '',
   compact = false,
 }) => {
@@ -33,22 +35,33 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         </div>
       )}
 
-      <h3 className="font-serif text-xl sm:text-2xl text-near-black font-normal mb-2">
+      <h3 className="font-serif text-lg sm:text-xl text-near-black font-normal mb-2">
         {title}
       </h3>
 
-      <p className="text-sm text-warm-grey max-w-md mb-6 leading-relaxed font-light">
+      <p className="text-xs text-warm-grey max-w-md mb-6 leading-relaxed font-light">
         {description}
       </p>
 
-      {actionHref && actionLabel && (
-        <Link
-          href={actionHref}
-          className="inline-flex items-center text-xs uppercase tracking-wider font-semibold text-olive hover:text-olive-hover transition-colors space-x-1.5"
+      {onAction && actionLabel ? (
+        <button
+          type="button"
+          onClick={onAction}
+          className="inline-flex items-center text-[11px] uppercase tracking-wider font-semibold text-olive hover:text-olive-hover transition-colors space-x-1.5 cursor-pointer"
         >
           <span>{actionLabel}</span>
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-        </Link>
+        </button>
+      ) : (
+        actionHref && actionLabel && (
+          <Link
+            href={actionHref}
+            className="inline-flex items-center text-[11px] uppercase tracking-wider font-semibold text-olive hover:text-olive-hover transition-colors space-x-1.5"
+          >
+            <span>{actionLabel}</span>
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+          </Link>
+        )
       )}
     </div>
   );

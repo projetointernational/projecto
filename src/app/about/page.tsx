@@ -2,13 +2,13 @@ import Image from 'next/image';
 import { createPublicServerClient } from '@/lib/supabase/server';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Info } from 'lucide-react';
 import { SiteSettings, AboutContent, Strength } from '@/lib/supabase/types';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function AboutPage() {
   let settings: SiteSettings | null = null;
@@ -45,54 +45,18 @@ export default async function AboutPage() {
     <div className="flex flex-col min-h-screen">
       <Navbar
         companyName={settings?.company_name}
+        logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
       />
 
       <main className="flex-1">
-        {/* Page Banner */}
-        <section className="bg-sand/30 py-20 sm:py-28">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-            <SectionHeading
-              subtitle="About Projecto"
-              title="Architectural Heritage & Construction Discipline"
-              description="Founded to bridge the divide between visionary architectural intent and uncompromising structural execution."
-            />
-          </div>
-        </section>
-
         {about ? (
           <>
             {/* Story & Visuals */}
-            <section className="py-24 sm:py-32 bg-off-white">
+            <section className="py-20 sm:py-8 bg-off-white">
               <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-                  <div className="lg:col-span-6 space-y-6">
-                    <span className="text-xs uppercase tracking-[0.2em] font-medium text-warm-grey">
-                      Our Philosophy
-                    </span>
-                    <h2 className="font-serif text-3xl sm:text-4xl text-near-black font-normal leading-tight">
-                      {about.title}
-                    </h2>
-                    <p className="text-base text-near-black/80 font-light leading-relaxed whitespace-pre-line">
-                      {about.narrative}
-                    </p>
-
-                    {about.stats && about.stats.length > 0 && (
-                      <div className="grid grid-cols-2 gap-6 pt-8 border-t border-sand">
-                        {about.stats.map((stat, idx) => (
-                          <div key={idx} className="space-y-1">
-                            <span className="font-serif text-4xl font-normal text-olive">
-                              {stat.value}
-                            </span>
-                            <p className="text-xs uppercase tracking-wider text-warm-grey font-medium">
-                              {stat.label}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                  {/* Left Column: Visual Imagery */}
                   <div className="lg:col-span-6 space-y-6">
                     {about.main_image_url ? (
                       <div className="relative aspect-[4/3] rounded-sm overflow-hidden bg-sand shadow-sm">
@@ -119,6 +83,36 @@ export default async function AboutPage() {
                           className="object-cover"
                           sizes="(max-width: 1024px) 100vw, 50vw"
                         />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Column: Philosophy, Narrative & Stats (Y-axis centered) */}
+                  <div className="lg:col-span-6 space-y-8">
+                    <div className="space-y-6">
+                      <span className="text-xs uppercase text-warm-grey">
+                        Our Philosophy
+                      </span>
+                      <h2 className="font-serif text-3xl sm:text-4xl text-near-black font-normal leading-tight">
+                        {about.title}
+                      </h2>
+                      <p className="text-base text-near-black/80 font-light leading-relaxed whitespace-pre-line">
+                        {about.narrative}
+                      </p>
+                    </div>
+
+                    {about.stats && about.stats.length > 0 && (
+                      <div className="grid grid-cols-2 gap-6 pt-8 border-t border-sand">
+                        {about.stats.map((stat, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <span className="font-serif text-4xl font-normal text-olive">
+                              {stat.value}
+                            </span>
+                            <p className="text-xs uppercase tracking-wider text-warm-grey font-medium">
+                              {stat.label}
+                            </p>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>

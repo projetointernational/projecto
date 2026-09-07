@@ -35,14 +35,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-warm-grey text-xs tracking-wider">
+          <div className="w-full h-full flex items-center justify-center text-warm-grey text-[11px] tracking-wider">
             Image Pending
           </div>
         )}
 
         {/* Category Badge overlay */}
         {project.category_name && (
-          <div className="absolute top-4 left-4 bg-off-white/90 backdrop-blur-sm px-3 py-1 rounded-sm text-[10px] uppercase tracking-widest text-near-black font-medium">
+          <div className="absolute top-4 left-4 bg-off-white/90 backdrop-blur-sm px-3 py-1 rounded-sm text-[9px] uppercase tracking-widest text-near-black font-medium">
             {project.category_name}
           </div>
         )}
@@ -55,7 +55,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
       {/* Meta Content */}
       <div className="pt-4 flex flex-col space-y-1.5">
-        <div className="flex items-center space-x-3 text-xs text-warm-grey font-light">
+        <div className="flex items-center space-x-3 text-[11px] text-warm-grey font-light">
           {project.location && (
             <span className="flex items-center space-x-1">
               <MapPin className="w-3 h-3 text-warm-beige" strokeWidth={1.5} />
@@ -70,11 +70,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           )}
         </div>
 
-        <h3 className="font-serif text-xl sm:text-2xl text-near-black group-hover:text-olive transition-colors duration-200 font-normal">
+        <h3 className="font-serif text-lg sm:text-xl text-near-black group-hover:text-olive transition-colors duration-200 font-normal">
           {project.title}
         </h3>
 
-        <p className="text-xs sm:text-sm text-warm-grey font-light line-clamp-2 leading-relaxed">
+        <p className="text-[11px] sm:text-xs text-warm-grey font-light line-clamp-2 leading-relaxed">
           {project.short_description}
         </p>
       </div>

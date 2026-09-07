@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
+import { ProjectGalleryManager } from '@/components/admin/ProjectGalleryManager';
 import { Project, Category } from '@/lib/supabase/types';
-import { Check, AlertCircle, Plus, Trash2, ArrowLeft } from 'lucide-react';
+import { Check, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 interface ProjectFormProps {
   initialData?: Project | null;
@@ -74,18 +74,17 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, isEdit = 
     }));
   };
 
-  const handleAddGalleryImage = (url: string) => {
-    if (!url) return;
+  const handleGalleryChange = (images: string[]) => {
     setFormData((prev) => ({
       ...prev,
-      gallery_images: [...(prev.gallery_images || []), url],
+      gallery_images: images,
     }));
   };
 
-  const handleRemoveGalleryImage = (idx: number) => {
+  const handleSetMainImage = (url: string) => {
     setFormData((prev) => ({
       ...prev,
-      gallery_images: (prev.gallery_images || []).filter((_, i) => i !== idx),
+      main_image_url: url,
     }));
   };
 
@@ -355,35 +354,13 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, isEdit = 
             />
           </div>
 
-          <div className="space-y-4 pt-4">
-            <label className="block text-xs uppercase tracking-wider text-warm-grey font-medium">
-              Gallery Images
-            </label>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {(formData.gallery_images || []).map((imgUrl, idx) => (
-                <div key={idx} className="relative aspect-[4/3] rounded-sm overflow-hidden bg-sand group">
-                  <Image src={imgUrl} alt="Gallery item" fill className="object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveGalleryImage(idx)}
-                    className="absolute top-2 right-2 bg-red-800/90 text-white p-1.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Remove Image"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-2">
-              <CloudinaryUploader
-                label="Add Another Gallery Image"
-                onUploadSuccess={handleAddGalleryImage}
-                aspectRatio="square"
-                folder="projects/gallery"
-              />
-            </div>
+          <div className="pt-2">
+            <ProjectGalleryManager
+              galleryImages={formData.gallery_images || []}
+              onChange={handleGalleryChange}
+              onSetMainImage={handleSetMainImage}
+              mainImageUrl={formData.main_image_url}
+            />
           </div>
         </div>
 

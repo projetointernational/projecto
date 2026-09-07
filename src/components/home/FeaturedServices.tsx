@@ -12,13 +12,13 @@ interface FeaturedServicesProps {
 
 export const FeaturedServices: React.FC<FeaturedServicesProps> = ({ services }) => {
   return (
-    <section className="py-24 sm:py-32 bg-off-white">
+    <section className="py-24 sm:py-16 bg-off-white">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <SectionHeading
             subtitle="Core Disciplines"
-            title="Comprehensive Construction & Structural Services"
+            title="Comprehensive Construction And Structural Services"
             description="From initial ground testing and architectural coordination to turnkey milestone completion, we provide end-to-end master builder expertise."
           />
           <Link
