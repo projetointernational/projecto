@@ -31,7 +31,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
         <div className="flex items-center space-x-2 mb-3">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-olive" />
           <span
-            className={`text-xs uppercase tracking-[0.2em] font-medium ${
+            className={`text-[11px] uppercase tracking-[0.2em] font-medium ${
               isDark ? 'text-warm-beige' : 'text-warm-grey'
             }`}
           >
@@ -41,7 +41,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
       )}
 
       <h2
-        className={`font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.15] tracking-tight ${
+        className={`font-serif text-2xl sm:text-3xl lg:text-4xl font-normal leading-[1.15] tracking-tight ${
           isDark ? 'text-off-white' : 'text-near-black'
         }`}
       >
@@ -50,7 +50,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
 
       {description && (
         <p
-          className={`mt-4 text-sm sm:text-base leading-relaxed max-w-2xl font-light ${
+          className={`mt-4 text-xs sm:text-[13px] leading-relaxed max-w-2xl font-light ${
             isDark ? 'text-warm-grey' : 'text-warm-grey'
           }`}
         >

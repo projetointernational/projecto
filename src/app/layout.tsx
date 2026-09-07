@@ -36,8 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
-      <body className="min-h-screen bg-off-white text-near-black antialiased flex flex-col font-sans selection:bg-olive selection:text-white">
+    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning>
+      <body
+        className="min-h-screen bg-off-white text-near-black antialiased flex flex-col font-sans selection:bg-olive selection:text-white"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

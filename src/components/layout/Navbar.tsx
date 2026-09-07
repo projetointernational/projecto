@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 
 interface NavbarProps {
   companyName?: string;
+  logoUrl?: string | null;
   navLabels?: {
     home?: string;
     about?: string;
@@ -20,10 +21,12 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({
   companyName = 'PROJECTO',
+  logoUrl,
   navLabels,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -55,19 +58,34 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-off-white/95 backdrop-blur-md py-4 shadow-sm'
-          : 'bg-off-white py-6'
+          ? 'bg-off-white/95 backdrop-blur-md py-2 shadow-sm'
+          : 'bg-off-white py-3 sm:py-3.5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex flex-col group">
-          <span className="font-serif text-2xl tracking-[0.18em] font-normal text-near-black uppercase">
-            {companyName}
-          </span>
-          <span className="text-[9px] uppercase tracking-[0.3em] text-warm-grey -mt-1 font-sans">
-            Construction & Architecture
-          </span>
+        <Link href="/" className="flex items-center space-x-3 group">
+          {logoUrl && !logoError ? (
+            <img
+              src={logoUrl}
+              alt={companyName}
+              onError={() => setLogoError(true)}
+              className={`${
+                scrolled
+                  ? 'h-10 sm:h-11'
+                  : 'h-12 sm:h-[54px]'
+              } w-auto max-w-[200px] object-contain transition-all duration-300 group-hover:scale-[1.02]`}
+            />
+          ) : (
+            <div className="flex flex-col">
+              <span className="font-serif text-2xl tracking-[0.18em] font-normal text-near-black uppercase">
+                {companyName}
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.3em] text-warm-grey -mt-1 font-sans">
+                Construction & Architecture
+              </span>
+            </div>
+          )}
         </Link>
 
         {/* Desktop Navigation */}

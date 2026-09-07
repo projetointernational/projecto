@@ -13,7 +13,8 @@ interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { slug } = await params;
@@ -61,6 +62,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     <div className="flex flex-col min-h-screen">
       <Navbar
         companyName={settings?.company_name}
+        logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
       />
 
@@ -154,7 +156,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             {/* Detailed Narrative & Specifications */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
               <div className="lg:col-span-8 space-y-6">
-                <span className="text-xs uppercase tracking-[0.2em] font-medium text-warm-grey">
+                <span className="text-xs uppercase text-warm-grey">
                   Architectural Narrative & Scope
                 </span>
                 <div className="text-base sm:text-lg text-near-black/85 font-light leading-relaxed whitespace-pre-line space-y-4">
@@ -185,7 +187,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             {project.gallery_images && project.gallery_images.length > 0 && (
               <div className="space-y-8 mb-24">
                 <div className="border-t border-sand pt-12">
-                  <span className="text-xs uppercase tracking-[0.2em] font-medium text-warm-grey block mb-3">
+                  <span className="text-xs uppercase text-warm-grey block mb-3">
                     Project Gallery
                   </span>
                   <h2 className="font-serif text-3xl text-near-black font-normal">
@@ -203,6 +205,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                         src={imgUrl}
                         alt={`${project.title} gallery frame ${idx + 1}`}
                         fill
+                        unoptimized
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                         sizes="(max-width: 768px) 100vw, 50vw"
                       />

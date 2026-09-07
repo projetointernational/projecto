@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -15,16 +15,31 @@ import {
   ShieldCheck,
   MessageSquareQuote,
   MailCheck,
+  Handshake,
   ArrowUpRight,
   LogOut,
   Loader2,
+  X,
 } from 'lucide-react';
 
-export const AdminSidebar: React.FC = () => {
+interface AdminSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({
+  isOpen = false,
+  onClose,
+}) => {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  // Auto-close mobile drawer when route changes
+  useEffect(() => {
+    onClose?.();
+  }, [pathname]);
 
   const navItems = [
     { label: 'Overview', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -36,6 +51,7 @@ export const AdminSidebar: React.FC = () => {
     { label: 'Categories', href: '/admin/categories', icon: Tag },
     { label: 'Why Choose Us', href: '/admin/strengths', icon: ShieldCheck },
     { label: 'Testimonials', href: '/admin/testimonials', icon: MessageSquareQuote },
+    { label: 'Clients & Partners', href: '/admin/clients', icon: Handshake },
     { label: 'Enquiries Inbox', href: '/admin/enquiries', icon: MailCheck },
   ];
 
@@ -54,21 +70,39 @@ export const AdminSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-64 bg-near-black text-off-white flex flex-col shrink-0 min-h-screen border-r border-white/5">
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 w-64 bg-near-black text-off-white flex flex-col shrink-0 h-full border-r border-white/5 transition-transform duration-200 ease-in-out md:translate-x-0 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
       {/* Brand Header */}
-      <div className="p-6 border-b border-white/10">
-        <Link href="/admin/dashboard" className="flex flex-col group">
-          <span className="font-serif text-xl tracking-[0.2em] font-normal uppercase text-off-white group-hover:text-warm-beige transition-colors">
+      <div className="h-16 px-6 border-b border-white/10 flex items-center justify-between shrink-0">
+        <Link
+          href="/admin/dashboard"
+          className="flex flex-col justify-center group"
+          onClick={() => onClose?.()}
+        >
+          <span className="font-serif text-xl tracking-[0.2em] font-normal uppercase text-off-white group-hover:text-warm-beige transition-colors leading-none">
             PROJECTO
           </span>
-          <span className="text-[9px] uppercase tracking-[0.25em] text-warm-beige -mt-0.5 font-sans">
+          <span className="text-[9px] uppercase tracking-[0.25em] text-warm-beige font-sans mt-1">
             Management Portal
           </span>
         </Link>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="md:hidden p-1 text-off-white/60 hover:text-off-white transition-colors"
+            aria-label="Close navigation"
+          >
+            <X className="w-5 h-5" strokeWidth={1.5} />
+          </button>
+        )}
       </div>
 
-      {/* Navigation List */}
-      <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+      {/* Navigation List - Independently scrollable tabs list with hidden scrollbar */}
+      <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto no-scrollbar">
         <div className="text-[10px] uppercase tracking-[0.2em] text-warm-grey/60 px-3 pb-2 font-medium">
           Content Modules
         </div>
@@ -83,6 +117,7 @@ export const AdminSidebar: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => onClose?.()}
               className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-sm text-xs font-medium tracking-wider transition-colors ${
                 isActive
                   ? 'bg-olive text-white'
@@ -97,7 +132,7 @@ export const AdminSidebar: React.FC = () => {
       </nav>
 
       {/* Footer / Portal Actions */}
-      <div className="p-4 border-t border-white/10 space-y-1.5">
+      <div className="p-4 border-t border-white/10 space-y-1.5 shrink-0">
         <Link
           href="/"
           target="_blank"

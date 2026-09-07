@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'olive' | 'dark' | 'outline' | 'beige' | 'ghost';
+  variant?: 'olive' | 'dark' | 'outline' | 'beige' | 'ghost' | 'primary';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
   icon?: React.ReactNode;
@@ -23,7 +23,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium transition-all duration-300 rounded-sm select-none tracking-wide';
+    'inline-flex items-center justify-center font-medium transition-all duration-300 rounded-sm select-none tracking-wide whitespace-nowrap';
 
   const sizeStyles = {
     sm: 'text-xs px-3.5 py-2 space-x-1.5',
@@ -33,6 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     olive: 'bg-olive hover:bg-olive-hover text-white shadow-none active:scale-[0.99]',
+    primary: 'bg-olive hover:bg-olive-hover text-white shadow-none active:scale-[0.99]',
     dark: 'bg-near-black hover:bg-black text-off-white active:scale-[0.99]',
     outline:
       'bg-transparent text-near-black border border-near-black/20 hover:border-near-black hover:bg-near-black hover:text-white',
@@ -40,20 +41,20 @@ export const Button: React.FC<ButtonProps> = ({
     ghost: 'bg-transparent text-near-black hover:bg-sand/60',
   };
 
-  const combinedClasses = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${
+  const combinedClasses = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant] || variantStyles.olive} ${
     disabled || isLoading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
   } ${className}`;
 
   const content = (
     <>
       {isLoading ? (
-        <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+        <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2 shrink-0" />
       ) : (
-        icon && iconPosition === 'left' && <span className="mr-1.5 inline-flex">{icon}</span>
+        icon && iconPosition === 'left' && <span className="mr-1.5 inline-flex items-center shrink-0">{icon}</span>
       )}
-      <span>{children}</span>
+      <span className="inline-flex items-center space-x-1.5 whitespace-nowrap">{children}</span>
       {!isLoading && icon && iconPosition === 'right' && (
-        <span className="ml-1.5 inline-flex">{icon}</span>
+        <span className="ml-1.5 inline-flex items-center shrink-0">{icon}</span>
       )}
     </>
   );

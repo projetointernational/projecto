@@ -6,7 +6,8 @@ import { ProjectsDirectory } from '@/components/projects/ProjectsDirectory';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
 import { SiteSettings, Project, Category } from '@/lib/supabase/types';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ProjectsPage() {
   let settings: SiteSettings | null = null;
@@ -42,12 +43,13 @@ export default async function ProjectsPage() {
     <div className="flex flex-col min-h-screen">
       <Navbar
         companyName={settings?.company_name}
+        logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
       />
 
       <main className="flex-1">
         {/* Banner */}
-        <section className="bg-sand/30 py-20 sm:py-28">
+        <section className=" py-20 sm:py-8">
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <SectionHeading
               subtitle="Portfolio Directory"
