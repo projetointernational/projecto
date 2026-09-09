@@ -60,7 +60,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Trigger Brevo transactional email notification in background
+    // Fetch site_settings to obtain admin notification email and company name
+    let adminEmail: string | undefined = undefined;
+    let companyName: string | undefined = undefined;
+
+    try {
+      const { data: settings } = await supabase
+        .from('site_settings')
+        .select('enquiry_notification_email, email, company_name')
+        .limit(1)
+        .maybeSingle();
+
+      if (settings?.enquiry_notification_email) {
+        adminEmail = settings.enquiry_notification_email;
+      } else if (settings?.email) {
+        adminEmail = settings.email;
+      }
+
+      if (settings?.company_name) {
+        companyName = settings.company_name;
+      }
+    } catch (settingsErr) {
+      console.warn('[Enquiries API] Could not retrieve site_settings for email:', settingsErr);
+    }
+
+    // Trigger Brevo transactional email notifications (Admin side & Client side)
     try {
       await sendEnquiryEmailNotification({
         name: enquiry.name,
@@ -69,6 +93,8 @@ export async function POST(req: NextRequest) {
         serviceType: enquiry.service_type,
         message: enquiry.message,
         enquiryId: enquiry.id,
+        adminEmail,
+        companyName,
       });
     } catch (emailErr) {
       console.error('[Enquiries API] Email notification failed:', emailErr);
