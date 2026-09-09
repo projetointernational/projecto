@@ -70,7 +70,7 @@ export const EditorialFeature: React.FC<EditorialFeatureProps> = ({ feature }) =
             )}
 
             {feature.title && (
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-near-black font-normal leading-[1.15] mb-6">
+              <h2 className="font-serif text-2xl sm:text-4xl text-near-black font-normal leading-[1.15] mb-6">
                 {feature.title}
               </h2>
             )}

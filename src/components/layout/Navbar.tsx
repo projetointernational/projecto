@@ -31,14 +31,22 @@ export const Navbar: React.FC<NavbarProps> = ({
   const pathname = usePathname();
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY;
+          setScrolled((prev) => {
+            if (!prev && y > 35) return true;
+            if (prev && y < 10) return false;
+            return prev;
+          });
+          ticking = false;
+        });
+        ticking = true;
       }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -57,9 +65,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
-        ? 'bg-white backdrop-blur-md py-2 shadow-sm'
-        : 'bg-white py-3 sm:py-3.5'
+      className={`sticky top-0 z-50 py-3 sm:py-3.5 transition-shadow duration-200 ${scrolled
+        ? 'bg-white/95 backdrop-blur-md shadow-sm'
+        : 'bg-white'
         }`}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between">
@@ -70,10 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               src={logoUrl}
               alt={companyName}
               onError={() => setLogoError(true)}
-              className={`${scrolled
-                ? 'h-10 sm:h-11'
-                : 'h-12 sm:h-[54px]'
-                } w-auto max-w-[200px] object-contain transition-all duration-300 group-hover:scale-[1.02]`}
+              className="h-11 sm:h-12 w-auto max-w-[200px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
             />
           ) : (
             <div className="flex flex-col">

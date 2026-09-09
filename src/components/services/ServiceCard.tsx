@@ -14,7 +14,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
       <div>
         {/* Icon & Index */}
         <div className="flex items-center justify-between mb-5 sm:mb-8">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-sm flex items-center justify-center bg-white text-olive group-hover:bg-olive/10 group-hover:scale-105 transition-all duration-300 shadow-xs border border-sand/60">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-sm flex items-center justify-center text-olive group-hover:scale-105 transition-all duration-300 ">
             <IconResolver name={service.icon_name} className="w-5 h-5 sm:w-6 sm:h-6 text-olive" strokeWidth={1.25} />
           </div>
           {/* <span className="text-xs uppercase tracking-widest text-warm-grey font-mono">

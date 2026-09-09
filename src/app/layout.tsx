@@ -1,7 +1,14 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Playfair_Display, Montserrat } from 'next/font/google';
 import './globals.css';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
