@@ -82,7 +82,7 @@ function EnquiryContent() {
       </div>
 
       {/* Enquiry Form */}
-      <div className="lg:col-span-7 bg-sand/20 p-8 sm:p-12 rounded-sm">
+      <div className="lg:col-span-7 sm:bg-sand/20 p-1 sm:p-12 rounded-sm">
         <div className="mb-8">
           <span className="text-xs uppercase tracking-[0.2em] text-olive font-medium block mb-1">
             Intake Questionnaire
@@ -138,7 +138,7 @@ export default function EnquirePage() {
         </section>
 
         {/* Content */}
-        <section className="py-24 sm:py-16 bg-off-white">
+        <section className="py-10 sm:py-16 bg-off-white">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <Suspense fallback={<LoadingSpinner text="Loading Enquiry Protocol..." />}>
               <EnquiryContent />
