@@ -46,7 +46,7 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
         <span className="text-xs uppercase tracking-[0.2em] text-warm-grey">
           Edit Portfolio Milestone
         </span>
-        <h1 className="font-serif text-3xl text-near-black font-normal mt-1">
+        <h1 className="font-serif text-2xl sm:text-3xl text-near-black font-normal mt-1">
           Edit: {project.title}
         </h1>
       </div>

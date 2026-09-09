@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Wrench } from 'lucide-react';
@@ -5,6 +7,7 @@ import { Service } from '@/lib/supabase/types';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ServiceCard } from '@/components/services/ServiceCard';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { motion } from 'framer-motion';
 
 interface FeaturedServicesProps {
   services: Service[];
@@ -12,8 +15,14 @@ interface FeaturedServicesProps {
 
 export const FeaturedServices: React.FC<FeaturedServicesProps> = ({ services }) => {
   return (
-    <section className="py-24 sm:py-16 bg-off-white">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+    <section className="py-10 sm:py-16 bg-off-white">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.12 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12"
+      >
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <SectionHeading
@@ -46,7 +55,7 @@ export const FeaturedServices: React.FC<FeaturedServicesProps> = ({ services }) 
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -10,7 +10,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ about }) => {
 
   return (
     <section className="py-24 sm:pt-32 bg-off-white sm:pb-16">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Label / Accent column */}
           <div className="lg:col-span-4 space-y-4">
@@ -27,7 +27,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ about }) => {
 
           {/* Narrative & Stats column */}
           <div className="lg:col-span-8 space-y-8">
-            <p className="text-sm text-near-black/80 font-light leading-relaxed">
+            <p className="text-sm text-black font-light leading-relaxed">
               {about.narrative}
             </p>
 

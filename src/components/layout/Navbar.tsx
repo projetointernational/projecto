@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
   companyName?: string;
@@ -56,13 +57,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-off-white/95 backdrop-blur-md py-2 shadow-sm'
-          : 'bg-off-white py-3 sm:py-3.5'
-      }`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
+        ? 'bg-white backdrop-blur-md py-2 shadow-sm'
+        : 'bg-white py-3 sm:py-3.5'
+        }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center space-x-3 group">
           {logoUrl && !logoError ? (
@@ -70,11 +70,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               src={logoUrl}
               alt={companyName}
               onError={() => setLogoError(true)}
-              className={`${
-                scrolled
-                  ? 'h-10 sm:h-11'
-                  : 'h-12 sm:h-[54px]'
-              } w-auto max-w-[200px] object-contain transition-all duration-300 group-hover:scale-[1.02]`}
+              className={`${scrolled
+                ? 'h-10 sm:h-11'
+                : 'h-12 sm:h-[54px]'
+                } w-auto max-w-[200px] object-contain transition-all duration-300 group-hover:scale-[1.02]`}
             />
           ) : (
             <div className="flex flex-col">
@@ -96,11 +95,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-xs uppercase tracking-[0.16em] font-medium transition-colors duration-200 relative py-1 ${
-                  isActive
-                    ? 'text-olive font-semibold'
-                    : 'text-near-black/80 hover:text-olive'
-                }`}
+                className={`text-xs uppercase tracking-[0.16em] font-medium transition-colors duration-200 relative py-1 ${isActive
+                  ? 'text-olive font-semibold'
+                  : 'text-near-black/80 hover:text-olive'
+                  }`}
               >
                 {link.label}
                 {isActive && (
@@ -135,37 +133,68 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Mobile Drawer */}
-      {isOpen && (
-        <div className="md:hidden bg-off-white px-6 pt-4 pb-8 space-y-5 border-t border-sand">
-          <nav className="flex flex-col space-y-4">
-            {links.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-sm uppercase tracking-widest font-medium py-2 ${
-                    isActive ? 'text-olive font-semibold' : 'text-near-black'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-          <div className="pt-4 flex flex-col space-y-3">
-            <Button
-              href="/enquire"
-              variant="olive"
-              size="md"
-              className="w-full text-center"
-              icon={<ArrowUpRight className="w-4 h-4" strokeWidth={1.5} />}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="md:hidden bg-off-white px-6 pt-5 pb-8 space-y-6 border-t border-sand overflow-hidden"
+          >
+            <nav className="flex flex-col items-center justify-center space-y-3 text-center">
+              {links.map((link, idx) => {
+                const isActive = pathname === link.href;
+                return (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.35,
+                      delay: idx * 0.07,
+                      ease: [0.25, 0.1, 0.25, 1],
+                    }}
+                    className="w-full text-center"
+                  >
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`inline-block text-sm uppercase tracking-widest font-medium py-1.5 transition-colors ${
+                        isActive ? 'text-olive font-semibold' : 'text-near-black hover:text-olive'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </nav>
+
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.35,
+                delay: links.length * 0.07,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              className="pt-2 flex flex-col items-center justify-center w-full"
             >
-              {navLabels?.enquire || 'Start Enquiry'}
-            </Button>
-          </div>
-        </div>
-      )}
+              <Button
+                href="/enquire"
+                variant="olive"
+                size="md"
+                className="w-full max-w-xs text-center"
+                icon={<ArrowUpRight className="w-4 h-4" strokeWidth={1.5} />}
+                onClick={() => setIsOpen(false)}
+              >
+                {navLabels?.enquire || 'Start Enquiry'}
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

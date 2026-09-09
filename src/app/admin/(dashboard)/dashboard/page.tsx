@@ -83,7 +83,7 @@ export default async function AdminDashboardPage() {
             <span className="text-xs uppercase tracking-wider text-warm-grey font-medium">
               Total Enquiries
             </span>
-            <div className="font-serif text-3xl text-near-black font-normal">
+            <div className="font-serif text-2xl sm:text-3xl text-near-black font-normal">
               {enquiriesCount}
             </div>
             {newEnquiriesCount > 0 && (
@@ -102,7 +102,7 @@ export default async function AdminDashboardPage() {
             <span className="text-xs uppercase tracking-wider text-warm-grey font-medium">
               Live Projects
             </span>
-            <div className="font-serif text-3xl text-near-black font-normal">
+            <div className="font-serif text-2xl sm:text-3xl text-near-black font-normal">
               {projectsCount}
             </div>
             <Link
@@ -123,7 +123,7 @@ export default async function AdminDashboardPage() {
             <span className="text-xs uppercase tracking-wider text-warm-grey font-medium">
               Published Disciplines
             </span>
-            <div className="font-serif text-3xl text-near-black font-normal">
+            <div className="font-serif text-2xl sm:text-3xl text-near-black font-normal">
               {servicesCount}
             </div>
             <Link
@@ -210,13 +210,12 @@ export default async function AdminDashboardPage() {
                     </td>
                     <td className="py-3.5 px-4">
                       <span
-                        className={`inline-block px-2 py-0.5 rounded-sm text-[10px] uppercase tracking-wider font-semibold ${
-                          enq.status === 'new'
+                        className={`inline-block px-2 py-0.5 rounded-sm text-[10px] uppercase tracking-wider font-semibold ${enq.status === 'new'
                             ? 'bg-olive text-white'
                             : enq.status === 'contacted'
-                            ? 'bg-warm-beige text-white'
-                            : 'bg-sand text-near-black'
-                        }`}
+                              ? 'bg-warm-beige text-white'
+                              : 'bg-sand text-near-black'
+                          }`}
                       >
                         {enq.status}
                       </span>

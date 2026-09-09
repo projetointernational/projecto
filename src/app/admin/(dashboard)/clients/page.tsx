@@ -162,7 +162,7 @@ GRANT ALL ON TABLE clients TO anon, authenticated, service_role;`;
           <span className="text-xs uppercase tracking-[0.2em] text-warm-grey font-medium">
             Partners And Brand Identity
           </span>
-          <h1 className="font-serif text-3xl text-near-black font-normal mt-1">
+          <h1 className="font-serif text-2xl sm:text-3xl text-near-black font-normal mt-1">
             Clients And Partners
           </h1>
           <p className="text-xs text-warm-grey mt-1">
@@ -220,11 +220,10 @@ GRANT ALL ON TABLE clients TO anon, authenticated, service_role;`;
       {/* Global Feedback Banner */}
       {feedback && (
         <div
-          className={`p-4 rounded-sm flex items-center space-x-3 text-xs tracking-wide transition-all ${
-            feedback.type === 'success'
+          className={`p-4 rounded-sm flex items-center space-x-3 text-xs tracking-wide transition-all ${feedback.type === 'success'
               ? 'bg-olive/10 text-olive border border-olive/20'
               : 'bg-red-50 text-red-700 border border-red-200'
-          }`}
+            }`}
         >
           {feedback.type === 'success' ? (
             <Check className="w-4 h-4 shrink-0" strokeWidth={2} />

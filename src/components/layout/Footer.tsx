@@ -20,8 +20,8 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
     settings?.address || '450 Architectural Boulevard, Suite 800, New York, NY 10018';
 
   return (
-    <footer className="bg-near-black text-off-white pt-20 pb-12 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+    <footer className="bg-black text-off-white pt-20 pb-12 mt-auto">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
           {/* Brand & Narrative */}
@@ -135,11 +135,19 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-warm-grey space-y-4 sm:space-y-0">
+        <div className="pt-8 flex flex-col items-center justify-center text-center text-xs text-warm-grey space-y-2">
           <p>© {currentYear} {companyName}. All architectural rights reserved.</p>
-          <div className="flex items-center space-x-6">
-            <span className="text-warm-grey/60">Crafted with architectural precision</span>
-          </div>
+          <p className="text-warm-grey/80">
+            Crafted by{' '}
+            <a
+              href="https://ekodrix.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-warm-beige hover:text-white transition-colors underline-offset-4 hover:underline"
+            >
+              Ekodrix
+            </a>
+          </p>
         </div>
       </div>
     </footer>

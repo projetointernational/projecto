@@ -68,8 +68,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
       <main className="flex-1">
         {/* Navigation Breadcrumb */}
-        <div className="bg-sand/30 py-6 border-b border-sand">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
+        {/* <div className="bg-sand/30 py-6 border-b border-sand">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between">
             <Link
               href="/projects"
               className="inline-flex items-center text-xs uppercase tracking-wider text-warm-grey hover:text-near-black transition-colors space-x-2"
@@ -84,16 +84,16 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               </span>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Project Header */}
-        <section className="py-16 sm:py-24 bg-off-white">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className="py-10 sm:py-14 bg-off-white">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <div className="max-w-4xl space-y-6">
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-near-black font-normal leading-tight">
+              <h1 className="font-serif text-2xl sm:text-4xl text-near-black font-normal leading-tight">
                 {project.title}
               </h1>
-              <p className="text-lg sm:text-xl text-warm-grey font-light leading-relaxed">
+              <p className="text-sm text-warm-grey font-light leading-relaxed">
                 {project.short_description}
               </p>
             </div>
@@ -154,17 +154,17 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             </div>
 
             {/* Detailed Narrative & Specifications */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-15">
               <div className="lg:col-span-8 space-y-6">
                 <span className="text-xs uppercase text-warm-grey">
                   Architectural Narrative & Scope
                 </span>
-                <div className="text-base sm:text-lg text-near-black/85 font-light leading-relaxed whitespace-pre-line space-y-4">
+                <div className="text-base text-near-black/85 font-light leading-relaxed whitespace-pre-line space-y-4">
                   {project.full_description || project.short_description}
                 </div>
               </div>
 
-              <div className="lg:col-span-4 p-8 bg-sand/30 rounded-sm space-y-6">
+              <div className="lg:col-span-4 sm:p-8 p-4 bg-sand/30 rounded-sm space-y-6">
                 <h3 className="font-serif text-xl text-near-black font-normal">
                   Inquire on Similar Works
                 </h3>
@@ -190,7 +190,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   <span className="text-xs uppercase text-warm-grey block mb-3">
                     Project Gallery
                   </span>
-                  <h2 className="font-serif text-3xl text-near-black font-normal">
+                  <h2 className="font-serif text-2xl sm:text-3xl text-near-black font-normal">
                     Craftsmanship & Architectural Perspectives
                   </h2>
                 </div>
@@ -217,7 +217,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
             {/* Related Works */}
             {relatedProjects.length > 0 && (
-              <div className="border-t border-sand pt-16">
+              <div className="border-t border-sand pt-5 sm:pt-16">
                 <div className="flex items-center justify-between mb-12">
                   <div>
                     <span className="text-xs uppercase tracking-[0.2em] text-warm-grey">
