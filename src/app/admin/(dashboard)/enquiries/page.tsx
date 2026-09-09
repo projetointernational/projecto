@@ -89,7 +89,7 @@ export default function AdminEnquiriesPage() {
           <span className="text-xs uppercase tracking-[0.2em] text-warm-grey">
             Lead Intake
           </span>
-          <h1 className="font-serif text-3xl text-near-black font-normal mt-1">
+          <h1 className="font-serif text-2xl sm:text-3xl text-near-black font-normal mt-1">
             Project Enquiries Pipeline
           </h1>
         </div>
@@ -100,11 +100,10 @@ export default function AdminEnquiriesPage() {
             <button
               key={tab}
               onClick={() => setFilter(tab)}
-              className={`px-3 py-1.5 rounded-sm uppercase tracking-wider font-medium transition-colors ${
-                filter === tab
+              className={`px-3 py-1.5 rounded-sm uppercase tracking-wider font-medium transition-colors ${filter === tab
                   ? 'bg-white text-near-black shadow-sm'
                   : 'text-warm-grey hover:text-near-black'
-              }`}
+                }`}
             >
               {tab} ({tab === 'all' ? enquiries.length : enquiries.filter((e) => e.status === tab).length})
             </button>
@@ -162,13 +161,12 @@ export default function AdminEnquiriesPage() {
                           e.target.value as 'new' | 'contacted' | 'completed'
                         )
                       }
-                      className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-sm border-0 cursor-pointer outline-none ${
-                        enq.status === 'new'
+                      className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-sm border-0 cursor-pointer outline-none ${enq.status === 'new'
                           ? 'bg-olive text-white'
                           : enq.status === 'contacted'
-                          ? 'bg-warm-beige text-white'
-                          : 'bg-sand text-near-black'
-                      }`}
+                            ? 'bg-warm-beige text-white'
+                            : 'bg-sand text-near-black'
+                        }`}
                     >
                       <option value="new">New</option>
                       <option value="contacted">Contacted</option>
@@ -294,11 +292,10 @@ export default function AdminEnquiriesPage() {
                       key={st}
                       type="button"
                       onClick={() => handleUpdateStatus(activeEnquiry.id, st)}
-                      className={`text-xs uppercase tracking-wider px-3 py-1.5 rounded-sm font-medium transition-all ${
-                        activeEnquiry.status === st
+                      className={`text-xs uppercase tracking-wider px-3 py-1.5 rounded-sm font-medium transition-all ${activeEnquiry.status === st
                           ? 'bg-olive text-white shadow-sm'
                           : 'bg-sand/40 text-warm-grey hover:bg-sand'
-                      }`}
+                        }`}
                     >
                       {st}
                     </button>

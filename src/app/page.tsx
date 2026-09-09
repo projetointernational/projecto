@@ -2,13 +2,14 @@ import { createPublicServerClient } from '@/lib/supabase/server';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSection } from '@/components/home/HeroSection';
-import { IntroSection } from '@/components/home/IntroSection';
+import { ProcessSection } from '@/components/home/ProcessSection';
 import { FeaturedServices } from '@/components/home/FeaturedServices';
+import { EditorialFeature } from '@/components/home/EditorialFeature';
 import { FeaturedProjects } from '@/components/home/FeaturedProjects';
 import { StrengthsSection } from '@/components/home/StrengthsSection';
 import { ClientsSection } from '@/components/home/ClientsSection';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
-import { SiteSettings, HeroContent, AboutContent, Service, Project, Strength, Client } from '@/lib/supabase/types';
+import { SiteSettings, HeroContent, ProcessContent, Service, Project, Strength, Client, EditorialFeature as EditorialFeatureType } from '@/lib/supabase/types';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -16,8 +17,9 @@ export const revalidate = 0;
 export default async function HomePage() {
   let settings: SiteSettings | null = null;
   let hero: HeroContent | null = null;
-  let about: AboutContent | null = null;
+  let processContent: ProcessContent | null = null;
   let services: Service[] = [];
+  let editorialFeature: EditorialFeatureType | null = null;
   let projects: Project[] = [];
   let strengths: Strength[] = [];
   let clients: Client[] = [];
@@ -41,13 +43,15 @@ export default async function HomePage() {
       .maybeSingle();
     hero = heroData;
 
-    // Fetch about summary
-    const { data: aboutData } = await supabase
-      .from('about_content')
+    // Fetch process / what we do content
+    const { data: processData } = await supabase
+      .from('process_content')
       .select('*')
       .limit(1)
       .maybeSingle();
-    about = aboutData;
+    if (processData && processData.is_active !== false) {
+      processContent = processData;
+    }
 
     // Fetch services
     const { data: servicesData } = await supabase
@@ -56,6 +60,17 @@ export default async function HomePage() {
       .order('display_order', { ascending: true })
       .limit(6);
     services = servicesData || [];
+
+    // Fetch editorial showcase feature
+    const { data: featureData } = await supabase
+      .from('editorial_feature')
+      .select('*')
+      .eq('is_active', true)
+      .limit(1)
+      .maybeSingle();
+    if (featureData) {
+      editorialFeature = featureData;
+    }
 
     // Fetch featured projects
     const { data: projectsData } = await supabase
@@ -93,7 +108,8 @@ export default async function HomePage() {
       />
       <main className="flex-1">
         <HeroSection content={hero} />
-        {about && <IntroSection about={about} />}
+        {processContent && <ProcessSection content={processContent} />}
+        {editorialFeature && <EditorialFeature feature={editorialFeature} />}
         <FeaturedServices services={services} />
         <FeaturedProjects projects={projects} />
         {strengths.length > 0 && <StrengthsSection strengths={strengths} />}

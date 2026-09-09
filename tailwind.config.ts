@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "off-white": "#F7F5EF",
+        "off-white": "#FFFFFF",
         "near-black": "#151512",
         "olive": {
           DEFAULT: "#5A5B33",

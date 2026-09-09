@@ -23,7 +23,7 @@ function EnquiryContent() {
           <span className="text-xs uppercase text-warm-grey block mb-2">
             Project Initiation
           </span>
-          <h2 className="font-serif text-3xl text-near-black font-normal mb-4">
+          <h2 className="font-serif text-2xl sm:text-3xl text-near-black font-normal mb-4">
             Direct Estimating & Feasibility Channel
           </h2>
           <p className="text-sm text-warm-grey font-light leading-relaxed">
@@ -127,8 +127,8 @@ export default function EnquirePage() {
 
       <main className="flex-1">
         {/* Banner */}
-        <section className=" py-20 sm:py-8">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className=" py-10 sm:py-8">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <SectionHeading
               subtitle="Project Consultation"
               title="Start an Architectural Project Enquiry"
@@ -138,8 +138,8 @@ export default function EnquirePage() {
         </section>
 
         {/* Content */}
-        <section className="py-24 sm:py-32 bg-off-white">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className="py-24 sm:py-16 bg-off-white">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <Suspense fallback={<LoadingSpinner text="Loading Enquiry Protocol..." />}>
               <EnquiryContent />
             </Suspense>

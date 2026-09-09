@@ -58,7 +58,7 @@ export default function AdminProjectsPage() {
           <span className="text-xs uppercase tracking-[0.2em] text-warm-grey">
             Portfolio
           </span>
-          <h1 className="font-serif text-3xl text-near-black font-normal mt-1">
+          <h1 className="font-serif text-2xl sm:text-3xl text-near-black font-normal mt-1">
             Projects Catalog
           </h1>
         </div>

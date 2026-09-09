@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, Montserrat } from 'next/font/google';
 import './globals.css';
+import { ScrollToTop } from '@/components/ui/ScrollToTop';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -42,6 +43,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <ScrollToTop />
       </body>
     </html>
   );

@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import { Strength } from '@/lib/supabase/types';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { IconResolver } from '@/components/ui/IconResolver';
+import { motion } from 'framer-motion';
 
 interface StrengthsSectionProps {
   strengths: Strength[];
@@ -12,7 +15,13 @@ export const StrengthsSection: React.FC<StrengthsSectionProps> = ({ strengths })
 
   return (
     <section className="py-24 sm:py-32 bg-near-black text-off-white">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.12 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12"
+      >
         <SectionHeading
           theme="dark"
           subtitle="Why Projecto"
@@ -45,7 +54,7 @@ export const StrengthsSection: React.FC<StrengthsSectionProps> = ({ strengths })
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
