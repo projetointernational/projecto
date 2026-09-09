@@ -14,7 +14,7 @@ interface HeroSectionProps {
 export const HeroSection: React.FC<HeroSectionProps> = ({ content }) => {
   if (!content) {
     return (
-      <section className="relative h-[calc(100vh-72px)] sm:h-[calc(100vh-82px)] h-[calc(100dvh-72px)] sm:h-[calc(100dvh-82px)] min-h-[calc(100vh-72px)] sm:min-h-[calc(100vh-82px)] min-h-[calc(100dvh-72px)] sm:min-h-[calc(100dvh-82px)] flex items-center justify-center bg-sand/30 px-6 sm:px-12 py-12">
+      <section className="relative h-[calc(100svh-68px)] sm:h-[calc(100dvh-76px)] min-h-[calc(100svh-68px)] sm:min-h-[calc(100dvh-76px)] flex items-center justify-center bg-sand/30 px-6 sm:px-12 py-12">
         <div className="max-w-xl text-center space-y-4">
           <span className="text-xs uppercase tracking-[0.2em] text-warm-grey">
             Architectural Excellence
@@ -36,7 +36,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content }) => {
   }
 
   return (
-    <section className="relative h-[calc(100vh-72px)] sm:h-[calc(100vh-82px)] h-[calc(100dvh-72px)] sm:h-[calc(100dvh-82px)] min-h-[calc(100vh-72px)] sm:min-h-[calc(100vh-82px)] min-h-[calc(100dvh-72px)] sm:min-h-[calc(100dvh-82px)] flex items-end pb-10 sm:pb-14 pt-16 sm:pt-20 overflow-hidden bg-near-black">
+    <section className="relative h-[calc(100svh-68px)] sm:h-[calc(100dvh-76px)] min-h-[calc(100svh-68px)] sm:min-h-[calc(100dvh-76px)] flex items-end pb-8 sm:pb-14 pt-16 sm:pt-20 overflow-hidden bg-near-black">
       {/* Background Architectural Imagery */}
       {content.background_image_url && (
         <div className="absolute inset-0 z-0">

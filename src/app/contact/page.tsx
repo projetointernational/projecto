@@ -129,7 +129,7 @@ export default async function ContactPage() {
               </div>
 
               {/* Right Form Card */}
-              <div className="lg:col-span-7 bg-sand/20 p-1 sm:p-12 rounded-sm">
+              <div className="lg:col-span-7 sm:bg-sand/20 p-1 sm:p-12 rounded-sm">
                 <div className="mb-8">
                   <span className="text-xs uppercase tracking-[0.2em] text-olive font-medium block mb-1">
                     Direct Contact
