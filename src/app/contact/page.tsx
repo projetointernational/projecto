@@ -3,6 +3,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EnquiryForm } from '@/components/forms/EnquiryForm';
+import { MotionSection } from '@/components/ui/MotionSection';
 import { MapPin, Mail, Phone, Clock } from 'lucide-react';
 import { SiteSettings, ContactPageContent } from '@/lib/supabase/types';
 
@@ -49,8 +50,8 @@ export default async function ContactPage() {
 
       <main className="flex-1">
         {/* Banner */}
-        <section className=" py-20 sm:py-8">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className=" py-10 sm:py-8">
+          <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <SectionHeading
               subtitle="Contact Directory"
               title={contactContent?.heading || 'Let us build your next landmark together.'}
@@ -59,12 +60,12 @@ export default async function ContactPage() {
                 'Whether initiating a ground-up development, architectural renovation, or specialized structural consultation, our senior engineering partners are ready to review your blueprints.'
               }
             />
-          </div>
+          </MotionSection>
         </section>
 
         {/* Contact Content & Form */}
-        <section className="py-24 sm:py-32 bg-off-white">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className="py-10 sm:py-8 bg-off-white">
+          <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
               {/* Left Contact Directory */}
               <div className="lg:col-span-5 space-y-10">
@@ -128,7 +129,7 @@ export default async function ContactPage() {
               </div>
 
               {/* Right Form Card */}
-              <div className="lg:col-span-7 bg-sand/20 p-8 sm:p-12 rounded-sm">
+              <div className="lg:col-span-7 bg-sand/20 p-1 sm:p-12 rounded-sm">
                 <div className="mb-8">
                   <span className="text-xs uppercase tracking-[0.2em] text-olive font-medium block mb-1">
                     Direct Contact
@@ -140,7 +141,7 @@ export default async function ContactPage() {
                 <EnquiryForm />
               </div>
             </div>
-          </div>
+          </MotionSection>
         </section>
       </main>
 

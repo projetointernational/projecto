@@ -110,18 +110,17 @@ export default function AdminSettingsPage() {
         <span className="text-xs uppercase tracking-[0.2em] text-warm-grey">
           Configuration
         </span>
-        <h1 className="font-serif text-3xl text-near-black font-normal mt-1">
+        <h1 className="font-serif text-2xl sm:text-3xl text-near-black font-normal mt-1">
           Site Settings & Identity
         </h1>
       </div>
 
       {feedback && (
         <div
-          className={`p-4 rounded-sm text-xs flex items-center space-x-2 ${
-            feedback.type === 'success'
+          className={`p-4 rounded-sm text-xs flex items-center space-x-2 ${feedback.type === 'success'
               ? 'bg-green-50 text-green-800'
               : 'bg-red-50 text-red-800'
-          }`}
+            }`}
         >
           {feedback.type === 'success' ? (
             <Check className="w-4 h-4 shrink-0" />

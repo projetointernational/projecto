@@ -1,8 +1,11 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { HeroContent } from '@/lib/supabase/types';
+import { motion } from 'framer-motion';
 
 interface HeroSectionProps {
   content?: HeroContent | null;
@@ -51,33 +54,39 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content }) => {
       )}
 
       {/* Main Content Container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
-        <div className="max-w-3xl space-y-4 sm:space-y-5">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full"
+      >
+        <div className="max-w-3xl space-y-3 sm:space-y-5">
           {content.subheadline && (
             <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 rounded-full bg-warm-beige" />
-              <span className="text-xs uppercase tracking-[0.25em] text-warm-beige font-medium">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-warm-beige" />
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-warm-beige font-medium">
                 {content.subheadline}
               </span>
             </div>
           )}
 
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-off-white leading-[1.15] tracking-tight">
+          <h1 className="font-serif text-2xl sm:text-4xl font-normal text-off-white leading-[1.2] sm:leading-[1.15] tracking-tight">
             {content.headline}
           </h1>
 
           {content.intro_text && (
-            <p className="text-sm text-off-white/80 font-light max-w-2xl leading-relaxed">
+            <p className="hidden sm:block text-sm text-off-white/80 font-light max-w-2xl leading-relaxed">
               {content.intro_text}
             </p>
           )}
 
-          <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+          <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4">
             <Button
               href={content.cta_primary_link || '/projects'}
               variant="olive"
               size="lg"
-              icon={<ArrowRight className="w-4 h-4" strokeWidth={1.5} />}
+              className="text-xs sm:text-base py-3 sm:py-4 px-5 sm:px-8"
+              icon={<ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />}
             >
               {content.cta_primary_text || 'Explore our projects'}
             </Button>
@@ -86,14 +95,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content }) => {
               href={content.cta_secondary_link || '/contact'}
               variant="outline"
               size="lg"
-              className="text-off-white border-white/30 hover:bg-white hover:!text-near-black hover:border-white"
-              icon={<ArrowUpRight className="w-4 h-4" strokeWidth={1.5} />}
+              className="text-xs sm:text-base py-3 sm:py-4 px-5 sm:px-8 text-off-white border-white/30 hover:bg-white hover:!text-near-black hover:border-white"
+              icon={<ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />}
             >
               {content.cta_secondary_text || 'Get in touch'}
             </Button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

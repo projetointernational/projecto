@@ -4,6 +4,7 @@ import { Footer } from '@/components/layout/Footer';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ProjectsDirectory } from '@/components/projects/ProjectsDirectory';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
+import { MotionSection } from '@/components/ui/MotionSection';
 import { SiteSettings, Project, Category } from '@/lib/supabase/types';
 
 export const dynamic = 'force-dynamic';
@@ -49,21 +50,21 @@ export default async function ProjectsPage() {
 
       <main className="flex-1">
         {/* Banner */}
-        <section className=" py-20 sm:py-8">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className=" py-10 sm:py-8">
+          <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <SectionHeading
               subtitle="Portfolio Directory"
               title="Architectural Works & Completed Projects"
               description="A curated survey of our luxury residential, commercial, and structural engineering projects completed across regions."
             />
-          </div>
+          </MotionSection>
         </section>
 
         {/* Catalog Section */}
-        <section className="py-20 sm:py-28 bg-off-white">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className="pb-10 sm:py-8 bg-off-white">
+          <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <ProjectsDirectory projects={projects} categories={categories} />
-          </div>
+          </MotionSection>
         </section>
 
         <EnquiryCta />

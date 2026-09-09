@@ -154,3 +154,31 @@ export interface Client {
   logo_url: string;
   created_at?: string;
 }
+
+export interface WorkflowStep {
+  title: string;
+  description: string;
+  icon_name: string;
+}
+
+export interface ProcessContent {
+  id: string;
+  subtitle?: string | null;
+  title: string;
+  description?: string | null;
+  steps?: WorkflowStep[] | null;
+  is_active?: boolean;
+  updated_at?: string;
+}
+
+export interface EditorialFeature {
+  id: string;
+  subtitle?: string | null;
+  title: string;
+  description?: string | null;
+  image_url?: string | null;
+  image_position?: 'left' | 'right';
+  highlights?: string[] | null;
+  is_active?: boolean;
+  updated_at?: string;
+}

@@ -140,7 +140,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
             required
             value={formData.name}
             onChange={handleChange}
-            placeholder="e.g. Jonathan Vance"
             className="w-full bg-sand/30 focus:bg-white text-near-black text-sm px-4 py-3 rounded-sm border-0 ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none transition-all placeholder:text-warm-grey/50"
           />
         </div>
@@ -155,7 +154,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
             required
             value={formData.email}
             onChange={handleChange}
-            placeholder="e.g. j.vance@studio.com"
             className="w-full bg-sand/30 focus:bg-white text-near-black text-sm px-4 py-3 rounded-sm border-0 ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none transition-all placeholder:text-warm-grey/50"
           />
         </div>
@@ -171,7 +169,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="+1 (555) 000-0000"
             className="w-full bg-sand/30 focus:bg-white text-near-black text-sm px-4 py-3 rounded-sm border-0 ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none transition-all placeholder:text-warm-grey/50"
           />
         </div>
@@ -207,7 +204,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
           rows={5}
           value={formData.message}
           onChange={handleChange}
-          placeholder="Please describe project location, estimated timeline, architectural partners, and specific requirements..."
           className="w-full bg-sand/30 focus:bg-white text-near-black text-sm p-4 rounded-sm border-0 ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none transition-all placeholder:text-warm-grey/50 resize-y"
         />
       </div>
