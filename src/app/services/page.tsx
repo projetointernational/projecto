@@ -41,27 +41,28 @@ export default async function ServicesPage() {
         companyName={settings?.company_name}
         logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
+        phone={settings?.phone}
       />
 
       <main className="flex-1">
         {/* Banner */}
-        <section className=" py-10 sm:py-6">
+        <section className="py-12 sm:py-16 bg-off-white border-b border-sand/60">
           <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <SectionHeading
-              subtitle="Disciplines & Capabilities"
-              title="End-to-End Architectural Construction Services"
-              description="From ground-breaking structural works to meticulous interior detailing, explore our full spectrum of master builder services."
+              subtitle="CAPABILITIES & DISCIPLINES"
+              title="Procurement & Project Coordination Services"
+              description="From sourcing verified project materials to coordinating professionals and execution teams, explore our full spectrum of project support."
             />
           </MotionSection>
         </section>
 
         {/* Services List */}
-        <section className="py-10 sm:py-16 bg-off-white">
+        <section className="py-16 sm:py-20 bg-white">
           <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             {services.length === 0 ? (
               <EmptyState
                 title="Capabilities Directory Updating"
-                description="Our structural and architectural service offerings are currently being updated. Contact our design desk for details."
+                description="Our procurement and coordination offerings are currently being updated. Contact our desk for details."
                 icon={Wrench}
                 actionHref="/contact"
                 actionLabel="Inquire About Capabilities"
@@ -76,7 +77,15 @@ export default async function ServicesPage() {
           </MotionSection>
         </section>
 
-        <EnquiryCta />
+        <EnquiryCta
+          eyebrow="GET STARTED"
+          heading="Discuss Your Project Scope"
+          description="Tell us what you're working on and the support you need. We'll help identify the right next step."
+          primaryCtaText="DISCUSS YOUR PROJECT"
+          primaryCtaLink="/contact"
+          secondaryCtaText="REQUEST PROCUREMENT SUPPORT"
+          secondaryCtaLink="/services/procurement"
+        />
       </main>
 
       <Footer settings={settings} />

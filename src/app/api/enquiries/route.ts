@@ -5,7 +5,20 @@ import { sendEnquiryEmailNotification } from '@/lib/brevo';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, phone, service_type, message } = body;
+    const {
+      name,
+      email,
+      phone,
+      company,
+      location,
+      project_type,
+      required_support,
+      project_stage,
+      service_type,
+      contact_method,
+      file_url,
+      message,
+    } = body;
 
     // Validation
     if (!name || typeof name !== 'string' || !name.trim()) {
@@ -15,19 +28,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!email || typeof email !== 'string' || !email.includes('@')) {
+    if (!phone || typeof phone !== 'string' || !phone.trim()) {
       return NextResponse.json(
-        { success: false, message: 'A valid email address is required.' },
+        { success: false, message: 'Phone number is required.' },
         { status: 400 }
       );
     }
 
-    if (!message || typeof message !== 'string' || !message.trim()) {
-      return NextResponse.json(
-        { success: false, message: 'Enquiry message is required.' },
-        { status: 400 }
-      );
-    }
+    const effectiveEmail = email && email.includes('@') ? email.trim().toLowerCase() : 'no-email-provided@client.com';
+    const effectiveSupport = required_support || service_type || 'General Project Support';
+
+    // Compile comprehensive notes for the admin inbox & email
+    const structuredNotes = [
+      company ? `Company: ${company}` : null,
+      location ? `Project Location: ${location}` : null,
+      project_type ? `Project Type: ${project_type}` : null,
+      required_support ? `Required Support: ${required_support}` : null,
+      project_stage ? `Project Stage: ${project_stage}` : null,
+      contact_method ? `Preferred Contact Method: ${contact_method}` : null,
+      file_url ? `Uploaded BOQ / Drawings: ${file_url}` : null,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    const formattedMessage = [
+      message?.trim() ? `Requirement / Message:\n${message.trim()}` : '',
+      structuredNotes ? `\n--- Project Scope Details ---\n${structuredNotes}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n');
 
     const supabase = createAdminServiceClient();
 
@@ -37,10 +66,11 @@ export async function POST(req: NextRequest) {
       .insert([
         {
           name: name.trim(),
-          email: email.trim().toLowerCase(),
+          email: effectiveEmail,
           phone: phone ? phone.trim() : null,
-          service_type: service_type ? service_type.trim() : null,
-          message: message.trim(),
+          service_type: effectiveSupport,
+          message: formattedMessage || 'Project enquiry submitted.',
+          notes: structuredNotes || null,
           status: 'new',
         },
       ])
@@ -49,7 +79,6 @@ export async function POST(req: NextRequest) {
 
     if (dbError) {
       console.error('[Enquiries API] Database insertion failed:', dbError);
-      // Even if placeholder credentials or DB table error, provide helpful response
       return NextResponse.json(
         {
           success: false,
@@ -84,7 +113,7 @@ export async function POST(req: NextRequest) {
       console.warn('[Enquiries API] Could not retrieve site_settings for email:', settingsErr);
     }
 
-    // Trigger Brevo transactional email notifications (Admin side & Client side)
+    // Trigger Brevo transactional email notification if configured
     try {
       await sendEnquiryEmailNotification({
         name: enquiry.name,
@@ -97,13 +126,12 @@ export async function POST(req: NextRequest) {
         companyName,
       });
     } catch (emailErr) {
-      console.error('[Enquiries API] Email notification failed:', emailErr);
-      // Non-blocking: record is saved in DB even if Brevo notification encounters an issue
+      console.error('[Enquiries API] Email notification non-fatal notice:', emailErr);
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Enquiry received successfully.',
+      message: 'Project enquiry submitted successfully.',
       enquiryId: enquiry.id,
     });
   } catch (err) {

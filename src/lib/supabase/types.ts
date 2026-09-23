@@ -21,6 +21,8 @@ export interface SiteSettings {
     linkedin?: string;
     twitter?: string;
     facebook?: string;
+    whatsapp?: string;
+    phone?: string;
   } | null;
   navigation_labels?: {
     home?: string;
@@ -29,6 +31,26 @@ export interface SiteSettings {
     projects?: string;
     contact?: string;
     enquire?: string;
+    menu?: Array<{
+      label: string;
+      href: string;
+      active?: boolean;
+      order?: number;
+      dropdown?: Array<{
+        label: string;
+        href: string;
+        active?: boolean;
+        order?: number;
+      }>;
+    }>;
+    form_options?: {
+      project_types?: string[];
+      required_support?: string[];
+      project_stages?: string[];
+      contact_methods?: string[];
+    };
+    whatsapp_number?: string;
+    phone_number?: string;
   } | null;
   enquiry_notification_email?: string | null;
   updated_at?: string;
