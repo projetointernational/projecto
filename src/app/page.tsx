@@ -2,14 +2,24 @@ import { createPublicServerClient } from '@/lib/supabase/server';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSection } from '@/components/home/HeroSection';
-import { ProcessSection } from '@/components/home/ProcessSection';
-import { FeaturedServices } from '@/components/home/FeaturedServices';
-import { EditorialFeature } from '@/components/home/EditorialFeature';
+import { TwoCoreServices } from '@/components/home/TwoCoreServices';
+import { ProcurementProcess } from '@/components/home/ProcurementProcess';
+import { CoordinationSection } from '@/components/home/CoordinationSection';
+import { WorkflowSection } from '@/components/home/WorkflowSection';
+import { AudienceSection } from '@/components/home/AudienceSection';
 import { FeaturedProjects } from '@/components/home/FeaturedProjects';
-import { StrengthsSection } from '@/components/home/StrengthsSection';
 import { ClientsSection } from '@/components/home/ClientsSection';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
-import { SiteSettings, HeroContent, ProcessContent, Service, Project, Strength, Client, EditorialFeature as EditorialFeatureType } from '@/lib/supabase/types';
+import {
+  SiteSettings,
+  HeroContent,
+  ProcessContent,
+  Service,
+  Project,
+  Strength,
+  Client,
+  EditorialFeature as EditorialFeatureType,
+} from '@/lib/supabase/types';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -17,17 +27,17 @@ export const revalidate = 0;
 export default async function HomePage() {
   let settings: SiteSettings | null = null;
   let hero: HeroContent | null = null;
-  let processContent: ProcessContent | null = null;
+  let allProcesses: ProcessContent[] = [];
   let services: Service[] = [];
   let editorialFeature: EditorialFeatureType | null = null;
   let projects: Project[] = [];
-  let strengths: Strength[] = [];
+  let audienceCards: Strength[] = [];
   let clients: Client[] = [];
 
   try {
     const supabase = createPublicServerClient();
 
-    // Fetch site settings
+    // 1. Site settings
     const { data: settingsData } = await supabase
       .from('site_settings')
       .select('*')
@@ -35,7 +45,7 @@ export default async function HomePage() {
       .maybeSingle();
     settings = settingsData;
 
-    // Fetch hero
+    // 2. Hero content
     const { data: heroData } = await supabase
       .from('hero_content')
       .select('*')
@@ -43,36 +53,30 @@ export default async function HomePage() {
       .maybeSingle();
     hero = heroData;
 
-    // Fetch process / what we do content
+    // 3. Process collections (Procurement, Coordination Support, Workflow)
     const { data: processData } = await supabase
       .from('process_content')
       .select('*')
-      .limit(1)
-      .maybeSingle();
-    if (processData && processData.is_active !== false) {
-      processContent = processData;
-    }
+      .eq('is_active', true);
+    allProcesses = processData || [];
 
-    // Fetch services
+    // 4. Services (Procurement, Project Coordination, etc.)
     const { data: servicesData } = await supabase
       .from('services')
       .select('*')
-      .order('display_order', { ascending: true })
-      .limit(6);
+      .order('display_order', { ascending: true });
     services = servicesData || [];
 
-    // Fetch editorial showcase feature
+    // 5. Editorial showcase feature
     const { data: featureData } = await supabase
       .from('editorial_feature')
       .select('*')
       .eq('is_active', true)
       .limit(1)
       .maybeSingle();
-    if (featureData) {
-      editorialFeature = featureData;
-    }
+    editorialFeature = featureData;
 
-    // Fetch featured projects
+    // 6. Selected projects
     const { data: projectsData } = await supabase
       .from('projects')
       .select('*')
@@ -80,14 +84,14 @@ export default async function HomePage() {
       .limit(6);
     projects = projectsData || [];
 
-    // Fetch strengths
+    // 7. Audience cards / Who We Work With (from strengths table)
     const { data: strengthsData } = await supabase
       .from('strengths')
       .select('*')
       .order('display_order', { ascending: true });
-    strengths = strengthsData || [];
+    audienceCards = strengthsData || [];
 
-    // Fetch clients
+    // 8. Clients / Partners
     const { data: clientsData, error: clientsError } = await supabase
       .from('clients')
       .select('*')
@@ -99,23 +103,103 @@ export default async function HomePage() {
     console.error('[HomePage] Supabase fetch warning:', error);
   }
 
+  // Identify specific process collections from Admin data
+  const procurementProcess =
+    allProcesses.find((p) => p.subtitle?.toUpperCase() === 'PROCUREMENT') ||
+    allProcesses[0] ||
+    null;
+
+  const coordinationSupport =
+    allProcesses.find((p) => p.subtitle?.toUpperCase() === 'COORDINATION SUPPORT') ||
+    allProcesses[1] ||
+    null;
+
+  const workflowProcess =
+    allProcesses.find(
+      (p) =>
+        p.subtitle?.toUpperCase() === 'PROJECT WORKFLOW' ||
+        p.title?.toLowerCase().includes('completion')
+    ) ||
+    allProcesses[2] ||
+    null;
+
+  const procurementService = services.find((s) => s.slug === 'procurement');
+  const coordinationService = services.find((s) => s.slug === 'project-coordination');
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar
         companyName={settings?.company_name}
         logoUrl={settings?.logo_url}
         navLabels={settings?.navigation_labels}
+        phone={settings?.phone}
       />
+
       <main className="flex-1">
+        {/* Section 01: Hero */}
         <HeroSection content={hero} />
-        {processContent && <ProcessSection content={processContent} />}
-        {editorialFeature && <EditorialFeature feature={editorialFeature} />}
-        <FeaturedServices services={services} />
-        <FeaturedProjects projects={projects} />
-        {strengths.length > 0 && <StrengthsSection strengths={strengths} />}
+
+        {/* Section 02: Two Core Services (Procurement & Project Coordination) */}
+        {services.length > 0 && (
+          <TwoCoreServices
+            services={services}
+            subtitle="WHAT WE DO"
+            title="One Project. One Coordinated Partner."
+          />
+        )}
+
+        {/* Section 03: Procurement Process (7 Steps + 9 Support Offerings) */}
+        {procurementProcess && (
+          <ProcurementProcess
+            processData={procurementProcess}
+            procurementService={procurementService}
+          />
+        )}
+
+        {/* Section 04: Project Coordination Ecosystem & Coordination Support */}
+        <CoordinationSection
+          coordinationService={coordinationService}
+          coordinationSupport={coordinationSupport}
+          feature={editorialFeature}
+        />
+
+        {/* Section 05: Core Project Workflow (7 Stages + Supporting Note) */}
+        {workflowProcess && <WorkflowSection workflowData={workflowProcess} />}
+
+        {/* Section 06: Who We Work With (Audience Cards) */}
+        {audienceCards.length > 0 && (
+          <AudienceSection
+            audienceCards={audienceCards}
+            subtitle="WHO WE WORK WITH"
+            title="Tailored Support for Every Project Stakeholder"
+          />
+        )}
+
+        {/* Section 07: Selected Projects & Case Studies */}
+        {projects.length > 0 && (
+          <FeaturedProjects
+            projects={projects}
+            subtitle="PORTFOLIO"
+            title="Selected Projects & Case Studies"
+            description="A curated selection of projects demonstrating our procurement, coordination and project support capabilities."
+          />
+        )}
+
+        {/* Section 08: Verified Clients / Partners */}
         {clients.length > 0 && <ClientsSection clients={clients} />}
-        <EnquiryCta />
+
+        {/* Section 09: Final CTA Block */}
+        <EnquiryCta
+          eyebrow="GET STARTED"
+          heading="Have a Project in Mind?"
+          description="Tell us what you need. We'll help coordinate the next step."
+          primaryCtaText="DISCUSS YOUR PROJECT"
+          primaryCtaLink="/contact"
+          secondaryCtaText="REQUEST PROCUREMENT SUPPORT"
+          secondaryCtaLink="/services/procurement"
+        />
       </main>
+
       <Footer settings={settings} />
     </div>
   );
