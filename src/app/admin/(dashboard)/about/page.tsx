@@ -99,7 +99,22 @@ export default function AdminAboutPage() {
         if (data) setAbout(data);
       }
 
-      setFeedback({ type: 'success', message: 'About narrative successfully updated.' });
+      // Sync section image to site_settings for instant global access
+      try {
+        const { data: sData } = await supabase.from('site_settings').select('id, navigation_labels').single();
+        if (sData) {
+          const nav = sData.navigation_labels || {};
+          nav.section_images = {
+            ...(nav.section_images || {}),
+            about_section_image: about.main_image_url || '',
+          };
+          await supabase.from('site_settings').update({ navigation_labels: nav }).eq('id', sData.id);
+        }
+      } catch (syncErr) {
+        console.warn('Sync warning:', syncErr);
+      }
+
+      setFeedback({ type: 'success', message: 'About content and section supporting image successfully saved.' });
     } catch (err) {
       setFeedback({
         type: 'error',
@@ -199,24 +214,22 @@ export default function AdminAboutPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-sand">
-            <div>
-              <CloudinaryUploader
-                label="Primary About Visual"
-                currentImageUrl={about.main_image_url}
-                onUploadSuccess={(url) => setAbout({ ...about, main_image_url: url })}
-                aspectRatio="video"
-                folder="about"
-              />
-            </div>
-            <div>
-              <CloudinaryUploader
-                label="Secondary Craftsmanship Visual"
-                currentImageUrl={about.secondary_image_url}
-                onUploadSuccess={(url) => setAbout({ ...about, secondary_image_url: url })}
-                aspectRatio="video"
-                folder="about"
-              />
+          <div className="pt-4 border-t border-sand space-y-3">
+            <CloudinaryUploader
+              label='"One Project. One Coordinated Partner." Section Supporting Visual (Recommended Ratio: 4:5 Portrait)'
+              currentImageUrl={about.main_image_url}
+              onUploadSuccess={(url) => setAbout({ ...about, main_image_url: url })}
+              aspectRatio="portrait"
+              compact={true}
+              folder="about"
+            />
+            <div className="p-3 bg-sand/30 rounded-xs text-[11px] text-near-black/80 space-y-1 max-w-md">
+              <p className="font-medium text-near-black">
+                Recommended upload ratio: <strong>4:5 (portrait)</strong>
+              </p>
+              <p className="text-warm-grey">
+                This image appears on the right side of the &quot;One Project. One Coordinated Partner.&quot; section on the homepage, spanning from the heading level down to the bottom of the two content cards.
+              </p>
             </div>
           </div>
 

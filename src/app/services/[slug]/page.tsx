@@ -133,19 +133,19 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {service.features.map((feature: string, idx: number) => (
                   <div
                     key={idx}
-                    className="p-6 bg-sand/20 rounded-sm border border-sand/70 hover:border-olive/40 transition-colors space-y-3"
+                    className="p-3.5 sm:p-6 bg-sand/20 rounded-sm border border-sand/70 hover:border-olive/40 transition-colors space-y-2 sm:space-y-3"
                   >
                     <div className="flex items-center space-x-2 text-olive">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" strokeWidth={1.5} />
+                      <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={1.5} />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-warm-grey">
                         Item 0{idx + 1}
                       </span>
                     </div>
-                    <h3 className="font-serif text-base sm:text-lg font-medium text-near-black leading-snug">
+                    <h3 className="font-serif text-sm sm:text-lg font-medium text-near-black leading-snug break-normal">
                       {feature}
                     </h3>
                   </div>
@@ -183,22 +183,22 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-7 gap-3">
                 {procurementProcess.steps?.map((step: any, idx: number) => (
                   <div
                     key={idx}
-                    className="p-5 bg-white rounded-sm border border-sand/70 shadow-sm flex flex-col justify-between"
+                    className="p-3.5 sm:p-5 bg-white rounded-sm border border-sand/70 shadow-sm flex flex-col justify-between"
                   >
                     <div>
-                      <span className="text-[10px] font-mono text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block mb-3">
+                      <span className="text-[10px] font-mono text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block mb-2 sm:mb-3">
                         0{idx + 1}
                       </span>
-                      <h4 className="font-serif text-xs font-semibold uppercase tracking-wider text-near-black mb-2">
+                      <h4 className="font-serif text-xs font-semibold uppercase tracking-wider text-near-black mb-1.5 sm:mb-2 break-normal">
                         {step.title}
                       </h4>
                     </div>
                     {step.description && (
-                      <p className="text-[11px] text-warm-grey font-light pt-2 border-t border-sand/40">
+                      <p className="text-[10.5px] sm:text-[11px] text-warm-grey font-light pt-2 border-t border-sand/40 break-normal">
                         {step.description}
                       </p>
                     )}
@@ -222,22 +222,22 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 mb-10">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-7 gap-3 mb-10">
                 {workflowProcess.steps?.map((step: any, idx: number) => (
                   <div
                     key={idx}
-                    className="p-5 bg-white rounded-sm border border-sand/70 shadow-sm flex flex-col justify-between"
+                    className="p-3.5 sm:p-5 bg-white rounded-sm border border-sand/70 shadow-sm flex flex-col justify-between"
                   >
                     <div>
-                      <span className="text-[10px] font-mono text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block mb-3">
+                      <span className="text-[10px] font-mono text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block mb-2 sm:mb-3">
                         0{idx + 1}
                       </span>
-                      <h4 className="font-serif text-xs font-semibold uppercase tracking-wider text-near-black mb-2">
+                      <h4 className="font-serif text-xs font-semibold uppercase tracking-wider text-near-black mb-1.5 sm:mb-2 break-normal">
                         {step.title}
                       </h4>
                     </div>
                     {step.description && (
-                      <p className="text-[11px] text-warm-grey font-light pt-2 border-t border-sand/40">
+                      <p className="text-[10.5px] sm:text-[11px] text-warm-grey font-light pt-2 border-t border-sand/40 break-normal">
                         {step.description}
                       </p>
                     )}
@@ -269,22 +269,22 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {coordinationProcess.steps?.map((step: any, idx: number) => (
                   <div
                     key={idx}
-                    className="p-5 bg-white rounded-sm border border-sand/60 flex flex-col justify-between"
+                    className="p-3.5 sm:p-5 bg-white rounded-sm border border-sand/60 flex flex-col justify-between"
                   >
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <span className="text-[10px] font-mono uppercase tracking-widest text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block">
                         0{idx + 1}
                       </span>
-                      <h4 className="font-serif text-sm font-medium text-near-black leading-snug">
+                      <h4 className="font-serif text-xs sm:text-sm font-medium text-near-black leading-snug break-normal">
                         {step.title}
                       </h4>
                     </div>
                     {step.description && (
-                      <p className="text-xs text-warm-grey font-light pt-2 mt-2 border-t border-sand/40">
+                      <p className="text-[10.5px] sm:text-xs text-warm-grey font-light pt-2 mt-1.5 sm:mt-2 border-t border-sand/40 break-normal">
                         {step.description}
                       </p>
                     )}

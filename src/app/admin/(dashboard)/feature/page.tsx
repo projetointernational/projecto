@@ -1,13 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
-import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EditorialFeature } from '@/lib/supabase/types';
-import { Check, AlertCircle, Plus, Trash2, LayoutTemplate, Eye } from 'lucide-react';
+import { Check, AlertCircle, Plus, Trash2 } from 'lucide-react';
 
 export default function AdminEditorialFeaturePage() {
   const supabase = createClient();
@@ -19,8 +17,6 @@ export default function AdminEditorialFeaturePage() {
     subtitle: '',
     title: '',
     description: '',
-    image_url: '',
-    image_position: 'left',
     highlights: [],
     is_active: true,
   });
@@ -53,9 +49,12 @@ export default function AdminEditorialFeaturePage() {
     loadFeature();
   }, [supabase]);
 
+  const MAX_HIGHLIGHTS = 12;
+
   const handleAddHighlight = () => {
     if (!newHighlight.trim()) return;
     const currentHighlights = feature.highlights || [];
+    if (currentHighlights.length >= MAX_HIGHLIGHTS) return;
     setFeature({
       ...feature,
       highlights: [...currentHighlights, newHighlight.trim()],
@@ -90,8 +89,7 @@ export default function AdminEditorialFeaturePage() {
         subtitle: feature.subtitle || null,
         title: feature.title || '',
         description: feature.description || null,
-        image_url: feature.image_url || null,
-        image_position: feature.image_position || 'left',
+        // image_url and image_position are not editable from this panel
         highlights: feature.highlights || [],
         is_active: feature.is_active ?? true,
         updated_at: new Date().toISOString(),
@@ -129,20 +127,18 @@ export default function AdminEditorialFeaturePage() {
 
   if (loading) return <LoadingSpinner text="Loading Showcase Feature..." />;
 
-  const isImageRight = feature.image_position === 'right';
-
   return (
-    <div className="space-y-8 max-w-5xl">
+    <div className="space-y-8 max-w-3xl">
       {/* Header */}
       <div>
         <span className="text-xs uppercase tracking-[0.2em] text-warm-grey font-medium">
           Homepage Showcase
         </span>
         <h1 className="font-serif text-2xl sm:text-3xl text-near-black font-normal mt-1">
-          Showcase Feature Editor
+          Coordination Showcase Editor
         </h1>
         <p className="text-sm text-warm-grey mt-1">
-          Configure the architectural showcase section that appears between Featured Services and Featured Projects.
+          Configure the text content for the coordination showcase section on the homepage.
         </p>
       </div>
 
@@ -161,9 +157,9 @@ export default function AdminEditorialFeaturePage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Section Visibility & Layout Orientation Card */}
-        <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-sand/40">
+        {/* Section Visibility */}
+        <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-wider text-near-black">
                 Section Visibility
@@ -185,72 +181,11 @@ export default function AdminEditorialFeaturePage() {
               </span>
             </label>
           </div>
-
-          <div>
-            <label className="block text-xs uppercase tracking-wider text-warm-grey font-medium mb-3">
-              Image & Content Alignment
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => setFeature({ ...feature, image_position: 'left' })}
-                className={`p-4 rounded-sm border text-left flex items-center space-x-3 transition-all ${feature.image_position !== 'right'
-                    ? 'border-olive bg-olive/5 text-near-black ring-1 ring-olive'
-                    : 'border-sand hover:border-warm-grey text-warm-grey'
-                  }`}
-              >
-                <LayoutTemplate className="w-5 h-5 text-olive shrink-0" />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-near-black">
-                    Image Left, Content Right
-                  </p>
-                  <p className="text-[11px] text-warm-grey">
-                    Traditional editorial layout with image on the left.
-                  </p>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setFeature({ ...feature, image_position: 'right' })}
-                className={`p-4 rounded-sm border text-left flex items-center space-x-3 transition-all ${feature.image_position === 'right'
-                    ? 'border-olive bg-olive/5 text-near-black ring-1 ring-olive'
-                    : 'border-sand hover:border-warm-grey text-warm-grey'
-                  }`}
-              >
-                <LayoutTemplate className="w-5 h-5 text-olive shrink-0 scale-x-[-1]" />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-near-black">
-                    Content Left, Image Right
-                  </p>
-                  <p className="text-[11px] text-warm-grey">
-                    Mirrored editorial layout with image on the right.
-                  </p>
-                </div>
-              </button>
-            </div>
-          </div>
         </div>
 
-        {/* Media Uploader Card */}
-        <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-near-black mb-1">
-            Featured Image
-          </h2>
-          <div className="max-w-md">
-            <CloudinaryUploader
-              label="Showcase High-Resolution Image"
-              currentImageUrl={feature.image_url}
-              onUploadSuccess={(url) => setFeature({ ...feature, image_url: url })}
-              aspectRatio="video"
-              folder="showcase"
-            />
-          </div>
-        </div>
-
-        {/* Narrative & Headlines Card */}
+        {/* Editorial Content */}
         <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-near-black">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-near-black border-b border-sand pb-4">
             Editorial Content
           </h2>
 
@@ -262,6 +197,7 @@ export default function AdminEditorialFeaturePage() {
               type="text"
               value={feature.subtitle || ''}
               onChange={(e) => setFeature({ ...feature, subtitle: e.target.value })}
+              placeholder="e.g. PROJECT COORDINATION"
               className="w-full bg-sand/20 focus:bg-white text-sm px-4 py-2.5 rounded-sm ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none"
             />
           </div>
@@ -275,6 +211,7 @@ export default function AdminEditorialFeaturePage() {
               required
               value={feature.title || ''}
               onChange={(e) => setFeature({ ...feature, title: e.target.value })}
+              placeholder="e.g. The Right People. The Right Resources. One Coordinated Process."
               className="w-full bg-sand/20 focus:bg-white text-sm px-4 py-2.5 rounded-sm ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none"
             />
           </div>
@@ -287,22 +224,28 @@ export default function AdminEditorialFeaturePage() {
               rows={4}
               value={feature.description || ''}
               onChange={(e) => setFeature({ ...feature, description: e.target.value })}
+              placeholder="e.g. Projeto can coordinate the professionals, contractors, vendors and execution teams required to progress a project..."
               className="w-full bg-sand/20 focus:bg-white text-sm p-4 rounded-sm ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none"
             />
           </div>
         </div>
 
-        {/* Key Highlights Card */}
+        {/* Key Highlights */}
         <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-wider text-near-black">
-                Section Highlights & Bullet Points
+                Section Highlights &amp; Disciplines ({feature.highlights?.length || 0} / {MAX_HIGHLIGHTS})
               </h2>
               <p className="text-xs text-warm-grey mt-0.5">
-                Add key milestones, capabilities, or architectural highlights.
+                Key disciplines displayed in the Coordination Ecosystem box. Max {MAX_HIGHLIGHTS} disciplines.
               </p>
             </div>
+            {((feature.highlights?.length || 0) >= MAX_HIGHLIGHTS) && (
+              <span className="text-[11px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded-sm border border-amber-200">
+                Limit reached ({MAX_HIGHLIGHTS}/{MAX_HIGHLIGHTS})
+              </span>
+            )}
           </div>
 
           {/* List of current highlights */}
@@ -339,6 +282,7 @@ export default function AdminEditorialFeaturePage() {
             <input
               type="text"
               value={newHighlight}
+              disabled={(feature.highlights?.length || 0) >= MAX_HIGHLIGHTS}
               onChange={(e) => setNewHighlight(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -346,13 +290,14 @@ export default function AdminEditorialFeaturePage() {
                   handleAddHighlight();
                 }
               }}
-              placeholder="Type a new highlight and click Add..."
-              className="flex-1 bg-sand/20 focus:bg-white text-sm px-4 py-2 rounded-sm ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none"
+              placeholder={(feature.highlights?.length || 0) >= MAX_HIGHLIGHTS ? `Maximum ${MAX_HIGHLIGHTS} highlights reached` : "Type a new highlight and click Add..."}
+              className="flex-1 bg-sand/20 focus:bg-white text-sm px-4 py-2 rounded-sm ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <Button
               type="button"
               variant="outline"
               size="sm"
+              disabled={(feature.highlights?.length || 0) >= MAX_HIGHLIGHTS}
               onClick={handleAddHighlight}
               icon={<Plus className="w-3.5 h-3.5" />}
             >
@@ -361,77 +306,7 @@ export default function AdminEditorialFeaturePage() {
           </div>
         </div>
 
-        {/* Live Preview Section */}
-        {(feature.title || feature.image_url) && (
-          <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-4">
-            <div className="flex items-center space-x-2 text-warm-grey">
-              <Eye className="w-4 h-4 text-olive" />
-              <h2 className="text-xs uppercase tracking-wider font-semibold text-near-black">
-                Live Layout Preview
-              </h2>
-            </div>
-            <div className="border border-sand/60 rounded-sm p-6 bg-sand/10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                {feature.image_url ? (
-                  <div
-                    className={`relative aspect-[4/3] w-full rounded-sm overflow-hidden bg-sand/30 border border-sand/60 ${isImageRight ? 'md:order-2' : 'md:order-1'
-                      }`}
-                  >
-                    <Image
-                      src={feature.image_url}
-                      alt={feature.title || 'Preview'}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={`aspect-[4/3] w-full rounded-sm bg-sand/30 border border-dashed border-sand flex items-center justify-center text-xs text-warm-grey ${isImageRight ? 'md:order-2' : 'md:order-1'
-                      }`}
-                  >
-                    No image uploaded yet
-                  </div>
-                )}
-
-                <div className={isImageRight ? 'md:order-1' : 'md:order-2'}>
-                  {feature.subtitle && (
-                    <div className="inline-flex items-center space-x-2 mb-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-olive" />
-                      <span className="text-[10px] uppercase tracking-widest text-warm-grey font-medium">
-                        {feature.subtitle}
-                      </span>
-                    </div>
-                  )}
-                  <h3 className="font-serif text-xl sm:text-2xl text-near-black mb-3">
-                    {feature.title || 'Title will appear here'}
-                  </h3>
-                  {feature.description && (
-                    <p className="text-xs text-warm-grey leading-relaxed mb-4">
-                      {feature.description}
-                    </p>
-                  )}
-                  {feature.highlights && feature.highlights.length > 0 && (
-                    <ul className="space-y-1.5 mb-4 text-xs text-near-black">
-                      {feature.highlights.map((h, i) => (
-                        <li key={i} className="flex items-center space-x-2">
-                          <Check className="w-3 h-3 text-olive shrink-0" />
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <div className="pt-1">
-                    <span className="inline-block text-xs bg-olive text-white px-4 py-2 rounded-sm font-medium">
-                      Contact Us
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Submit Actions */}
+        {/* Submit */}
         <div className="flex items-center justify-end space-x-4 pt-4 border-t border-sand">
           <Button type="submit" variant="olive" isLoading={saving}>
             Save Showcase Feature
