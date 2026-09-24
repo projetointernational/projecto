@@ -13,7 +13,6 @@ import {
   Building2,
   Tag,
   ShieldCheck,
-  MessageSquareQuote,
   MailCheck,
   Handshake,
   Workflow,
@@ -54,7 +53,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { label: 'Projects & Case Studies', href: '/admin/projects', icon: Building2 },
     { label: 'Categories', href: '/admin/categories', icon: Tag },
     { label: 'Who We Work With', href: '/admin/strengths', icon: ShieldCheck },
-    { label: 'Testimonials', href: '/admin/testimonials', icon: MessageSquareQuote },
     { label: 'Clients & Partners', href: '/admin/clients', icon: Handshake },
     { label: 'Enquiries Inbox', href: '/admin/enquiries', icon: MailCheck },
   ];
