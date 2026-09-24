@@ -51,6 +51,12 @@ export interface SiteSettings {
     };
     whatsapp_number?: string;
     phone_number?: string;
+    section_images?: {
+      about_section_image?: string;
+      procurement_section_image?: string;
+      role_section_image?: string;
+      hero_mobile_background_image?: string;
+    };
   } | null;
   enquiry_notification_email?: string | null;
   updated_at?: string;
@@ -62,6 +68,7 @@ export interface HeroContent {
   subheadline?: string | null;
   intro_text?: string | null;
   background_image_url?: string | null;
+  mobile_background_image_url?: string | null;
   cta_primary_text?: string | null;
   cta_primary_link?: string | null;
   cta_secondary_text?: string | null;
@@ -180,7 +187,7 @@ export interface Client {
 export interface WorkflowStep {
   title: string;
   description: string;
-  icon_name: string;
+  icon_name?: string;
 }
 
 export interface ProcessContent {

@@ -27,47 +27,28 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
     coordinationService?.short_description ||
     'Projeto can coordinate the professionals, contractors, vendors and execution teams required to progress a project, according to the client\'s requirements and agreed scope.';
 
-  // 12 Resource nodes from CMS or approved brief
-  const leftColumnNodes = [
-    'ARCHITECTS',
-    'INTERIOR DESIGNERS',
-    'VAASTHU CONSULTANTS WHERE REQUIRED',
-    'MATERIAL SUPPLIERS & VENDORS',
-    'INTERIOR & FINISHING TEAMS',
-    'LANDSCAPING TEAMS',
-  ];
+  // Disciplines from DB (editorial_feature.highlights)
+  const highlightsList: string[] =
+    Array.isArray(feature?.highlights) && feature!.highlights.length > 0
+      ? feature!.highlights
+      : [];
 
-  const rightColumnNodes = [
-    'STRUCTURAL / CIVIL ENGINEERS',
-    'MEP CONSULTANTS',
-    'MAIN & SPECIALIST CONTRACTORS',
-    'CIVIL CONSTRUCTION TEAMS',
-    'ELECTRICAL & PLUMBING TEAMS',
-    'SPECIALIST PROJECT RESOURCES',
-  ];
+  const mid = Math.ceil(highlightsList.length / 2);
+  const leftColumnNodes = highlightsList.slice(0, mid);
+  const rightColumnNodes = highlightsList.slice(mid);
 
-  // 9 Coordination milestones from coordinationSupport or approved defaults
+  // Coordination milestones — all from DB (coordinationSupport.steps)
   const supportEyebrow = coordinationSupport?.subtitle || 'COORDINATION SUPPORT';
   const supportHeading =
     coordinationSupport?.title || 'Coordination That Keeps the Project Moving.';
 
-  const milestones =
-    coordinationSupport?.steps && coordinationSupport.steps.length > 0
-      ? coordinationSupport.steps
-      : [
-          { title: 'Requirement Understanding', description: 'Aligning on goals, scope, and specific client needs' },
-          { title: 'Professional / Team Coordination', description: 'Aligning consultants, architects, and engineers' },
-          { title: 'Design & Planning Coordination', description: 'Coordinating design documentation and revisions' },
-          { title: 'Procurement Coordination', description: 'Managing material flow and supplier alignment' },
-          { title: 'Vendor & Contractor Coordination', description: 'Clear briefs, scope enforcement, and scheduling' },
-          { title: 'Execution Follow-up', description: 'Tracking site progress and resolving bottlenecks' },
-          { title: 'Material & Delivery Coordination', description: 'Just-in-time material arrival to prevent idle time' },
-          { title: 'Progress & Communication Follow-up', description: 'Unified stakeholder updates and reporting' },
-          { title: 'Handover Coordination', description: 'Smooth project completion and documentation' },
-        ];
+  const milestones: { title: string; description?: string }[] =
+    Array.isArray(coordinationSupport?.steps) && coordinationSupport!.steps.length > 0
+      ? coordinationSupport!.steps
+      : [];
 
   return (
-    <section className="py-20 sm:py-28 bg-white border-b border-sand/80 overflow-hidden">
+    <section className="py-20 sm:py-18 bg-white border-b border-sand/80 overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         {/* PART 1: Project Coordination Ecosystem (Image 1) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-24 sm:mb-32">
@@ -195,64 +176,68 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                 </div>
               </div>
 
-              {/* Bottom Line: 12 Project Disciplines & Single Coordinated Point */}
+              {/* Bottom Line: Project Disciplines & Single Coordinated Point */}
               <div className="pt-6 mt-6 border-t border-sand/60 flex items-center justify-between text-[11px] text-warm-grey font-mono">
-                <span>12 Project Disciplines</span>
+                <span>{highlightsList.length > 0 ? `${highlightsList.length} Project Disciplines` : 'Project Disciplines'}</span>
                 <span>Single Coordinated Point of Contact</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* PART 2: Coordination Support List (Exact Image 2 layout) */}
-        <div>
-          <div className="max-w-3xl mb-12 sm:mb-16">
-            <div className="flex items-center space-x-2.5 mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-olive" />
-              <span className="text-[11px] uppercase tracking-[0.25em] text-olive font-mono font-semibold">
-                {supportEyebrow}
-              </span>
+        {/* PART 2: Coordination Support Cards Grid (Clean 3-col on Desktop, 2-col on Mobile) */}
+        {milestones.length > 0 && (
+          <div>
+            <div className="max-w-3xl mb-8 sm:mb-12">
+              <div className="flex items-center space-x-2.5 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-olive" />
+                <span className="text-[11px] uppercase tracking-[0.25em] text-olive font-mono font-semibold">
+                  {supportEyebrow}
+                </span>
+              </div>
+              <h3 className="font-serif text-3xl sm:text-4xl text-near-black font-normal tracking-tight">
+                {supportHeading}
+              </h3>
             </div>
-            <h3 className="font-serif text-3xl sm:text-4xl text-near-black font-normal tracking-tight">
-              {supportHeading}
-            </h3>
-          </div>
 
-          {/* Thin Hairline List with 01-09 */}
-          <div className="divide-y divide-sand/70 border-y border-sand/70">
-            {milestones.map((step, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.03 }}
-                className="group py-5 sm:py-6 px-2 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6 hover:bg-sand/15 transition-colors cursor-default"
-              >
-                {/* Left: Number & Title */}
-                <div className="flex items-center space-x-6 sm:space-x-10">
-                  <span className="text-xs font-mono text-warm-grey font-medium shrink-0 w-6">
-                    {idx < 9 ? `0${idx + 1}` : idx + 1}
-                  </span>
-                  <h4 className="font-serif text-base sm:text-lg text-near-black font-normal group-hover:text-olive transition-colors">
-                    {step.title}
-                  </h4>
-                </div>
+            {/* Cards Grid: 3 columns on Desktop, 2 columns on Mobile */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+              {milestones.map((step, idx) => {
+                const isLastOdd = idx === milestones.length - 1 && milestones.length % 2 !== 0;
 
-                {/* Right: Description & Arrow */}
-                <div className="flex items-center space-x-4 pl-12 sm:pl-0 justify-between sm:justify-end">
-                  <span className="text-xs sm:text-sm text-warm-grey font-light">
-                    {step.description}
-                  </span>
-                  <ArrowRight
-                    className="w-4 h-4 text-warm-grey/50 group-hover:text-olive group-hover:translate-x-1 transition-all shrink-0"
-                    strokeWidth={1.5}
-                  />
-                </div>
-              </motion.div>
-            ))}
+                return (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.35, delay: idx * 0.04 }}
+                    className={`group bg-white rounded-sm border border-sand/60 hover:border-olive/50 hover:shadow-xs transition-all duration-200 flex flex-col justify-between p-3.5 sm:p-4.5 lg:p-5 ${
+                      isLastOdd ? 'col-span-2 md:col-span-1' : 'col-span-1'
+                    }`}
+                  >
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block">
+                        {idx < 9 ? `0${idx + 1}` : idx + 1}
+                      </span>
+                      <h4 className="font-serif text-xs sm:text-sm lg:text-[15px] font-medium text-near-black leading-snug group-hover:text-olive transition-colors break-normal">
+                        {step.title}
+                      </h4>
+                    </div>
+
+                    {step.description && (
+                      <div className="border-t border-sand/40 pt-2 mt-2 sm:pt-2.5 sm:mt-2.5">
+                        <p className="text-[10.5px] sm:text-xs text-warm-grey font-light leading-relaxed break-normal">
+                          {step.description}
+                        </p>
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

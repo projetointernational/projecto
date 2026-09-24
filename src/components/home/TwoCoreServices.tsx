@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Package, Users, Check } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Package, Users } from 'lucide-react';
 import { Service } from '@/lib/supabase/types';
 import { motion } from 'framer-motion';
 
@@ -10,12 +11,14 @@ interface TwoCoreServicesProps {
   services: Service[];
   subtitle?: string;
   title?: string;
+  imageUrl?: string | null;
 }
 
 export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
   services,
-  subtitle = 'WHAT WE DO',
+  subtitle = 'ABOUT PROJETO',
   title = 'One Project. One Coordinated Partner.',
+  imageUrl,
 }) => {
   // Find the two core services: procurement & project-coordination (or take the first 2)
   const procurement =
@@ -30,7 +33,7 @@ export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
       verticalName: 'PROCUREMENT',
       defaultTitle: 'Project Supplies & Procurement Consultancy',
       defaultDesc:
-        'We help you source the materials your project needs through structured procurement, vendor comparison, product sourcing and supply coordination.',
+        'We help source, compare, negotiate and coordinate the materials that your project needs through a structured procurement process.',
       defaultCta: 'EXPLORE PROCUREMENT',
       href: '/services/procurement',
       icon: Package,
@@ -41,96 +44,111 @@ export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
       verticalName: 'PROJECT COORDINATION',
       defaultTitle: 'Complete Project Support',
       defaultDesc:
-        'We coordinate professionals, contractors, vendors and execution teams according to your project requirements and agreed scope.',
+        'We coordinate professionals, contractors, suppliers and execution teams toward aligned project progress.',
       defaultCta: 'EXPLORE PROJECT COORDINATION',
       href: '/services/project-coordination',
       icon: Users,
     },
   ];
 
+  const resolvedImage =
+    imageUrl ||
+    'https://res.cloudinary.com/qnlgrbhb/image/upload/v1788763067/projecto/about/dtc7ot9bkiy1bczrm9mm.png';
+
   return (
     <section className="py-16 sm:py-24 bg-white border-b border-sand/60">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-        {/* Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <div className="flex items-center space-x-2 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-olive" />
-            <span className="text-[11px] uppercase tracking-[0.22em] text-olive font-semibold">
-              {subtitle}
-            </span>
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-near-black font-normal tracking-tight">
-            {title}
-          </h2>
-        </div>
+        {/* Section Layout: Left Column (Heading + 2 Cards), Right Column (Image spanning from heading level to cards on desktop) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+          {/* LEFT: Heading at the top + 2 Content Boxes below */}
+          <div className="lg:col-span-8 flex flex-col justify-between">
+            {/* Header - Aligned at top with the right-side image */}
+            <div className="max-w-3xl mb-8 sm:mb-10">
+              <div className="flex items-center space-x-2 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-olive" />
+                <span className="text-[11px] uppercase tracking-[0.22em] text-olive font-semibold font-mono">
+                  {subtitle}
+                </span>
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl text-near-black font-normal tracking-tight">
+                {title}
+              </h2>
+            </div>
 
-        {/* 2 Core Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-          {cards.map((card, idx) => {
-            const Icon = card.icon;
-            const item = card.data;
-            const cardTitle = item?.title || card.defaultTitle;
-            const cardDesc = item?.short_description || card.defaultDesc;
-            const features = item?.features || [];
+            {/* 2 Content Boxes Side-by-Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6 flex-1">
+              {cards.map((card, idx) => {
+                const Icon = card.icon;
+                const item = card.data;
+                const cardTitle = item?.title || card.defaultTitle;
+                const cardDesc = item?.short_description || card.defaultDesc;
 
-            return (
-              <motion.div
-                key={card.verticalNum}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.15 }}
-                className="group relative flex flex-col justify-between p-8 sm:p-10 rounded-sm bg-sand/20 hover:bg-sand/35 border border-sand/80 hover:border-olive/40 transition-all duration-300"
-              >
-                <div className="space-y-6">
-                  {/* Vertical Tag */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono tracking-widest text-warm-beige bg-near-black px-2.5 py-1 rounded-sm">
-                      {card.verticalNum} — {card.verticalName}
-                    </span>
-                    <div className="w-10 h-10 rounded-full bg-olive/10 text-olive flex items-center justify-center group-hover:bg-olive group-hover:text-white transition-colors duration-300">
-                      <Icon className="w-5 h-5" strokeWidth={1.5} />
-                    </div>
-                  </div>
+                return (
+                  <motion.div
+                    key={card.verticalNum}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: idx * 0.12 }}
+                    className="group relative flex flex-col justify-between p-6 sm:p-7 rounded-sm bg-[#FAF9F5] border border-sand/80 hover:border-olive/40 transition-all duration-300 shadow-2xs h-full"
+                  >
+                    <div className="space-y-4">
+                      {/* Top Tag & Subtle Circle Icon */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-warm-beige bg-near-black px-2.5 py-1 rounded-xs uppercase font-medium">
+                          {card.verticalNum} {card.verticalName}
+                        </span>
+                        <div className="w-9 h-9 rounded-full bg-[#EAE6DE]/80 text-near-black/75 flex items-center justify-center group-hover:bg-olive group-hover:text-white transition-colors duration-300">
+                          <Icon className="w-4 h-4" strokeWidth={1.5} />
+                        </div>
+                      </div>
 
-                  {/* Title & Description */}
-                  <div className="space-y-3">
-                    <h3 className="font-serif text-2xl sm:text-3xl text-near-black font-normal leading-snug">
-                      {cardTitle}
-                    </h3>
-                    <p className="text-sm text-near-black/75 font-light leading-relaxed">
-                      {cardDesc}
-                    </p>
-                  </div>
-
-                  {/* Key Highlights / Features if present */}
-                  {features.length > 0 && (
-                    <div className="pt-2 border-t border-sand/60">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-warm-grey">
-                        {features.slice(0, 4).map((f, fIdx) => (
-                          <div key={fIdx} className="flex items-center space-x-2">
-                            <Check className="w-3.5 h-3.5 text-olive shrink-0" strokeWidth={2} />
-                            <span className="truncate">{f}</span>
-                          </div>
-                        ))}
+                      {/* Title & Description (without tick lists) */}
+                      <div className="space-y-2 pt-1">
+                        <h3 className="font-serif text-lg sm:text-xl text-near-black font-medium leading-snug">
+                          {cardTitle}
+                        </h3>
+                        <p className="text-xs sm:text-[13px] text-near-black/75 font-light leading-relaxed">
+                          {cardDesc}
+                        </p>
                       </div>
                     </div>
-                  )}
-                </div>
 
-                {/* Card CTA */}
-                <div className="pt-8">
-                  <Link
-                    href={card.href}
-                    className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest font-semibold text-olive group-hover:text-near-black transition-colors"
-                  >
-                    <span>{card.defaultCta}</span>
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
-                  </Link>
-                </div>
-              </motion.div>
-            );
-          })}
+                    {/* Card CTA Link */}
+                    <div className="pt-6">
+                      <Link
+                        href={card.href}
+                        className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-wider font-semibold text-olive group-hover:text-near-black transition-colors"
+                      >
+                        <span>{card.defaultCta}</span>
+                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
+                      </Link>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* RIGHT: Clean Vertical Image Area starting at Heading Level on Desktop, Compact on Mobile */}
+          <div className="lg:col-span-4 flex flex-col h-full">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="relative w-full h-48 sm:h-56 lg:h-full min-h-[190px] sm:min-h-[220px] lg:min-h-full rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/20"
+            >
+              <Image
+                src={resolvedImage}
+                alt={title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 35vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                priority={false}
+              />
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

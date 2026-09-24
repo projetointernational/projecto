@@ -13,6 +13,7 @@ import { EnquiryCta } from '@/components/home/EnquiryCta';
 import {
   SiteSettings,
   HeroContent,
+  AboutContent,
   ProcessContent,
   Service,
   Project,
@@ -27,6 +28,7 @@ export const revalidate = 0;
 export default async function HomePage() {
   let settings: SiteSettings | null = null;
   let hero: HeroContent | null = null;
+  let about: AboutContent | null = null;
   let allProcesses: ProcessContent[] = [];
   let services: Service[] = [];
   let editorialFeature: EditorialFeatureType | null = null;
@@ -53,21 +55,29 @@ export default async function HomePage() {
       .maybeSingle();
     hero = heroData;
 
-    // 3. Process collections (Procurement, Coordination Support, Workflow)
+    // 3. About content (used for Section 02 visual image & identity)
+    const { data: aboutData } = await supabase
+      .from('about_content')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+    about = aboutData;
+
+    // 4. Process collections (Procurement, Coordination Support, Workflow)
     const { data: processData } = await supabase
       .from('process_content')
       .select('*')
       .eq('is_active', true);
     allProcesses = processData || [];
 
-    // 4. Services (Procurement, Project Coordination, etc.)
+    // 5. Services (Procurement, Project Coordination, etc.)
     const { data: servicesData } = await supabase
       .from('services')
       .select('*')
       .order('display_order', { ascending: true });
     services = servicesData || [];
 
-    // 5. Editorial showcase feature
+    // 6. Editorial showcase feature
     const { data: featureData } = await supabase
       .from('editorial_feature')
       .select('*')
@@ -76,7 +86,7 @@ export default async function HomePage() {
       .maybeSingle();
     editorialFeature = featureData;
 
-    // 6. Selected projects
+    // 7. Selected projects
     const { data: projectsData } = await supabase
       .from('projects')
       .select('*')
@@ -84,14 +94,14 @@ export default async function HomePage() {
       .limit(6);
     projects = projectsData || [];
 
-    // 7. Audience cards / Who We Work With (from strengths table)
+    // 8. Audience cards / Who We Work With (from strengths table)
     const { data: strengthsData } = await supabase
       .from('strengths')
       .select('*')
       .order('display_order', { ascending: true });
     audienceCards = strengthsData || [];
 
-    // 8. Clients / Partners
+    // 9. Clients / Partners
     const { data: clientsData, error: clientsError } = await supabase
       .from('clients')
       .select('*')
@@ -126,6 +136,25 @@ export default async function HomePage() {
   const procurementService = services.find((s) => s.slug === 'procurement');
   const coordinationService = services.find((s) => s.slug === 'project-coordination');
 
+  // Resolved admin-controlled section images
+  const sectionTwoImage =
+    about?.main_image_url ||
+    settings?.navigation_labels?.section_images?.about_section_image ||
+    null;
+
+  const sectionThreeImage =
+    procurementService?.image_url ||
+    settings?.navigation_labels?.section_images?.procurement_section_image ||
+    null;
+
+  const sectionRoleImage =
+    settings?.navigation_labels?.section_images?.role_section_image ||
+    null;
+
+  const heroMobileImage =
+    settings?.navigation_labels?.section_images?.hero_mobile_background_image ||
+    null;
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar
@@ -137,22 +166,24 @@ export default async function HomePage() {
 
       <main className="flex-1">
         {/* Section 01: Hero */}
-        <HeroSection content={hero} />
+        <HeroSection content={hero} mobileImageUrl={heroMobileImage} />
 
         {/* Section 02: Two Core Services (Procurement & Project Coordination) */}
         {services.length > 0 && (
           <TwoCoreServices
             services={services}
-            subtitle="WHAT WE DO"
-            title="One Project. One Coordinated Partner."
+            subtitle={about?.subtitle || "ABOUT PROJETO"}
+            title={about?.title || "One Project. One Coordinated Partner."}
+            imageUrl={sectionTwoImage}
           />
         )}
 
-        {/* Section 03: Procurement Process (7 Steps + 9 Support Offerings) */}
+        {/* Section 03: Procurement Process (Split Layout with Supporting Image & 6 Steps + Support Scope) */}
         {procurementProcess && (
           <ProcurementProcess
             processData={procurementProcess}
             procurementService={procurementService}
+            imageUrl={sectionThreeImage}
           />
         )}
 
@@ -166,12 +197,13 @@ export default async function HomePage() {
         {/* Section 05: Core Project Workflow (7 Stages + Supporting Note) */}
         {workflowProcess && <WorkflowSection workflowData={workflowProcess} />}
 
-        {/* Section 06: Who We Work With (Audience Cards) */}
+        {/* Section 06: Who We Work With (Audience Cards - Split Layout with Supporting Image) */}
         {audienceCards.length > 0 && (
           <AudienceSection
             audienceCards={audienceCards}
             subtitle="WHO WE WORK WITH"
-            title="Tailored Support for Every Project Stakeholder"
+            title="Built Around Your Role in the Project."
+            imageUrl={sectionRoleImage}
           />
         )}
 

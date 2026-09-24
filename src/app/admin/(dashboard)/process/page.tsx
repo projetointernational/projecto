@@ -5,8 +5,8 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { IconResolver } from '@/components/ui/IconResolver';
 import { ProcessContent, WorkflowStep } from '@/lib/supabase/types';
+import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import {
   Check,
   AlertCircle,
@@ -15,27 +15,16 @@ import {
   ArrowUp,
   ArrowDown,
   Workflow,
-  Eye,
-  Layers,
 } from 'lucide-react';
 
-const COMMON_PROCESS_ICONS = [
-  'FileText',
-  'Users',
-  'Compass',
-  'Package',
-  'Truck',
-  'Handshake',
-  'CheckCircle2',
-  'Wrench',
-  'Layers',
-  'ShieldCheck',
-  'Clock',
-  'Building2',
-  'Award',
-  'Sparkles',
-  'HardHat',
-];
+// Step limits per process type
+const getStepLimit = (subtitle?: string, title?: string): number => {
+  const sub = (subtitle || '').toUpperCase();
+  const ttl = (title || '').toLowerCase();
+  if (sub === 'PROCUREMENT' || ttl.includes('requirement') || ttl.includes('delivery')) return 7;
+  if (sub === 'PROJECT WORKFLOW' || ttl.includes('completion')) return 7;
+  return 9; // Coordination Support and others
+};
 
 export default function AdminProcessPage() {
   const supabase = createClient();
@@ -45,6 +34,7 @@ export default function AdminProcessPage() {
 
   const [allProcesses, setAllProcesses] = useState<ProcessContent[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [procurementImageUrl, setProcurementImageUrl] = useState<string>('');
 
   const [activeProcess, setActiveProcess] = useState<Partial<ProcessContent>>({
     subtitle: '',
@@ -66,6 +56,21 @@ export default function AdminProcessPage() {
         setAllProcesses(data);
         const idx = Math.min(selectedIndex, data.length - 1);
         setActiveProcess(data[idx]);
+      }
+
+      // Load current procurement section image
+      const { data: svcData } = await supabase
+        .from('services')
+        .select('image_url')
+        .eq('slug', 'procurement')
+        .maybeSingle();
+      if (svcData?.image_url) {
+        setProcurementImageUrl(svcData.image_url);
+      } else {
+        const { data: sData } = await supabase.from('site_settings').select('navigation_labels').single();
+        if (sData?.navigation_labels?.section_images?.procurement_section_image) {
+          setProcurementImageUrl(sData.navigation_labels.section_images.procurement_section_image);
+        }
       }
     } catch (err) {
       console.error('[AdminProcessPage] Error fetching processes:', err);
@@ -101,10 +106,11 @@ export default function AdminProcessPage() {
 
   const handleAddStep = () => {
     const currentSteps = activeProcess.steps || [];
+    const limit = getStepLimit(activeProcess.subtitle ?? undefined, activeProcess.title ?? undefined);
+    if (currentSteps.length >= limit) return; // already at limit
     const newStep: WorkflowStep = {
       title: '',
       description: '',
-      icon_name: 'FileText',
     };
     setActiveProcess({
       ...activeProcess,
@@ -178,6 +184,31 @@ export default function AdminProcessPage() {
 
         if (error) throw error;
         if (data) setActiveProcess(data);
+      }
+
+      // If active process is Procurement, save section supporting image
+      if (
+        activeProcess.subtitle?.toUpperCase() === 'PROCUREMENT' ||
+        activeProcess.title?.toLowerCase().includes('requirement')
+      ) {
+        try {
+          await supabase
+            .from('services')
+            .update({ image_url: procurementImageUrl })
+            .eq('slug', 'procurement');
+
+          const { data: sData } = await supabase.from('site_settings').select('id, navigation_labels').single();
+          if (sData) {
+            const nav = sData.navigation_labels || {};
+            nav.section_images = {
+              ...(nav.section_images || {}),
+              procurement_section_image: procurementImageUrl,
+            };
+            await supabase.from('site_settings').update({ navigation_labels: nav }).eq('id', sData.id);
+          }
+        } catch (imgErr) {
+          console.warn('Procurement image sync warning:', imgErr);
+        }
       }
 
       setFeedback({ type: 'success', message: 'Process collection successfully saved to database.' });
@@ -314,6 +345,23 @@ export default function AdminProcessPage() {
               className="w-full bg-sand/20 focus:bg-white text-sm p-4 rounded-sm ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none"
             />
           </div>
+
+          {/* Section Supporting Image Control for Procurement Workflow */}
+          {(activeProcess.subtitle?.toUpperCase() === 'PROCUREMENT' ||
+            activeProcess.title?.toLowerCase().includes('requirement')) && (
+            <div className="pt-4 border-t border-sand space-y-2">
+              <CloudinaryUploader
+                label='"From Requirement to Delivery. Coordinated." Section Supporting Image'
+                currentImageUrl={procurementImageUrl}
+                onUploadSuccess={(url) => setProcurementImageUrl(url)}
+                aspectRatio="video"
+                folder="procurement"
+              />
+              <p className="text-[11px] text-warm-grey">
+                This image occupies approximately 45% of the split layout beside the 6 process steps on the homepage.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Steps Manager */}
@@ -321,10 +369,13 @@ export default function AdminProcessPage() {
           <div className="flex items-center justify-between border-b border-sand pb-4">
             <div>
               <h2 className="font-serif text-lg text-near-black">
-                Process Steps ({stepsList.length})
+                Process Steps ({stepsList.length} / {getStepLimit(activeProcess.subtitle ?? undefined, activeProcess.title ?? undefined)})
               </h2>
               <p className="text-[11px] text-warm-grey font-light">
-                Configure sequential stages. Admin can reorder, change titles, descriptions, and icons.
+                Configure sequential stages. You can reorder, change titles and descriptions.{' '}
+                <span className="text-olive font-medium">
+                  Max {getStepLimit(activeProcess.subtitle ?? undefined, activeProcess.title ?? undefined)} steps for this process.
+                </span>
               </p>
             </div>
             <Button
@@ -332,6 +383,7 @@ export default function AdminProcessPage() {
               variant="outline"
               size="sm"
               onClick={handleAddStep}
+              disabled={stepsList.length >= getStepLimit(activeProcess.subtitle ?? undefined, activeProcess.title ?? undefined)}
               icon={<Plus className="w-3.5 h-3.5" />}
             >
               Add Step
@@ -387,32 +439,9 @@ export default function AdminProcessPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-                    {/* Icon */}
-                    <div className="sm:col-span-4 space-y-1.5">
-                      <label className="block text-[11px] uppercase tracking-wider text-warm-grey font-medium">
-                        Icon
-                      </label>
-                      <div className="flex items-center space-x-2">
-                        <select
-                          value={step.icon_name || 'FileText'}
-                          onChange={(e) => handleUpdateStep(idx, 'icon_name', e.target.value)}
-                          className="flex-1 bg-white text-xs px-3 py-2 rounded-sm ring-1 ring-sand focus:ring-olive outline-none"
-                        >
-                          {COMMON_PROCESS_ICONS.map((ic) => (
-                            <option key={ic} value={ic}>
-                              {ic}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="w-9 h-9 rounded-sm bg-sand/30 flex items-center justify-center text-near-black shrink-0 border border-sand/60">
-                          <IconResolver name={step.icon_name} className="w-4 h-4" strokeWidth={1.5} />
-                        </div>
-                      </div>
-                    </div>
-
+                  <div className="grid grid-cols-1 gap-4">
                     {/* Step Title */}
-                    <div className="sm:col-span-8 space-y-1.5">
+                    <div className="space-y-1.5">
                       <label className="block text-[11px] uppercase tracking-wider text-warm-grey font-medium">
                         Step Title *
                       </label>
@@ -427,7 +456,7 @@ export default function AdminProcessPage() {
                     </div>
 
                     {/* Step Description */}
-                    <div className="sm:col-span-12 space-y-1.5">
+                    <div className="space-y-1.5">
                       <label className="block text-[11px] uppercase tracking-wider text-warm-grey font-medium">
                         Step Description
                       </label>
