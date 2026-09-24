@@ -9,7 +9,8 @@ interface CloudinaryUploaderProps {
   onUploadSuccess: (url: string) => void;
   folder?: string;
   label?: string;
-  aspectRatio?: 'video' | 'square' | 'wide';
+  aspectRatio?: 'video' | 'square' | 'wide' | 'portrait' | 'tall';
+  compact?: boolean;
 }
 
 export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
@@ -18,6 +19,7 @@ export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
   folder = 'projects',
   label = 'Upload Image',
   aspectRatio = 'wide',
+  compact = false,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +36,8 @@ export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
     square: 'aspect-square',
     video: 'aspect-[16/9]',
     wide: 'aspect-[21/9]',
+    portrait: 'aspect-[4/5]',
+    tall: 'aspect-[9/16]',
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,8 +81,11 @@ export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
     onUploadSuccess('');
   };
 
+  const isVertical = aspectRatio === 'portrait' || aspectRatio === 'tall';
+  const containerWidthClass = compact || isVertical ? 'max-w-xs' : 'w-full';
+
   return (
-    <div className="w-full">
+    <div className={containerWidthClass}>
       {label && (
         <label className="block text-xs uppercase tracking-wider text-warm-grey font-medium mb-2">
           {label}
@@ -87,7 +94,7 @@ export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
 
       <div
         onClick={() => !isUploading && fileInputRef.current?.click()}
-        className={`relative w-full ${aspectClasses[aspectRatio]} bg-sand/30 rounded-sm overflow-hidden flex flex-col items-center justify-center cursor-pointer group transition-all duration-300 hover:bg-sand/60 ${
+        className={`relative w-full ${aspectClasses[aspectRatio]} max-h-72 bg-sand/30 rounded-sm overflow-hidden flex flex-col items-center justify-center cursor-pointer group transition-all duration-300 hover:bg-sand/60 ${
           isUploading ? 'opacity-70 cursor-wait' : ''
         }`}
       >

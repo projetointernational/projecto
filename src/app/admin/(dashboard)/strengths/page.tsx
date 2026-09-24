@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
+import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Strength } from '@/lib/supabase/types';
 import { IconResolver } from '@/components/ui/IconResolver';
-import { ShieldCheck, Plus, Trash2, Edit3, Check, AlertCircle, X, Users } from 'lucide-react';
+import { Plus, Trash2, Edit3, Check, AlertCircle, X, Users } from 'lucide-react';
 
 const AUDIENCE_ICONS = [
   'Building2',
@@ -28,7 +29,10 @@ export default function AdminStrengthsPage() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [savingImage, setSavingImage] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const [roleImageUrl, setRoleImageUrl] = useState<string>('');
 
   const [currentStrength, setCurrentStrength] = useState<Partial<Strength>>({
     title: '',
@@ -46,6 +50,16 @@ export default function AdminStrengthsPage() {
 
       if (error) throw error;
       setStrengths(data || []);
+
+      // Load section supporting image
+      const { data: sData } = await supabase
+        .from('site_settings')
+        .select('navigation_labels')
+        .single();
+
+      if (sData?.navigation_labels?.section_images?.role_section_image) {
+        setRoleImageUrl(sData.navigation_labels.section_images.role_section_image);
+      }
     } catch (err) {
       console.error('Error fetching audience cards:', err);
     } finally {
@@ -70,6 +84,42 @@ export default function AdminStrengthsPage() {
   const handleStartEdit = (s: Strength) => {
     setCurrentStrength(s);
     setIsEditing(true);
+  };
+
+  const handleSaveSectionImage = async (newUrl?: string) => {
+    const urlToSave = newUrl !== undefined ? newUrl : roleImageUrl;
+    setSavingImage(true);
+    setFeedback(null);
+
+    try {
+      const { data: sData } = await supabase
+        .from('site_settings')
+        .select('id, navigation_labels')
+        .single();
+
+      if (sData) {
+        const nav = sData.navigation_labels || {};
+        nav.section_images = {
+          ...(nav.section_images || {}),
+          role_section_image: urlToSave,
+        };
+        const { error } = await supabase
+          .from('site_settings')
+          .update({ navigation_labels: nav })
+          .eq('id', sData.id);
+
+        if (error) throw error;
+        setRoleImageUrl(urlToSave);
+        setFeedback({ type: 'success', message: 'Section supporting image successfully saved.' });
+      }
+    } catch (err) {
+      setFeedback({
+        type: 'error',
+        message: err instanceof Error ? err.message : 'Failed to save section image.',
+      });
+    } finally {
+      setSavingImage(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -138,7 +188,7 @@ export default function AdminStrengthsPage() {
             Who We Work With / Audience Cards
           </h1>
           <p className="text-xs text-warm-grey font-light mt-1">
-            Manage the audience cards on the homepage (Project Owners, Architects & Designers, Builders & Contractors, Developers).
+            Manage the audience cards and supporting section image on the homepage (Project Owners, Architects & Designers, Builders & Contractors, Developers).
           </p>
         </div>
 
@@ -164,6 +214,40 @@ export default function AdminStrengthsPage() {
           <span>{feedback.message}</span>
         </div>
       )}
+
+      {/* Dedicated Section Supporting Image Control */}
+      <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-sand pb-4">
+          <div>
+            <h2 className="font-serif text-base sm:text-lg text-near-black">
+              Section Supporting Visual
+            </h2>
+            <p className="text-[11px] text-warm-grey font-light">
+              This high-resolution image appears on the right side of the 4 cards in &quot;Built Around Your Role in the Project.&quot;
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="olive"
+            size="sm"
+            onClick={() => handleSaveSectionImage()}
+            isLoading={savingImage}
+          >
+            Save Section Image
+          </Button>
+        </div>
+
+        <CloudinaryUploader
+          label='"Built Around Your Role in the Project." Right-Side Supporting Visual'
+          currentImageUrl={roleImageUrl}
+          onUploadSuccess={(url) => {
+            setRoleImageUrl(url);
+            handleSaveSectionImage(url);
+          }}
+          aspectRatio="video"
+          folder="audiences"
+        />
+      </div>
 
       {isEditing ? (
         <form onSubmit={handleSave} className="bg-white p-8 rounded-sm shadow-sm border border-sand/60 space-y-6">

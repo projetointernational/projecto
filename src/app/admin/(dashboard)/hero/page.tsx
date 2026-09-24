@@ -35,8 +35,25 @@ export default function AdminHeroPage() {
           .maybeSingle();
 
         if (error) throw error;
+
+        // Also fetch mobile background image from site_settings
+        let mobileImg = '';
+        try {
+          const { data: sData } = await supabase
+            .from('site_settings')
+            .select('navigation_labels')
+            .limit(1)
+            .maybeSingle();
+          mobileImg = sData?.navigation_labels?.section_images?.hero_mobile_background_image || '';
+        } catch (sErr) {
+          console.warn('Could not load site_settings section_images:', sErr);
+        }
+
         if (data) {
-          setHero(data);
+          setHero({
+            ...data,
+            mobile_background_image_url: data.mobile_background_image_url || mobileImg || '',
+          });
         }
       } catch (err) {
         console.error('Error fetching hero:', err);
@@ -54,11 +71,14 @@ export default function AdminHeroPage() {
     setFeedback(null);
 
     try {
+      // Exclude mobile_background_image_url from hero_content if table column doesn't exist
+      const { mobile_background_image_url, ...heroDbPayload } = hero;
+
       if (hero.id) {
         const { error } = await supabase
           .from('hero_content')
           .update({
-            ...hero,
+            ...heroDbPayload,
             updated_at: new Date().toISOString(),
           })
           .eq('id', hero.id);
@@ -67,15 +87,30 @@ export default function AdminHeroPage() {
       } else {
         const { data, error } = await supabase
           .from('hero_content')
-          .insert([hero])
+          .insert([heroDbPayload])
           .select()
           .single();
 
         if (error) throw error;
-        if (data) setHero(data);
+        if (data) setHero((prev) => ({ ...prev, ...data }));
       }
 
-      setFeedback({ type: 'success', message: 'Hero content successfully saved.' });
+      // Sync mobile background image to site_settings.navigation_labels.section_images
+      try {
+        const { data: sData } = await supabase.from('site_settings').select('id, navigation_labels').single();
+        if (sData) {
+          const nav = sData.navigation_labels || {};
+          nav.section_images = {
+            ...(nav.section_images || {}),
+            hero_mobile_background_image: mobile_background_image_url || '',
+          };
+          await supabase.from('site_settings').update({ navigation_labels: nav }).eq('id', sData.id);
+        }
+      } catch (syncErr) {
+        console.warn('Sync hero mobile image warning:', syncErr);
+      }
+
+      setFeedback({ type: 'success', message: 'Hero content and background imagery successfully saved.' });
     } catch (err: unknown) {
       const errorObj = err as { message?: string; code?: string };
       const rawMessage = errorObj?.message || (err instanceof Error ? err.message : 'Failed to update hero.');
@@ -152,14 +187,34 @@ export default function AdminHeroPage() {
             />
           </div>
 
-          <div>
-            <CloudinaryUploader
-              label="Hero Architectural Milestone Background (Cloudinary)"
-              currentImageUrl={hero.background_image_url}
-              onUploadSuccess={(url) => setHero({ ...hero, background_image_url: url })}
-              aspectRatio="wide"
-              folder="hero"
-            />
+          {/* Desktop & Mobile Background Imagery Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-sand">
+            <div className="space-y-2">
+              <CloudinaryUploader
+                label="Hero Background — Desktop & Tablet (Wide)"
+                currentImageUrl={hero.background_image_url}
+                onUploadSuccess={(url) => setHero({ ...hero, background_image_url: url })}
+                aspectRatio="wide"
+                folder="hero"
+              />
+              <p className="text-[11px] text-warm-grey">
+                Recommended ratio: <strong>16:9 or 21:9</strong> wide landscape imagery for desktop monitors.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <CloudinaryUploader
+                label="Hero Background — Mobile Screen (9:16 Vertical)"
+                currentImageUrl={hero.mobile_background_image_url}
+                onUploadSuccess={(url) => setHero({ ...hero, mobile_background_image_url: url })}
+                aspectRatio="tall"
+                compact={true}
+                folder="hero"
+              />
+              <p className="text-[11px] text-warm-grey">
+                Recommended ratio: <strong>9:16 (vertical)</strong> tailored for mobile devices. If unselected, desktop image will be used.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-sand">
