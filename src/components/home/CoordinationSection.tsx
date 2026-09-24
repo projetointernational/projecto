@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Users, Check, Shield } from 'lucide-react';
+import { ArrowRight, Hexagon } from 'lucide-react';
 import { ProcessContent, Service, EditorialFeature } from '@/lib/supabase/types';
 import { motion } from 'framer-motion';
 
@@ -17,6 +17,8 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
   coordinationSupport,
   feature,
 }) => {
+  const [hoveredNode, setHoveredNode] = useState<number | null>(null);
+
   const eyebrow = feature?.subtitle || 'PROJECT COORDINATION';
   const heading =
     feature?.title || 'The Right People. The Right Resources. One Coordinated Process.';
@@ -25,141 +27,228 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
     coordinationService?.short_description ||
     'Projeto can coordinate the professionals, contractors, vendors and execution teams required to progress a project, according to the client\'s requirements and agreed scope.';
 
-  // Resource tags / ecosystem from service features or editorial feature highlights
-  const ecosystemItems =
-    coordinationService?.features && coordinationService.features.length > 0
-      ? coordinationService.features
-      : (feature?.highlights as string[]) || [
-          'Architects',
-          'Structural / Civil Engineers',
-          'Interior Designers',
-          'MEP Consultants',
-          'Vaasthu Consultants where required',
-          'Main and specialist contractors',
-          'Material suppliers and vendors',
-          'Civil construction teams',
-          'Interior and finishing teams',
-          'Electrical and plumbing teams',
-          'Landscaping teams',
-          'Other specialist project resources',
-        ];
+  // 12 Resource nodes from CMS or approved brief
+  const leftColumnNodes = [
+    'ARCHITECTS',
+    'INTERIOR DESIGNERS',
+    'VAASTHU CONSULTANTS WHERE REQUIRED',
+    'MATERIAL SUPPLIERS & VENDORS',
+    'INTERIOR & FINISHING TEAMS',
+    'LANDSCAPING TEAMS',
+  ];
 
-  // 9 Coordination milestones from coordinationSupport or defaults
+  const rightColumnNodes = [
+    'STRUCTURAL / CIVIL ENGINEERS',
+    'MEP CONSULTANTS',
+    'MAIN & SPECIALIST CONTRACTORS',
+    'CIVIL CONSTRUCTION TEAMS',
+    'ELECTRICAL & PLUMBING TEAMS',
+    'SPECIALIST PROJECT RESOURCES',
+  ];
+
+  // 9 Coordination milestones from coordinationSupport or approved defaults
+  const supportEyebrow = coordinationSupport?.subtitle || 'COORDINATION SUPPORT';
+  const supportHeading =
+    coordinationSupport?.title || 'Coordination That Keeps the Project Moving.';
+
   const milestones =
     coordinationSupport?.steps && coordinationSupport.steps.length > 0
       ? coordinationSupport.steps
       : [
-          { title: 'Requirement Understanding', description: 'Aligning scope & goals' },
-          { title: 'Professional / Team Coordination', description: 'Aligning consultants' },
-          { title: 'Design & Planning Coordination', description: 'Coordinating blueprints' },
-          { title: 'Procurement Coordination', description: 'Material flow management' },
-          { title: 'Vendor & Contractor Coordination', description: 'Briefs & schedules' },
-          { title: 'Execution Follow-up', description: 'Tracking site progress' },
-          { title: 'Material & Delivery Coordination', description: 'Just-in-time delivery' },
-          { title: 'Progress & Communication Follow-up', description: 'Continuous reporting' },
-          { title: 'Handover Coordination', description: 'Seamless project completion' },
+          { title: 'Requirement Understanding', description: 'Aligning on goals, scope, and specific client needs' },
+          { title: 'Professional / Team Coordination', description: 'Aligning consultants, architects, and engineers' },
+          { title: 'Design & Planning Coordination', description: 'Coordinating design documentation and revisions' },
+          { title: 'Procurement Coordination', description: 'Managing material flow and supplier alignment' },
+          { title: 'Vendor & Contractor Coordination', description: 'Clear briefs, scope enforcement, and scheduling' },
+          { title: 'Execution Follow-up', description: 'Tracking site progress and resolving bottlenecks' },
+          { title: 'Material & Delivery Coordination', description: 'Just-in-time material arrival to prevent idle time' },
+          { title: 'Progress & Communication Follow-up', description: 'Unified stakeholder updates and reporting' },
+          { title: 'Handover Coordination', description: 'Smooth project completion and documentation' },
         ];
 
   return (
-    <section className="py-16 sm:py-24 bg-white border-b border-sand/60">
+    <section className="py-20 sm:py-28 bg-white border-b border-sand/80 overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-        {/* Top Part: The Coordination Ecosystem */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-20">
-          <div className="lg:col-span-5 space-y-5">
-            <div className="flex items-center space-x-2">
+        {/* PART 1: Project Coordination Ecosystem (Image 1) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-24 sm:mb-32">
+          {/* Left Column: Narrative */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="flex items-center space-x-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-olive" />
-              <span className="text-[11px] uppercase tracking-[0.22em] text-olive font-semibold">
+              <span className="text-[11px] uppercase tracking-[0.25em] text-olive font-mono font-semibold">
                 {eyebrow}
               </span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl text-near-black font-normal tracking-tight leading-tight">
+
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-[44px] text-near-black font-normal leading-[1.18] tracking-tight">
               {heading}
             </h2>
-            <p className="text-sm text-near-black/75 font-light leading-relaxed">
+
+            <p className="text-sm sm:text-base text-near-black/75 font-light leading-relaxed">
               {description}
             </p>
+
             <div className="pt-2">
               <Link
                 href="/services/project-coordination"
-                className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest font-semibold text-olive hover:text-near-black transition-colors"
+                className="inline-flex items-center space-x-2 text-xs uppercase tracking-[0.2em] font-semibold text-olive hover:text-near-black transition-colors"
               >
-                <span>Explore Project Coordination</span>
-                <ArrowUpRight className="w-4 h-4" strokeWidth={1.5} />
+                <span>EXPLORE PROJECT COORDINATION</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
               </Link>
             </div>
 
-            {/* Legal Notice Callout */}
-            <div className="p-4 bg-sand/30 rounded-sm border border-sand flex items-start space-x-3 text-xs text-warm-grey font-light leading-relaxed">
-              <Shield className="w-4 h-4 text-olive shrink-0 mt-0.5" strokeWidth={1.5} />
-              <span>
+            {/* Legal Notice Callout with Hexagon Icon */}
+            <div className="p-4 sm:p-5 border border-sand/80 bg-off-white/40 rounded-sm flex items-start space-x-3.5 mt-8">
+              <Hexagon className="w-4 h-4 text-warm-grey shrink-0 mt-0.5" strokeWidth={1.5} />
+              <span className="text-xs text-warm-grey font-light leading-relaxed">
                 Projeto acts as a coordination partner. All licensed architectural, engineering, and specialist services are performed by appropriately qualified and registered professionals.
               </span>
             </div>
           </div>
 
-          {/* Right: Coordination Resources Tags */}
-          <div className="lg:col-span-7 bg-sand/20 p-8 sm:p-10 rounded-sm border border-sand/70">
-            <div className="flex items-center justify-between pb-6 mb-6 border-b border-sand/60">
-              <span className="text-[11px] uppercase tracking-[0.2em] text-warm-grey font-medium">
-                Coordination Ecosystem
-              </span>
-              <Users className="w-4 h-4 text-olive" strokeWidth={1.5} />
-            </div>
+          {/* Right Column: Visual Coordination Ecosystem (Exact Image 1 layout) */}
+          <div className="lg:col-span-7">
+            <div className="relative w-full rounded-sm bg-off-white/30 border border-sand/80 p-6 sm:p-10 shadow-2xs overflow-hidden">
+              {/* Subtle background radar/grid concentric rings */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25">
+                <div className="w-[360px] h-[360px] rounded-full border border-sand-dark/50" />
+                <div className="absolute w-[240px] h-[240px] rounded-full border border-sand-dark/40" />
+                <div className="absolute w-[120px] h-[120px] rounded-full border border-sand-dark/30" />
+                <div className="absolute w-full h-[1px] bg-sand/60" />
+                <div className="absolute h-full w-[1px] bg-sand/60" />
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {ecosystemItems.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center space-x-2.5 p-3 rounded-sm bg-white border border-sand/60 text-xs text-near-black font-medium hover:border-olive/40 transition-colors"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-olive shrink-0" />
-                  <span>{item}</span>
+              {/* Central PROJETO Hub (Top Center of diagram) */}
+              <div className="relative z-20 flex flex-col items-center justify-center mb-8">
+                <div className="inline-flex items-center space-x-2 px-6 py-2.5 bg-[#171717] rounded-full text-warm-beige shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-olive animate-pulse" />
+                  <span className="font-mono text-xs sm:text-sm font-semibold tracking-[0.25em] text-warm-beige">
+                    PROJETO
+                  </span>
                 </div>
-              ))}
+                <p className="text-[10px] uppercase font-mono tracking-[0.2em] text-warm-grey mt-2">
+                  CENTRAL COORDINATION CORE
+                </p>
+              </div>
+
+              {/* 12 Disciplines in 2 columns of 6 */}
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                {/* Left Column of 6 */}
+                <div className="space-y-2.5 sm:space-y-3">
+                  {leftColumnNodes.map((item, idx) => {
+                    const nodeIndex = idx;
+                    const isHovered = hoveredNode === nodeIndex;
+
+                    return (
+                      <div
+                        key={idx}
+                        onMouseEnter={() => setHoveredNode(nodeIndex)}
+                        onMouseLeave={() => setHoveredNode(null)}
+                        className={`flex items-center space-x-2.5 px-3.5 py-2.5 rounded-sm border transition-all duration-200 cursor-default ${
+                          isHovered
+                            ? 'bg-near-black text-white border-near-black shadow-xs'
+                            : 'bg-white text-near-black border-sand/70 hover:border-olive/50'
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${
+                            isHovered ? 'bg-warm-beige' : 'bg-olive'
+                          }`}
+                        />
+                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider truncate">
+                          {item}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Right Column of 6 */}
+                <div className="space-y-2.5 sm:space-y-3">
+                  {rightColumnNodes.map((item, idx) => {
+                    const nodeIndex = idx + 6;
+                    const isHovered = hoveredNode === nodeIndex;
+
+                    return (
+                      <div
+                        key={idx}
+                        onMouseEnter={() => setHoveredNode(nodeIndex)}
+                        onMouseLeave={() => setHoveredNode(null)}
+                        className={`flex items-center space-x-2.5 px-3.5 py-2.5 rounded-sm border transition-all duration-200 cursor-default ${
+                          isHovered
+                            ? 'bg-near-black text-white border-near-black shadow-xs'
+                            : 'bg-white text-near-black border-sand/70 hover:border-olive/50'
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${
+                            isHovered ? 'bg-warm-beige' : 'bg-olive'
+                          }`}
+                        />
+                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider truncate">
+                          {item}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Bottom Line: 12 Project Disciplines & Single Coordinated Point */}
+              <div className="pt-6 mt-6 border-t border-sand/60 flex items-center justify-between text-[11px] text-warm-grey font-mono">
+                <span>12 Project Disciplines</span>
+                <span>Single Coordinated Point of Contact</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Part: Coordination Support Steps */}
-        <div className="bg-sand/15 p-8 sm:p-12 rounded-sm border border-sand/70">
-          <div className="max-w-3xl mb-10">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-warm-grey font-medium block mb-2">
-              Execution Support
-            </span>
-            <h3 className="font-serif text-2xl sm:text-3xl text-near-black font-normal">
-              Coordination That Keeps the Project Moving.
+        {/* PART 2: Coordination Support List (Exact Image 2 layout) */}
+        <div>
+          <div className="max-w-3xl mb-12 sm:mb-16">
+            <div className="flex items-center space-x-2.5 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-olive" />
+              <span className="text-[11px] uppercase tracking-[0.25em] text-olive font-mono font-semibold">
+                {supportEyebrow}
+              </span>
+            </div>
+            <h3 className="font-serif text-3xl sm:text-4xl text-near-black font-normal tracking-tight">
+              {supportHeading}
             </h3>
-            <p className="text-xs text-warm-grey font-light mt-1">
-              From requirement definition through final handover, active coordination avoids project friction and communication gaps.
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Thin Hairline List with 01-09 */}
+          <div className="divide-y divide-sand/70 border-y border-sand/70">
             {milestones.map((step, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 14 }}
+                initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.35, delay: idx * 0.05 }}
-                className="p-5 bg-white rounded-sm border border-sand/60 flex flex-col justify-between"
+                transition={{ duration: 0.3, delay: idx * 0.03 }}
+                className="group py-5 sm:py-6 px-2 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6 hover:bg-sand/15 transition-colors cursor-default"
               >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-warm-beige bg-near-black px-2 py-0.5 rounded-sm">
-                      0{idx + 1}
-                    </span>
-                    <Check className="w-3.5 h-3.5 text-olive/60" strokeWidth={1.5} />
-                  </div>
-                  <h4 className="font-serif text-sm font-medium text-near-black leading-snug pt-1">
+                {/* Left: Number & Title */}
+                <div className="flex items-center space-x-6 sm:space-x-10">
+                  <span className="text-xs font-mono text-warm-grey font-medium shrink-0 w-6">
+                    {idx < 9 ? `0${idx + 1}` : idx + 1}
+                  </span>
+                  <h4 className="font-serif text-base sm:text-lg text-near-black font-normal group-hover:text-olive transition-colors">
                     {step.title}
                   </h4>
                 </div>
-                {step.description && (
-                  <p className="text-xs text-warm-grey font-light pt-2 mt-2 border-t border-sand/40">
+
+                {/* Right: Description & Arrow */}
+                <div className="flex items-center space-x-4 pl-12 sm:pl-0 justify-between sm:justify-end">
+                  <span className="text-xs sm:text-sm text-warm-grey font-light">
                     {step.description}
-                  </p>
-                )}
+                  </span>
+                  <ArrowRight
+                    className="w-4 h-4 text-warm-grey/50 group-hover:text-olive group-hover:translate-x-1 transition-all shrink-0"
+                    strokeWidth={1.5}
+                  />
+                </div>
               </motion.div>
             ))}
           </div>

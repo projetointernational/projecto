@@ -26,7 +26,6 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ userEmail, onMenuToggl
     if (path.startsWith('/admin/projects')) return 'Projects';
     if (path.startsWith('/admin/categories')) return 'Categories';
     if (path.startsWith('/admin/strengths')) return 'Why Choose Us';
-    if (path.startsWith('/admin/testimonials')) return 'Testimonials';
     if (path.startsWith('/admin/enquiries')) return 'Enquiries Inbox';
     return 'Dashboard Overview';
   };
