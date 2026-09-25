@@ -1,44 +1,19 @@
-import { createPublicServerClient } from '@/lib/supabase/server';
+import { getSiteSettings, getAllProjects, getCategories } from '@/lib/supabase/queries';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ProjectsDirectory } from '@/components/projects/ProjectsDirectory';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
 import { MotionSection } from '@/components/ui/MotionSection';
-import { SiteSettings, Project, Category } from '@/lib/supabase/types';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function ProjectsPage() {
-  let settings: SiteSettings | null = null;
-  let projects: Project[] = [];
-  let categories: Category[] = [];
-
-  try {
-    const supabase = createPublicServerClient();
-
-    const { data: settingsData } = await supabase
-      .from('site_settings')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    settings = settingsData;
-
-    const { data: categoriesData } = await supabase
-      .from('categories')
-      .select('*')
-      .order('display_order', { ascending: true });
-    categories = categoriesData || [];
-
-    const { data: projectsData } = await supabase
-      .from('projects')
-      .select('*')
-      .order('display_order', { ascending: true });
-    projects = projectsData || [];
-  } catch (err) {
-    console.error('[ProjectsPage] Error fetching projects:', err);
-  }
+  const [settings, categories, projects] = await Promise.all([
+    getSiteSettings(),
+    getCategories(),
+    getAllProjects(),
+  ]);
 
   return (
     <div className="flex flex-col min-h-screen">

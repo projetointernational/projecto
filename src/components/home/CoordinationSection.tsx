@@ -118,7 +118,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                     src={desktopBg}
                     alt="Central Coordination Core Background"
                     fill
-                    priority={false}
+                    loading="lazy"
                     className="object-cover object-center"
                     sizes="(max-width: 1024px) 100vw, 58vw"
                   />
@@ -134,7 +134,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                     src={mobileBg}
                     alt="Central Coordination Core Mobile Background"
                     fill
-                    priority={false}
+                    loading="lazy"
                     className="object-cover object-center"
                     sizes="100vw"
                   />

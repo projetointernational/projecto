@@ -65,7 +65,7 @@ export const ProcurementProcess: React.FC<ProcurementProcessProps> = ({
                   fill
                   sizes="(max-width: 1024px) 100vw, 45vw"
                   className={`${resolvedMobileImage && resolvedMobileImage !== resolvedDesktopImage ? 'hidden lg:block' : ''} object-cover transition-transform duration-700 group-hover:scale-105`}
-                  priority={false}
+                  loading="lazy"
                 />
               )}
               {resolvedMobileImage && resolvedMobileImage !== resolvedDesktopImage && (
@@ -75,7 +75,7 @@ export const ProcurementProcess: React.FC<ProcurementProcessProps> = ({
                   fill
                   sizes="100vw"
                   className="block lg:hidden object-cover transition-transform duration-700 group-hover:scale-105"
-                  priority={false}
+                  loading="lazy"
                 />
               )}
               {/* Subtle architectural vignette */}

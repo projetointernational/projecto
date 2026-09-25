@@ -70,9 +70,9 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
                 src={resolvedDesktopImage}
                 alt={title}
                 fill
-                sizes="(max-width: 1024px) 100vw, 38vw"
+                sizes="(max-width: 1280px) 38vw, 36vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
-                priority={false}
+                loading="lazy"
               />
               {/* Subtle vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-near-black/50 via-transparent to-transparent opacity-75" />
@@ -148,9 +148,9 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
                 src={resolvedMobileImage}
                 alt={title}
                 fill
-                sizes="(max-width: 1024px) 100vw, 40vw"
+                sizes="100vw"
                 className="object-cover"
-                priority={false}
+                loading="lazy"
               />
               {/* Subtle vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-near-black/50 via-transparent to-transparent opacity-75" />

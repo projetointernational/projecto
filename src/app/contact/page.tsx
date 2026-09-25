@@ -1,38 +1,18 @@
-import { createPublicServerClient } from '@/lib/supabase/server';
+import { getSiteSettings, getContactPageContent } from '@/lib/supabase/queries';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EnquiryForm } from '@/components/forms/EnquiryForm';
 import { MotionSection } from '@/components/ui/MotionSection';
 import { MapPin, Mail, Phone, MessageSquare, Clock, ArrowUpRight } from 'lucide-react';
-import { SiteSettings, ContactPageContent } from '@/lib/supabase/types';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function ContactPage() {
-  let settings: SiteSettings | null = null;
-  let contactContent: ContactPageContent | null = null;
-
-  try {
-    const supabase = createPublicServerClient();
-
-    const { data: settingsData } = await supabase
-      .from('site_settings')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    settings = settingsData;
-
-    const { data: contactData } = await supabase
-      .from('contact_page')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    contactContent = contactData;
-  } catch (err) {
-    console.error('[ContactPage] Error fetching contact content:', err);
-  }
+  const [settings, contactContent] = await Promise.all([
+    getSiteSettings(),
+    getContactPageContent(),
+  ]);
 
   const email = settings?.email || 'projetointernational@gmail.com';
   const phone = settings?.phone || '+91 9072873225';

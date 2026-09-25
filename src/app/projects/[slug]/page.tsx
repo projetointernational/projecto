@@ -1,61 +1,45 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getSiteSettings, getProjectBySlug } from '@/lib/supabase/queries';
 import { createPublicServerClient } from '@/lib/supabase/server';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
 import { ProjectCard } from '@/components/projects/ProjectCard';
 import { ArrowLeft, ArrowUpRight, MapPin, Calendar, User, Maximize2 } from 'lucide-react';
-import { SiteSettings, Project } from '@/lib/supabase/types';
 
 interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { slug } = await params;
 
-  let settings: SiteSettings | null = null;
-  let project: Project | null = null;
-  let relatedProjects: Project[] = [];
-
-  try {
-    const supabase = createPublicServerClient();
-
-    const { data: settingsData } = await supabase
-      .from('site_settings')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    settings = settingsData;
-
-    const { data: projectData } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('slug', slug)
-      .maybeSingle();
-
-    project = projectData;
-
-    if (project) {
-      // Fetch related projects in same category or general
-      const { data: relatedData } = await supabase
-        .from('projects')
-        .select('*')
-        .neq('id', project.id)
-        .limit(3);
-      relatedProjects = relatedData || [];
-    }
-  } catch (err) {
-    console.error('[ProjectDetailPage] Fetch error:', err);
-  }
+  // Fetch settings and project in parallel
+  const [settings, project] = await Promise.all([
+    getSiteSettings(),
+    getProjectBySlug(slug),
+  ]);
 
   if (!project) {
     notFound();
+  }
+
+  // Related projects: needs project.id — small sequential fetch, cached per render
+  let relatedProjects: import('@/lib/supabase/types').Project[] = [];
+  try {
+    const supabase = createPublicServerClient();
+    const { data: relatedData } = await supabase
+      .from('projects')
+      .select('id,title,slug,category_name,short_description,main_image_url,location,year,status,is_featured,display_order')
+      .neq('id', project.id)
+      .limit(3);
+    relatedProjects = relatedData || [];
+  } catch {
+    // non-critical
   }
 
   return (

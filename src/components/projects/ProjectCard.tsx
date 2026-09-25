@@ -31,8 +31,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             src={project.main_image_url}
             alt={project.title}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 768px) 33vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            loading="lazy"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-warm-grey text-[11px] tracking-wider">

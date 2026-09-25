@@ -1,17 +1,15 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { createPublicServerClient } from '@/lib/supabase/server';
+import { getSiteSettings, getServiceBySlug, getProcessCollections } from '@/lib/supabase/queries';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
 import { MotionSection } from '@/components/ui/MotionSection';
 import { IconResolver } from '@/components/ui/IconResolver';
 import { CheckCircle2, ArrowRight, Shield, Layers, Users, Sparkles } from 'lucide-react';
-import { SiteSettings, Service, ProcessContent } from '@/lib/supabase/types';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 interface ServiceDetailPageProps {
   params: Promise<{
@@ -21,33 +19,18 @@ interface ServiceDetailPageProps {
 
 export default async function ServiceDetailPage({ params }: ServiceDetailPageProps) {
   const { slug } = await params;
-  const supabase = createPublicServerClient();
 
-  // 1. Fetch site settings
-  const { data: settings } = await supabase
-    .from('site_settings')
-    .select('*')
-    .limit(1)
-    .maybeSingle();
-
-  // 2. Fetch the specific service by slug
-  const { data: service } = await supabase
-    .from('services')
-    .select('*')
-    .eq('slug', slug)
-    .maybeSingle();
+  // Parallel fetch: settings + service + processes simultaneously
+  const [settings, service, processes] = await Promise.all([
+    getSiteSettings(),
+    getServiceBySlug(slug),
+    getProcessCollections(),
+  ]);
 
   if (!service) {
     notFound();
   }
 
-  // 3. Fetch process collections if applicable (e.g. for procurement or how-we-work)
-  const { data: processCollections } = await supabase
-    .from('process_content')
-    .select('*')
-    .eq('is_active', true);
-
-  const processes = processCollections || [];
   const procurementProcess = processes.find(
     (p) => p.subtitle?.toUpperCase() === 'PROCUREMENT'
   );
