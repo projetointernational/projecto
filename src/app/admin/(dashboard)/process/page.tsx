@@ -35,6 +35,7 @@ export default function AdminProcessPage() {
   const [allProcesses, setAllProcesses] = useState<ProcessContent[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [procurementImageUrl, setProcurementImageUrl] = useState<string>('');
+  const [procurementMobileImageUrl, setProcurementMobileImageUrl] = useState<string>('');
 
   const [activeProcess, setActiveProcess] = useState<Partial<ProcessContent>>({
     subtitle: '',
@@ -58,7 +59,7 @@ export default function AdminProcessPage() {
         setActiveProcess(data[idx]);
       }
 
-      // Load current procurement section image
+      // Load current procurement section images
       const { data: svcData } = await supabase
         .from('services')
         .select('image_url')
@@ -71,6 +72,12 @@ export default function AdminProcessPage() {
         if (sData?.navigation_labels?.section_images?.procurement_section_image) {
           setProcurementImageUrl(sData.navigation_labels.section_images.procurement_section_image);
         }
+      }
+
+      const { data: sData } = await supabase.from('site_settings').select('navigation_labels').single();
+      const sImgs = sData?.navigation_labels?.section_images;
+      if (sImgs?.procurement_mobile_section_image) {
+        setProcurementMobileImageUrl(sImgs.procurement_mobile_section_image);
       }
     } catch (err) {
       console.error('[AdminProcessPage] Error fetching processes:', err);
@@ -205,6 +212,7 @@ export default function AdminProcessPage() {
             nav.section_images = {
               ...(nav.section_images || {}),
               procurement_section_image: procurementImageUrl,
+              procurement_mobile_section_image: procurementMobileImageUrl,
             };
             await supabase.from('site_settings').update({ navigation_labels: nav }).eq('id', sData.id);
           }
@@ -354,17 +362,80 @@ export default function AdminProcessPage() {
 
           {/* Section Supporting Image Control for Procurement Workflow ONLY (Completely excluded for Project Workflow) */}
           {isProcurementProcess && (
-            <div className="pt-4 border-t border-sand space-y-2">
-              <CloudinaryUploader
-                label='"From Requirement to Delivery. Coordinated." Section Supporting Image'
-                currentImageUrl={procurementImageUrl}
-                onUploadSuccess={(url) => setProcurementImageUrl(url)}
-                aspectRatio="video"
-                folder="procurement"
-              />
-              <p className="text-[11px] text-warm-grey">
-                This image occupies approximately 45% of the split layout beside the process steps in the Procurement section.
-              </p>
+            <div className="pt-6 border-t border-sand space-y-6">
+              <div>
+                <span className="text-[11px] uppercase tracking-[0.2em] text-olive font-semibold block mb-1">
+                  PROCUREMENT PROCESS
+                </span>
+                <h3 className="font-serif text-lg text-near-black font-normal">
+                  &ldquo;From Requirement to Delivery. Coordinated.&rdquo; Section Supporting Imagery
+                </h3>
+                <p className="text-xs text-warm-grey font-light mt-0.5">
+                  Manage supporting visuals for desktop (4:3 landscape) and mobile (16:9 landscape) viewports.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Desktop Supporting Image (Ratio: 4:3 Landscape) */}
+                <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                        Desktop Supporting Image
+                      </h4>
+                      <span className="text-[11px] text-warm-grey font-mono">
+                        Ratio: 4:3 Landscape
+                      </span>
+                    </div>
+                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                      Desktop Viewport
+                    </span>
+                  </div>
+
+                  <CloudinaryUploader
+                    label=""
+                    currentImageUrl={procurementImageUrl}
+                    onUploadSuccess={(url) => setProcurementImageUrl(url)}
+                    aspectRatio="classic"
+                    compact={false}
+                    folder="procurement"
+                  />
+
+                  <div className="text-[11px] text-warm-grey leading-relaxed">
+                    Recommended upload ratio: <strong className="text-near-black">4:3 (Landscape)</strong>. Occupies approximately 45% of the split layout beside the process steps on desktop.
+                  </div>
+                </div>
+
+                {/* Mobile Supporting Image (Ratio: 16:9 Landscape) */}
+                <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                        Mobile Supporting Image
+                      </h4>
+                      <span className="text-[11px] text-warm-grey font-mono">
+                        Ratio: 16:9 Landscape
+                      </span>
+                    </div>
+                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                      Mobile Viewport
+                    </span>
+                  </div>
+
+                  <CloudinaryUploader
+                    label=""
+                    currentImageUrl={procurementMobileImageUrl}
+                    onUploadSuccess={(url) => setProcurementMobileImageUrl(url)}
+                    aspectRatio="video"
+                    compact={false}
+                    folder="procurement"
+                  />
+
+                  <div className="text-[11px] text-warm-grey leading-relaxed">
+                    Recommended upload ratio: <strong className="text-near-black">16:9 (Landscape)</strong>. Appears above the process steps on mobile devices.
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>

@@ -154,13 +154,37 @@ export default async function HomePage() {
     settings?.navigation_labels?.section_images?.procurement_section_image ||
     null;
 
+  const sectionThreeMobileImage =
+    settings?.navigation_labels?.section_images?.procurement_mobile_section_image ||
+    null;
+
   const sectionRoleImage =
     settings?.navigation_labels?.section_images?.role_section_image ||
+    null;
+
+  const sectionRoleMobileImage =
+    settings?.navigation_labels?.section_images?.role_mobile_section_image ||
     null;
 
   const heroMobileImage =
     settings?.navigation_labels?.section_images?.hero_mobile_background_image ||
     null;
+
+  const coordinationDesktopImage =
+    editorialFeature?.image_url && editorialFeature.image_url.trim() !== ''
+      ? editorialFeature.image_url.trim()
+      : settings?.navigation_labels?.section_images?.coordination_desktop_image &&
+        settings.navigation_labels.section_images.coordination_desktop_image.trim() !== ''
+      ? settings.navigation_labels.section_images.coordination_desktop_image.trim()
+      : null;
+
+  const coordinationMobileImage =
+    settings?.navigation_labels?.section_images?.coordination_mobile_image &&
+    settings.navigation_labels.section_images.coordination_mobile_image.trim() !== ''
+      ? settings.navigation_labels.section_images.coordination_mobile_image.trim()
+      : editorialFeature?.mobile_image_url && editorialFeature.mobile_image_url.trim() !== ''
+      ? editorialFeature.mobile_image_url.trim()
+      : null;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -192,6 +216,7 @@ export default async function HomePage() {
             processData={procurementProcess}
             procurementService={procurementService}
             imageUrl={sectionThreeImage}
+            mobileImageUrl={sectionThreeMobileImage}
           />
         )}
 
@@ -200,6 +225,8 @@ export default async function HomePage() {
           coordinationService={coordinationService}
           coordinationSupport={coordinationSupport}
           feature={editorialFeature}
+          desktopBackgroundImage={coordinationDesktopImage}
+          mobileBackgroundImage={coordinationMobileImage}
         />
 
         {/* Section 05: Core Project Workflow (7 Stages + Supporting Note) */}
@@ -212,6 +239,7 @@ export default async function HomePage() {
             subtitle="WHO WE WORK WITH"
             title="Built Around Your Role in the Project."
             imageUrl={sectionRoleImage}
+            mobileImageUrl={sectionRoleMobileImage}
           />
         )}
 
