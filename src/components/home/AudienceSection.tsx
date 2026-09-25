@@ -13,6 +13,7 @@ interface AudienceSectionProps {
   subtitle?: string;
   title?: string;
   imageUrl?: string | null;
+  mobileImageUrl?: string | null;
 }
 
 export const AudienceSection: React.FC<AudienceSectionProps> = ({
@@ -20,6 +21,7 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
   subtitle = 'WHO WE WORK WITH',
   title = 'Built Around Your Role in the Project.',
   imageUrl,
+  mobileImageUrl,
 }) => {
   if (!audienceCards || audienceCards.length === 0) {
     return null;
@@ -40,7 +42,8 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
     return { href: '/contact', label: 'EXPLORE SUPPORT' };
   };
 
-  const resolvedImage = imageUrl || '';
+  const resolvedDesktopImage = imageUrl || '';
+  const resolvedMobileImage = mobileImageUrl || imageUrl || '';
 
   return (
     <section className="py-16 sm:py-24 bg-white border-b border-sand/80 overflow-hidden">
@@ -60,11 +63,11 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
             </h2>
           </div>
 
-          {/* Desktop Right-Side Image: Aligned at top with heading level, extends down to bottom of cards */}
-          {resolvedImage && (
-            <div className="hidden lg:block absolute top-0 right-0 w-[38%] xl:w-[36%] h-[110%] rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/30 z-0">
+          {/* Desktop Right-Side Image: Aligned at top with heading level, 1:1 Aspect Ratio */}
+          {resolvedDesktopImage && (
+            <div className="hidden lg:block absolute top-0 right-0 w-[38%] xl:w-[36%] aspect-square rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/30 z-0">
               <Image
-                src={resolvedImage}
+                src={resolvedDesktopImage}
                 alt={title}
                 fill
                 sizes="(max-width: 1024px) 100vw, 38vw"
@@ -73,13 +76,6 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
               />
               {/* Subtle vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-near-black/50 via-transparent to-transparent opacity-75" />
-
-              {/* Top-Right Architectural Badge (Matches Reference Image) */}
-              <div className="absolute top-5 right-5 z-10 bg-near-black/85 backdrop-blur-xs px-3.5 py-2.5 rounded-xs border border-white/10 text-right">
-                <span className="block font-mono text-[10px] tracking-[0.25em] uppercase text-warm-beige leading-tight font-medium">
-                  STRONGER<br />PROJECTS<br />TOGETHER
-                </span>
-              </div>
             </div>
           )}
 
@@ -145,11 +141,11 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
             })}
           </div>
 
-          {/* Mobile / Tablet Supporting Image (Below cards on screens < lg) */}
-          {resolvedImage && (
-            <div className="lg:hidden mt-8 w-full h-[260px] sm:h-[320px] rounded-sm overflow-hidden border border-sand/80 shadow-2xs relative bg-sand/30">
+          {/* Mobile / Tablet Supporting Image (Below cards on screens < lg) — 16:9 Aspect Ratio */}
+          {resolvedMobileImage && (
+            <div className="lg:hidden mt-8 w-full aspect-[16/9] rounded-sm overflow-hidden border border-sand/80 shadow-2xs relative bg-sand/30">
               <Image
-                src={resolvedImage}
+                src={resolvedMobileImage}
                 alt={title}
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
@@ -158,13 +154,6 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
               />
               {/* Subtle vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-near-black/50 via-transparent to-transparent opacity-75" />
-
-              {/* Top-Right Architectural Badge */}
-              <div className="absolute top-5 right-5 z-10 bg-near-black/85 backdrop-blur-xs px-3.5 py-2.5 rounded-xs border border-white/10 text-right">
-                <span className="block font-mono text-[10px] tracking-[0.25em] uppercase text-warm-beige leading-tight font-medium">
-                  STRONGER<br />PROJECTS<br />TOGETHER
-                </span>
-              </div>
             </div>
           )}
         </div>

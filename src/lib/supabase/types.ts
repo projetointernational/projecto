@@ -55,8 +55,12 @@ export interface SiteSettings {
       about_section_image?: string;
       about_mobile_section_image?: string;
       procurement_section_image?: string;
+      procurement_mobile_section_image?: string;
       role_section_image?: string;
+      role_mobile_section_image?: string;
       hero_mobile_background_image?: string;
+      coordination_desktop_image?: string;
+      coordination_mobile_image?: string;
     };
   } | null;
   enquiry_notification_email?: string | null;
@@ -208,6 +212,7 @@ export interface EditorialFeature {
   title: string;
   description?: string | null;
   image_url?: string | null;
+  mobile_image_url?: string | null;
   image_position?: 'left' | 'right';
   highlights?: string[] | null;
   is_active?: boolean;

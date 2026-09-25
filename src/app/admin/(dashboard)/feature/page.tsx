@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EditorialFeature } from '@/lib/supabase/types';
-import { Check, AlertCircle, Plus, Trash2 } from 'lucide-react';
+import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
+import { Check, AlertCircle, Plus, Trash2, Eye, Monitor, Smartphone } from 'lucide-react';
 
 export default function AdminEditorialFeaturePage() {
   const supabase = createClient();
@@ -21,6 +23,9 @@ export default function AdminEditorialFeaturePage() {
     is_active: true,
   });
 
+  const [desktopImageUrl, setDesktopImageUrl] = useState<string>('');
+  const [mobileImageUrl, setMobileImageUrl] = useState<string>('');
+  const [previewDevice, setPreviewDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [newHighlight, setNewHighlight] = useState('');
 
   useEffect(() => {
@@ -33,11 +38,29 @@ export default function AdminEditorialFeaturePage() {
           .maybeSingle();
 
         if (error) throw error;
+
+        let deskImg = '';
+        let mobImg = '';
+        try {
+          const { data: sData } = await supabase
+            .from('site_settings')
+            .select('navigation_labels')
+            .limit(1)
+            .maybeSingle();
+          const sectionImgs = sData?.navigation_labels?.section_images || {};
+          deskImg = sectionImgs.coordination_desktop_image || '';
+          mobImg = sectionImgs.coordination_mobile_image || '';
+        } catch (sErr) {
+          console.warn('Could not fetch site_settings coordination images:', sErr);
+        }
+
         if (data) {
           setFeature({
             ...data,
             highlights: Array.isArray(data.highlights) ? data.highlights : [],
           });
+          setDesktopImageUrl(data.image_url || deskImg || '');
+          setMobileImageUrl(mobImg || '');
         }
       } catch (err) {
         console.error('Error fetching editorial feature:', err);
@@ -89,7 +112,7 @@ export default function AdminEditorialFeaturePage() {
         subtitle: feature.subtitle || null,
         title: feature.title || '',
         description: feature.description || null,
-        // image_url and image_position are not editable from this panel
+        image_url: desktopImageUrl || null,
         highlights: feature.highlights || [],
         is_active: feature.is_active ?? true,
         updated_at: new Date().toISOString(),
@@ -113,7 +136,23 @@ export default function AdminEditorialFeaturePage() {
         if (data) setFeature(data);
       }
 
-      setFeedback({ type: 'success', message: 'Showcase feature saved successfully.' });
+      // Sync background images to site_settings for global access
+      try {
+        const { data: sData } = await supabase.from('site_settings').select('id, navigation_labels').single();
+        if (sData) {
+          const nav = sData.navigation_labels || {};
+          nav.section_images = {
+            ...(nav.section_images || {}),
+            coordination_desktop_image: desktopImageUrl || '',
+            coordination_mobile_image: mobileImageUrl || '',
+          };
+          await supabase.from('site_settings').update({ navigation_labels: nav }).eq('id', sData.id);
+        }
+      } catch (syncErr) {
+        console.warn('Sync warning:', syncErr);
+      }
+
+      setFeedback({ type: 'success', message: 'Coordination showcase content and background imagery saved successfully.' });
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       setFeedback({
@@ -303,6 +342,223 @@ export default function AdminEditorialFeaturePage() {
             >
               Add
             </Button>
+          </div>
+        </div>
+
+        {/* Background Images Management */}
+        <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-6">
+          <div className="border-b border-sand pb-4">
+            <span className="text-[11px] uppercase tracking-[0.2em] text-olive font-semibold block mb-1">
+              CENTRAL COORDINATION CORE
+            </span>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-near-black">
+              Background Images
+            </h2>
+            <p className="text-xs text-warm-grey mt-0.5">
+              Upload independent background images for the Central Coordination Core box. Images are rendered with a subtle translucent overlay to preserve readability. If empty, the section renders cleanly without a background image.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Desktop Background Image */}
+            <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                    Desktop Background Image
+                  </h3>
+                  <span className="text-[11px] text-warm-grey font-mono">
+                    Recommended: 16:9 Landscape
+                  </span>
+                </div>
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                  Desktop / Tablet
+                </span>
+              </div>
+
+              <CloudinaryUploader
+                label=""
+                currentImageUrl={desktopImageUrl}
+                onUploadSuccess={(url) => setDesktopImageUrl(url)}
+                aspectRatio="video"
+                compact={false}
+                folder="coordination"
+              />
+
+              <div className="text-[11px] text-warm-grey leading-relaxed">
+                Used as the background for the Central Coordination Core box on desktop and tablet screens.
+              </div>
+            </div>
+
+            {/* Mobile Background Image */}
+            <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                    Mobile Background Image
+                  </h3>
+                  <span className="text-[11px] text-warm-grey font-mono">
+                    Recommended: 9:16 Portrait
+                  </span>
+                </div>
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                  Mobile Viewport
+                </span>
+              </div>
+
+              <CloudinaryUploader
+                label=""
+                currentImageUrl={mobileImageUrl}
+                onUploadSuccess={(url) => setMobileImageUrl(url)}
+                aspectRatio="tall"
+                compact={false}
+                folder="coordination"
+              />
+
+              <div className="text-[11px] text-warm-grey leading-relaxed">
+                Used specifically for mobile viewports. Completely independent — desktop image is not reused if mobile image is empty.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Visual Live Preview */}
+        <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-sand pb-4">
+            <div>
+              <div className="flex items-center space-x-2">
+                <Eye className="w-4 h-4 text-olive" />
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-near-black">
+                  Visual Live Preview
+                </h2>
+              </div>
+              <p className="text-xs text-warm-grey mt-0.5">
+                Simulated appearance of the Central Coordination Core with active background imagery and translucent overlay.
+              </p>
+            </div>
+
+            {/* Device Toggle */}
+            <div className="inline-flex rounded-sm border border-sand bg-sand/20 p-0.5 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setPreviewDevice('desktop')}
+                className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono rounded-xs transition-colors ${
+                  previewDevice === 'desktop'
+                    ? 'bg-near-black text-warm-beige shadow-xs'
+                    : 'text-warm-grey hover:text-near-black'
+                }`}
+              >
+                <Monitor className="w-3.5 h-3.5" />
+                <span>Desktop (16:9)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewDevice('mobile')}
+                className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono rounded-xs transition-colors ${
+                  previewDevice === 'mobile'
+                    ? 'bg-near-black text-warm-beige shadow-xs'
+                    : 'text-warm-grey hover:text-near-black'
+                }`}
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                <span>Mobile (9:16)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Preview Box Container */}
+          <div className="flex justify-center p-4 sm:p-6 bg-sand/15 rounded-sm border border-sand/50">
+            <div
+              className={`relative rounded-sm bg-off-white/50 border border-sand/80 shadow-2xs overflow-hidden transition-all duration-300 ${
+                previewDevice === 'desktop' ? 'w-full max-w-2xl p-6 sm:p-8' : 'w-full max-w-sm p-4 sm:p-5'
+              }`}
+            >
+              {/* Background Image layer */}
+              {previewDevice === 'desktop' && desktopImageUrl ? (
+                <div className="absolute inset-0 pointer-events-none z-0">
+                  <Image
+                    src={desktopImageUrl}
+                    alt="Desktop Background Preview"
+                    fill
+                    unoptimized
+                    className="object-cover object-center"
+                  />
+                  <div className="absolute inset-0 bg-white/70 backdrop-blur-[0.5px]" />
+                </div>
+              ) : previewDevice === 'mobile' && mobileImageUrl ? (
+                <div className="absolute inset-0 pointer-events-none z-0">
+                  <Image
+                    src={mobileImageUrl}
+                    alt="Mobile Background Preview"
+                    fill
+                    unoptimized
+                    className="object-cover object-center"
+                  />
+                  <div className="absolute inset-0 bg-white/70 backdrop-blur-[0.5px]" />
+                </div>
+              ) : null}
+
+              {/* Concentric rings */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 z-0">
+                <div className="w-[300px] h-[300px] rounded-full border border-sand-dark/50" />
+                <div className="absolute w-[200px] h-[200px] rounded-full border border-sand-dark/40" />
+                <div className="absolute w-[100px] h-[100px] rounded-full border border-sand-dark/30" />
+              </div>
+
+              {/* Central PROJETO Hub */}
+              <div className="relative z-10 flex flex-col items-center justify-center mb-6">
+                <div className="inline-flex items-center space-x-2 px-5 py-2 bg-[#171717] rounded-full text-warm-beige shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-olive animate-pulse" />
+                  <span className="font-mono text-xs font-semibold tracking-[0.25em] text-warm-beige">
+                    PROJETO
+                  </span>
+                </div>
+                <p className="text-[10px] uppercase font-mono tracking-[0.2em] text-near-black/80 font-medium mt-2">
+                  CENTRAL COORDINATION CORE
+                </p>
+              </div>
+
+              {/* Disciplines */}
+              <div
+                className={`relative z-10 grid gap-2.5 ${
+                  previewDevice === 'desktop' ? 'grid-cols-2' : 'grid-cols-1'
+                }`}
+              >
+                {(feature.highlights && feature.highlights.length > 0
+                  ? feature.highlights
+                  : [
+                      'ARCHITECTS',
+                      'STRUCTURAL / CIVIL ENGINEERS',
+                      'INTERIOR DESIGNERS',
+                      'MEP CONSULTANTS',
+                      'VAASTHU CONSULTANTS WHERE REQUIRED',
+                      'MAIN & SPECIALIST CONTRACTORS',
+                      'MATERIAL SUPPLIERS & VENDORS',
+                      'CIVIL CONSTRUCTION TEAMS',
+                      'INTERIOR & FINISHING TEAMS',
+                      'ELECTRICAL & PLUMBING TEAMS',
+                      'LANDSCAPING TEAMS',
+                      'SPECIALIST PROJECT RESOURCES',
+                    ]
+                ).map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center space-x-2.5 px-3 py-2 rounded-sm border bg-white/90 backdrop-blur-xs text-near-black border-sand/80 shadow-2xs"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-olive" />
+                    <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider leading-snug break-words">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Bottom metadata */}
+              <div className="relative z-10 pt-4 mt-5 border-t border-sand/70 flex items-center justify-between text-[10px] text-near-black/75 font-mono">
+                <span>{feature.highlights && feature.highlights.length > 0 ? `${feature.highlights.length} Project Disciplines` : '12 Project Disciplines'}</span>
+                <span>Single Coordinated Point of Contact</span>
+              </div>
+            </div>
           </div>
         </div>
 

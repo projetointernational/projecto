@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Hexagon } from 'lucide-react';
 import { ProcessContent, Service, EditorialFeature } from '@/lib/supabase/types';
 import { motion } from 'framer-motion';
@@ -10,12 +11,16 @@ interface CoordinationSectionProps {
   coordinationService?: Service | null;
   coordinationSupport?: ProcessContent | null;
   feature?: EditorialFeature | null;
+  desktopBackgroundImage?: string | null;
+  mobileBackgroundImage?: string | null;
 }
 
 export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
   coordinationService,
   coordinationSupport,
   feature,
+  desktopBackgroundImage,
+  mobileBackgroundImage,
 }) => {
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
 
@@ -26,6 +31,21 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
     feature?.description ||
     coordinationService?.short_description ||
     'Projeto can coordinate the professionals, contractors, vendors and execution teams required to progress a project, according to the client\'s requirements and agreed scope.';
+
+  // Strictly resolve background images from CMS / Props with NO hardcoded fallbacks
+  const desktopBg =
+    desktopBackgroundImage && desktopBackgroundImage.trim() !== ''
+      ? desktopBackgroundImage.trim()
+      : feature?.image_url && feature.image_url.trim() !== ''
+      ? feature.image_url.trim()
+      : null;
+
+  const mobileBg =
+    mobileBackgroundImage && mobileBackgroundImage.trim() !== ''
+      ? mobileBackgroundImage.trim()
+      : feature?.mobile_image_url && feature.mobile_image_url.trim() !== ''
+      ? feature.mobile_image_url.trim()
+      : null;
 
   // Disciplines from DB (editorial_feature.highlights)
   const highlightsList: string[] =
@@ -50,7 +70,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
   return (
     <section className="py-20 sm:py-18 bg-white border-b border-sand/80 overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-        {/* PART 1: Project Coordination Ecosystem (Image 1) */}
+        {/* PART 1: Project Coordination Ecosystem */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-24 sm:mb-32">
           {/* Left Column: Narrative */}
           <div className="lg:col-span-5 space-y-6">
@@ -88,11 +108,43 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
             </div>
           </div>
 
-          {/* Right Column: Visual Coordination Ecosystem (Exact Image 1 layout) */}
+          {/* Right Column: Visual Coordination Ecosystem (Central Coordination Core) */}
           <div className="lg:col-span-7">
-            <div className="relative w-full rounded-sm bg-off-white/30 border border-sand/80 p-6 sm:p-10 shadow-2xs overflow-hidden">
+            <div className="relative w-full rounded-sm bg-off-white/40 border border-sand/80 p-6 sm:p-8 lg:p-10 shadow-2xs overflow-hidden">
+              {/* Desktop/Tablet Background Image Layer */}
+              {desktopBg && (
+                <div className="hidden md:block absolute inset-0 pointer-events-none z-0">
+                  <Image
+                    src={desktopBg}
+                    alt="Central Coordination Core Background"
+                    fill
+                    priority={false}
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 58vw"
+                  />
+                  {/* Subtle warm/white translucent overlay to ensure crystal clear contrast without obscuring image */}
+                  <div className="absolute inset-0 bg-white/70 backdrop-blur-[0.5px]" />
+                </div>
+              )}
+
+              {/* Mobile Background Image Layer */}
+              {mobileBg && (
+                <div className="block md:hidden absolute inset-0 pointer-events-none z-0">
+                  <Image
+                    src={mobileBg}
+                    alt="Central Coordination Core Mobile Background"
+                    fill
+                    priority={false}
+                    className="object-cover object-center"
+                    sizes="100vw"
+                  />
+                  {/* Subtle warm/white translucent overlay */}
+                  <div className="absolute inset-0 bg-white/70 backdrop-blur-[0.5px]" />
+                </div>
+              )}
+
               {/* Subtle background radar/grid concentric rings */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 z-0">
                 <div className="w-[360px] h-[360px] rounded-full border border-sand-dark/50" />
                 <div className="absolute w-[240px] h-[240px] rounded-full border border-sand-dark/40" />
                 <div className="absolute w-[120px] h-[120px] rounded-full border border-sand-dark/30" />
@@ -101,19 +153,19 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
               </div>
 
               {/* Central PROJETO Hub (Top Center of diagram) */}
-              <div className="relative z-20 flex flex-col items-center justify-center mb-8">
+              <div className="relative z-10 flex flex-col items-center justify-center mb-8">
                 <div className="inline-flex items-center space-x-2 px-6 py-2.5 bg-[#171717] rounded-full text-warm-beige shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-olive animate-pulse" />
                   <span className="font-mono text-xs sm:text-sm font-semibold tracking-[0.25em] text-warm-beige">
                     PROJETO
                   </span>
                 </div>
-                <p className="text-[10px] uppercase font-mono tracking-[0.2em] text-warm-grey mt-2">
+                <p className="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.2em] text-near-black/80 font-medium mt-2">
                   CENTRAL COORDINATION CORE
                 </p>
               </div>
 
-              {/* 12 Disciplines in 2 columns of 6 */}
+              {/* 12 Disciplines in 2 columns of 6 on Desktop/Tablet, 1 column on Mobile */}
               <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 {/* Left Column of 6 */}
                 <div className="space-y-2.5 sm:space-y-3">
@@ -128,8 +180,8 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                         onMouseLeave={() => setHoveredNode(null)}
                         className={`flex items-center space-x-2.5 px-3.5 py-2.5 rounded-sm border transition-all duration-200 cursor-default ${
                           isHovered
-                            ? 'bg-near-black text-white border-near-black shadow-xs'
-                            : 'bg-white text-near-black border-sand/70 hover:border-olive/50'
+                            ? 'bg-near-black text-white border-near-black shadow-sm'
+                            : 'bg-white/90 backdrop-blur-xs text-near-black border-sand/80 shadow-2xs hover:border-olive/50 hover:bg-white'
                         }`}
                       >
                         <span
@@ -137,7 +189,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                             isHovered ? 'bg-warm-beige' : 'bg-olive'
                           }`}
                         />
-                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider truncate">
+                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider leading-snug break-words">
                           {item}
                         </span>
                       </div>
@@ -158,8 +210,8 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                         onMouseLeave={() => setHoveredNode(null)}
                         className={`flex items-center space-x-2.5 px-3.5 py-2.5 rounded-sm border transition-all duration-200 cursor-default ${
                           isHovered
-                            ? 'bg-near-black text-white border-near-black shadow-xs'
-                            : 'bg-white text-near-black border-sand/70 hover:border-olive/50'
+                            ? 'bg-near-black text-white border-near-black shadow-sm'
+                            : 'bg-white/90 backdrop-blur-xs text-near-black border-sand/80 shadow-2xs hover:border-olive/50 hover:bg-white'
                         }`}
                       >
                         <span
@@ -167,7 +219,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                             isHovered ? 'bg-warm-beige' : 'bg-olive'
                           }`}
                         />
-                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider truncate">
+                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider leading-snug break-words">
                           {item}
                         </span>
                       </div>
@@ -177,9 +229,9 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
               </div>
 
               {/* Bottom Line: Project Disciplines & Single Coordinated Point */}
-              <div className="pt-6 mt-6 border-t border-sand/60 flex items-center justify-between text-[11px] text-warm-grey font-mono">
-                <span>{highlightsList.length > 0 ? `${highlightsList.length} Project Disciplines` : 'Project Disciplines'}</span>
-                <span>Single Coordinated Point of Contact</span>
+              <div className="relative z-10 pt-6 mt-6 border-t border-sand/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-near-black/75 font-mono">
+                <span>{highlightsList.length > 0 ? `${highlightsList.length} Project Disciplines` : '12 Project Disciplines'}</span>
+                <span className="text-right sm:text-left">Single Coordinated Point of Contact</span>
               </div>
             </div>
           </div>
