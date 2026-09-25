@@ -1,47 +1,19 @@
 import Image from 'next/image';
-import { createPublicServerClient } from '@/lib/supabase/server';
+import { getSiteSettings, getAboutContent, getFirstProcessCollection } from '@/lib/supabase/queries';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
 import { MotionSection } from '@/components/ui/MotionSection';
 import { CheckCircle2, ShieldCheck, Users, Layers } from 'lucide-react';
-import { SiteSettings, AboutContent, ProcessContent } from '@/lib/supabase/types';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function AboutPage() {
-  let settings: SiteSettings | null = null;
-  let about: AboutContent | null = null;
-  let processContent: ProcessContent | null = null;
-
-  try {
-    const supabase = createPublicServerClient();
-
-    const { data: settingsData } = await supabase
-      .from('site_settings')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    settings = settingsData;
-
-    const { data: aboutData } = await supabase
-      .from('about_content')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    about = aboutData;
-
-    const { data: processData } = await supabase
-      .from('process_content')
-      .select('*')
-      .eq('is_active', true)
-      .limit(1)
-      .maybeSingle();
-    processContent = processData;
-  } catch (err) {
-    console.error('[AboutPage] Error fetching about data:', err);
-  }
+  const [settings, about, processContent] = await Promise.all([
+    getSiteSettings(),
+    getAboutContent(),
+    getFirstProcessCollection(),
+  ]);
 
   const eyebrow = about?.subtitle || 'ABOUT PROJETO';
   const heading = about?.title || 'One Project. One Coordinated Partner.';

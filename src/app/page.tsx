@@ -1,4 +1,14 @@
-import { createPublicServerClient } from '@/lib/supabase/server';
+import {
+  getSiteSettings,
+  getHeroContent,
+  getAboutContent,
+  getProcessCollections,
+  getServices,
+  getEditorialFeature,
+  getFeaturedProjects,
+  getStrengths,
+  getClients,
+} from '@/lib/supabase/queries';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSection } from '@/components/home/HeroSection';
@@ -10,108 +20,34 @@ import { AudienceSection } from '@/components/home/AudienceSection';
 import { FeaturedProjects } from '@/components/home/FeaturedProjects';
 import { ClientsSection } from '@/components/home/ClientsSection';
 import { EnquiryCta } from '@/components/home/EnquiryCta';
-import {
-  SiteSettings,
-  HeroContent,
-  AboutContent,
-  ProcessContent,
-  Service,
-  Project,
-  Strength,
-  Client,
-  EditorialFeature as EditorialFeatureType,
-} from '@/lib/supabase/types';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR: revalidate every 60 seconds. Admin changes trigger /api/admin/revalidate
+// to bust this cache immediately without waiting for the interval.
+export const revalidate = 60;
 
 export default async function HomePage() {
-  let settings: SiteSettings | null = null;
-  let hero: HeroContent | null = null;
-  let about: AboutContent | null = null;
-  let allProcesses: ProcessContent[] = [];
-  let services: Service[] = [];
-  let editorialFeature: EditorialFeatureType | null = null;
-  let projects: Project[] = [];
-  let audienceCards: Strength[] = [];
-  let clients: Client[] = [];
-
-  try {
-    const supabase = createPublicServerClient();
-
-    // 1. Site settings
-    const { data: settingsData } = await supabase
-      .from('site_settings')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    settings = settingsData;
-
-    // 2. Hero content
-    const { data: heroData } = await supabase
-      .from('hero_content')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    hero = heroData;
-
-    // 3. About content (used for Section 02 visual image & identity)
-    const { data: aboutData } = await supabase
-      .from('about_content')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    about = aboutData;
-
-    // 4. Process collections (Procurement, Coordination Support, Workflow)
-    const { data: processData } = await supabase
-      .from('process_content')
-      .select('*')
-      .eq('is_active', true);
-    allProcesses = processData || [];
-
-    // 5. Services (Procurement, Project Coordination, etc.)
-    const { data: servicesData } = await supabase
-      .from('services')
-      .select('*')
-      .order('display_order', { ascending: true });
-    services = servicesData || [];
-
-    // 6. Editorial showcase feature
-    const { data: featureData } = await supabase
-      .from('editorial_feature')
-      .select('*')
-      .eq('is_active', true)
-      .limit(1)
-      .maybeSingle();
-    editorialFeature = featureData;
-
-    // 7. Selected projects
-    const { data: projectsData } = await supabase
-      .from('projects')
-      .select('*')
-      .order('display_order', { ascending: true })
-      .limit(6);
-    projects = projectsData || [];
-
-    // 8. Audience cards / Who We Work With (from strengths table)
-    const { data: strengthsData } = await supabase
-      .from('strengths')
-      .select('*')
-      .order('display_order', { ascending: true });
-    audienceCards = strengthsData || [];
-
-    // 9. Clients / Partners
-    const { data: clientsData, error: clientsError } = await supabase
-      .from('clients')
-      .select('*')
-      .order('created_at', { ascending: true });
-    if (!clientsError && clientsData) {
-      clients = clientsData;
-    }
-  } catch (error) {
-    console.error('[HomePage] Supabase fetch warning:', error);
-  }
+  // All queries run in parallel; React cache() deduplicates any repeated calls.
+  const [
+    settings,
+    hero,
+    about,
+    allProcesses,
+    services,
+    editorialFeature,
+    projects,
+    audienceCards,
+    clients,
+  ] = await Promise.all([
+    getSiteSettings(),
+    getHeroContent(),
+    getAboutContent(),
+    getProcessCollections(),
+    getServices(),
+    getEditorialFeature(),
+    getFeaturedProjects(),
+    getStrengths(),
+    getClients(),
+  ]);
 
   // Identify specific process collections from Admin data
   const procurementProcess =
