@@ -53,6 +53,7 @@ export interface SiteSettings {
     phone_number?: string;
     section_images?: {
       about_section_image?: string;
+      about_mobile_section_image?: string;
       procurement_section_image?: string;
       role_section_image?: string;
       hero_mobile_background_image?: string;
@@ -84,6 +85,7 @@ export interface AboutContent {
   mission_text?: string | null;
   vision_text?: string | null;
   main_image_url?: string | null;
+  mobile_image_url?: string | null;
   secondary_image_url?: string | null;
   stats?: Array<{ label: string; value: string }> | null;
   updated_at?: string;

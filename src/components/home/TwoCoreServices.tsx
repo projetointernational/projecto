@@ -12,6 +12,7 @@ interface TwoCoreServicesProps {
   subtitle?: string;
   title?: string;
   imageUrl?: string | null;
+  mobileImageUrl?: string | null;
 }
 
 export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
@@ -19,6 +20,7 @@ export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
   subtitle = 'ABOUT PROJETO',
   title = 'One Project. One Coordinated Partner.',
   imageUrl,
+  mobileImageUrl,
 }) => {
   // Find the two core services: procurement & project-coordination (or take the first 2)
   const procurement =
@@ -130,25 +132,40 @@ export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
             </div>
           </div>
 
-          {/* RIGHT: Clean Vertical Image Area starting at Heading Level on Desktop, Compact on Mobile */}
-          <div className="lg:col-span-4 flex flex-col h-full">
+          {/* RIGHT: Clean Vertical Image Area starting at Heading Level on Desktop (Hidden on mobile) */}
+          <div className="hidden lg:flex lg:col-span-4 flex-col h-full">
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="relative w-full h-48 sm:h-56 lg:h-full min-h-[190px] sm:min-h-[220px] lg:min-h-full rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/20"
+              className="relative w-full h-full min-h-[280px] rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/20"
             >
               <Image
                 src={resolvedImage}
                 alt={title}
                 fill
-                sizes="(max-width: 1024px) 100vw, 35vw"
+                sizes="35vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 priority={false}
               />
             </motion.div>
           </div>
+
+          {/* Mobile Image: Only renders if dedicated mobileImageUrl exists; NEVER fallback to desktop image */}
+          {mobileImageUrl ? (
+            <div className="block lg:hidden w-full pt-4">
+              <div className="relative aspect-[16/9] w-full rounded-sm overflow-hidden bg-sand/20 border border-sand/80 shadow-2xs">
+                <Image
+                  src={mobileImageUrl}
+                  alt={title}
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

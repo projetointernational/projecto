@@ -82,78 +82,81 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
             </div>
           </div>
 
-          {/* Core Verticals & Capabilities */}
-          <div className="md:col-span-3 space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
-              Core Verticals
-            </h4>
-            <ul className="space-y-2.5 text-sm font-light">
-              <li>
-                <Link href="/services/procurement" className="text-off-white/80 hover:text-white transition-colors">
-                  01 — Procurement
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/project-coordination" className="text-off-white/80 hover:text-white transition-colors">
-                  02 — Project Coordination
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/materials-project-supplies" className="text-off-white/80 hover:text-white transition-colors">
-                  Materials & Supplies
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/for-architects-designers" className="text-off-white/80 hover:text-white transition-colors">
-                  For Architects & Designers
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/for-builders-contractors" className="text-off-white/80 hover:text-white transition-colors">
-                  For Builders & Contractors
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/how-we-work" className="text-off-white/80 hover:text-white transition-colors">
-                  How We Work
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {/* Navigation Links: 2-column grid on mobile, distributed on desktop */}
+          <div className="col-span-1 md:col-span-5 grid grid-cols-2 gap-6 sm:gap-8">
+            {/* Core Verticals & Capabilities */}
+            <div className="space-y-4">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
+                Core Verticals
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-sm font-light">
+                <li>
+                  <Link href="/services/procurement" className="text-off-white/80 hover:text-white transition-colors">
+                    01 — Procurement
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/project-coordination" className="text-off-white/80 hover:text-white transition-colors">
+                    02 — Project Coordination
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/materials-project-supplies" className="text-off-white/80 hover:text-white transition-colors">
+                    Materials & Supplies
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/for-architects-designers" className="text-off-white/80 hover:text-white transition-colors">
+                    For Architects & Designers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/for-builders-contractors" className="text-off-white/80 hover:text-white transition-colors">
+                    For Builders & Contractors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/how-we-work" className="text-off-white/80 hover:text-white transition-colors">
+                    How We Work
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-          {/* Quick Navigation */}
-          <div className="md:col-span-2 space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
-              Company
-            </h4>
-            <ul className="space-y-2.5 text-sm font-light">
-              <li>
-                <Link href="/" className="text-off-white/80 hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-off-white/80 hover:text-white transition-colors">
-                  About Projeto
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="text-off-white/80 hover:text-white transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/projects" className="text-off-white/80 hover:text-white transition-colors">
-                  Selected Projects
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-olive-light hover:text-warm-beige transition-colors flex items-center">
-                  <span>Discuss Project</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 ml-1" strokeWidth={1.5} />
-                </Link>
-              </li>
-            </ul>
+            {/* Quick Navigation / Company */}
+            <div className="space-y-4">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
+                Company
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-sm font-light">
+                <li>
+                  <Link href="/" className="text-off-white/80 hover:text-white transition-colors">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about" className="text-off-white/80 hover:text-white transition-colors">
+                    About Projeto
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services" className="text-off-white/80 hover:text-white transition-colors">
+                    Services
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/projects" className="text-off-white/80 hover:text-white transition-colors">
+                    Selected Projects
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="text-olive-light hover:text-warm-beige transition-colors flex items-center">
+                    <span>Discuss Project</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 ml-1" strokeWidth={1.5} />
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Contact Directives */}
