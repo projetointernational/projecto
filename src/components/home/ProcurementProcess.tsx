@@ -47,7 +47,7 @@ export const ProcurementProcess: React.FC<ProcurementProcessProps> = ({
         {/* Split Layout: Left Image (approx 45%), Right Content & 7 Steps (approx 55%) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-10 items-stretch">
           {/* LEFT COLUMN: Large Supporting Project / Procurement Image (approx 45%) */}
-          <div className="lg:col-span-5 flex flex-col order-1 lg:order-1">
+          <div className="lg:col-span-5 flex flex-col order-2 lg:order-1">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -78,7 +78,7 @@ export const ProcurementProcess: React.FC<ProcurementProcessProps> = ({
           </div>
 
           {/* RIGHT COLUMN: Heading, Description & 6 Process Steps (approx 55%) */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-8 order-2 lg:order-2">
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-8 order-1 lg:order-2">
             <div>
               {/* Header */}
               <div className="flex items-center space-x-2 mb-3">

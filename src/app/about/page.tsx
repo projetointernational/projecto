@@ -49,6 +49,31 @@ export default async function AboutPage() {
     about?.narrative ||
     'Projeto International supports construction, interior and related projects through procurement and project coordination.\n\nFrom sourcing verified quality materials to coordinating the right licensed professionals, contractors and execution teams, we act as your central project partner to ensure transparency, cost efficiency, and timely delivery.';
 
+  // Desktop Image: Only if desktop image exists
+  const desktopImageUrl =
+    about?.main_image_url && about.main_image_url.trim() !== ''
+      ? about.main_image_url.trim()
+      : settings?.navigation_labels?.section_images?.about_section_image &&
+        settings.navigation_labels.section_images.about_section_image.trim() !== ''
+      ? settings.navigation_labels.section_images.about_section_image.trim()
+      : null;
+
+  // Mobile Image: Strictly and exclusively from the dedicated mobile image field in Admin.
+  // NEVER fall back to desktopImageUrl or main_image_url!
+  const rawMobileImage =
+    settings?.navigation_labels?.section_images?.about_mobile_section_image &&
+    settings.navigation_labels.section_images.about_mobile_section_image.trim() !== ''
+      ? settings.navigation_labels.section_images.about_mobile_section_image.trim()
+      : about?.mobile_image_url && about.mobile_image_url.trim() !== ''
+      ? about.mobile_image_url.trim()
+      : null;
+
+  // Explicit check: mobile image only exists if rawMobileImage is provided AND does NOT match desktop image
+  const mobileImageUrl =
+    rawMobileImage && rawMobileImage !== desktopImageUrl
+      ? rawMobileImage
+      : null;
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar
@@ -61,30 +86,26 @@ export default async function AboutPage() {
       <main className="flex-1">
         {/* Story & Philosophy Section */}
         <section className="py-12 sm:py-20 bg-off-white border-b border-sand/60">
-          <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-12 sm:space-y-16">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-              {/* Left Column: Visual Imagery */}
-              <div className="lg:col-span-6">
-                {about?.main_image_url ? (
-                  <div className="relative aspect-[4/3] rounded-sm overflow-hidden bg-sand shadow-sm">
+          <MotionSection className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center">
+              {/* Desktop / Tablet Left Column: 4:5 Portrait Image, proportionally sized to match content height */}
+              {desktopImageUrl ? (
+                <div className="hidden md:flex md:col-span-5 items-center justify-center lg:justify-start">
+                  <div className="relative w-full max-w-[280px] sm:max-w-[310px] lg:max-w-[340px] xl:max-w-[360px] aspect-[4/5] rounded-sm overflow-hidden bg-sand shadow-sm border border-sand/60">
                     <Image
-                      src={about.main_image_url}
+                      src={desktopImageUrl}
                       alt={heading}
                       fill
                       priority
                       className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      sizes="(max-width: 1024px) 310px, 360px"
                     />
                   </div>
-                ) : (
-                  <div className="aspect-[4/3] rounded-sm bg-sand/40 flex items-center justify-center text-warm-grey text-xs tracking-wider">
-                    Projeto International
-                  </div>
-                )}
-              </div>
+                </div>
+              ) : null}
 
               {/* Right Column: Narrative & Positioning */}
-              <div className="lg:col-span-6 space-y-6">
+              <div className={`${desktopImageUrl ? 'md:col-span-7' : 'md:col-span-12 max-w-3xl'} space-y-6`}>
                 <div className="flex items-center space-x-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-olive" />
                   <span className="text-[11px] uppercase tracking-[0.22em] text-olive font-semibold">
@@ -99,18 +120,21 @@ export default async function AboutPage() {
                   {narrative}
                 </p>
 
-                {/* Secondary Image if present */}
-                {about?.secondary_image_url && (
-                  <div className="relative aspect-[16/9] rounded-sm overflow-hidden bg-sand mt-6 shadow-sm">
-                    <Image
-                      src={about.secondary_image_url}
-                      alt="Project Coordination & Procurement"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
+                {/* Mobile Only: 16:9 Landscape Image placed BELOW the complete content */}
+                {/* Renders ONLY if dedicated mobileImageUrl exists; NEVER falls back to desktop image */}
+                {mobileImageUrl ? (
+                  <div className="block md:hidden pt-4">
+                    <div className="relative aspect-[16/9] w-full rounded-sm overflow-hidden bg-sand shadow-sm border border-sand/60">
+                      <Image
+                        src={mobileImageUrl}
+                        alt={heading}
+                        fill
+                        className="object-cover"
+                        sizes="100vw"
+                      />
+                    </div>
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
 
