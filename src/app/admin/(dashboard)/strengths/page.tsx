@@ -33,6 +33,7 @@ export default function AdminStrengthsPage() {
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const [roleImageUrl, setRoleImageUrl] = useState<string>('');
+  const [roleMobileImageUrl, setRoleMobileImageUrl] = useState<string>('');
 
   const [currentStrength, setCurrentStrength] = useState<Partial<Strength>>({
     title: '',
@@ -51,14 +52,18 @@ export default function AdminStrengthsPage() {
       if (error) throw error;
       setStrengths(data || []);
 
-      // Load section supporting image
+      // Load section supporting images
       const { data: sData } = await supabase
         .from('site_settings')
         .select('navigation_labels')
         .single();
 
-      if (sData?.navigation_labels?.section_images?.role_section_image) {
-        setRoleImageUrl(sData.navigation_labels.section_images.role_section_image);
+      const sImgs = sData?.navigation_labels?.section_images;
+      if (sImgs?.role_section_image) {
+        setRoleImageUrl(sImgs.role_section_image);
+      }
+      if (sImgs?.role_mobile_section_image) {
+        setRoleMobileImageUrl(sImgs.role_mobile_section_image);
       }
     } catch (err) {
       console.error('Error fetching audience cards:', err);
@@ -86,8 +91,9 @@ export default function AdminStrengthsPage() {
     setIsEditing(true);
   };
 
-  const handleSaveSectionImage = async (newUrl?: string) => {
-    const urlToSave = newUrl !== undefined ? newUrl : roleImageUrl;
+  const handleSaveSectionImage = async (newDesktopUrl?: string, newMobileUrl?: string) => {
+    const desktopToSave = newDesktopUrl !== undefined ? newDesktopUrl : roleImageUrl;
+    const mobileToSave = newMobileUrl !== undefined ? newMobileUrl : roleMobileImageUrl;
     setSavingImage(true);
     setFeedback(null);
 
@@ -101,7 +107,8 @@ export default function AdminStrengthsPage() {
         const nav = sData.navigation_labels || {};
         nav.section_images = {
           ...(nav.section_images || {}),
-          role_section_image: urlToSave,
+          role_section_image: desktopToSave,
+          role_mobile_section_image: mobileToSave,
         };
         const { error } = await supabase
           .from('site_settings')
@@ -109,13 +116,14 @@ export default function AdminStrengthsPage() {
           .eq('id', sData.id);
 
         if (error) throw error;
-        setRoleImageUrl(urlToSave);
-        setFeedback({ type: 'success', message: 'Section supporting image successfully saved.' });
+        setRoleImageUrl(desktopToSave);
+        setRoleMobileImageUrl(mobileToSave);
+        setFeedback({ type: 'success', message: 'Section supporting images successfully saved.' });
       }
     } catch (err) {
       setFeedback({
         type: 'error',
-        message: err instanceof Error ? err.message : 'Failed to save section image.',
+        message: err instanceof Error ? err.message : 'Failed to save section images.',
       });
     } finally {
       setSavingImage(false);
@@ -215,15 +223,18 @@ export default function AdminStrengthsPage() {
         </div>
       )}
 
-      {/* Dedicated Section Supporting Image Control */}
-      <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-4">
+      {/* Dedicated Section Supporting Image Controls */}
+      <div className="bg-white p-6 sm:p-8 rounded-sm shadow-sm border border-sand/60 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-sand pb-4">
           <div>
+            <span className="text-[11px] uppercase tracking-[0.2em] text-olive font-semibold block mb-1">
+              BUILT AROUND YOUR ROLE IN THE PROJECT
+            </span>
             <h2 className="font-serif text-base sm:text-lg text-near-black">
-              Section Supporting Visual
+              Section Supporting Imagery
             </h2>
             <p className="text-[11px] text-warm-grey font-light">
-              This high-resolution image appears on the right side of the 4 cards in &quot;Built Around Your Role in the Project.&quot;
+              Manage independent visual assets for desktop (1:1 square) and mobile (16:9 landscape) viewports.
             </p>
           </div>
           <Button
@@ -233,20 +244,77 @@ export default function AdminStrengthsPage() {
             onClick={() => handleSaveSectionImage()}
             isLoading={savingImage}
           >
-            Save Section Image
+            Save Section Images
           </Button>
         </div>
 
-        <CloudinaryUploader
-          label='"Built Around Your Role in the Project." Right-Side Supporting Visual'
-          currentImageUrl={roleImageUrl}
-          onUploadSuccess={(url) => {
-            setRoleImageUrl(url);
-            handleSaveSectionImage(url);
-          }}
-          aspectRatio="video"
-          folder="audiences"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Desktop Supporting Image (Ratio 1:1 Square) */}
+          <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                  Desktop Supporting Image
+                </h3>
+                <span className="text-[11px] text-warm-grey font-mono">
+                  Ratio: 1:1 Square
+                </span>
+              </div>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                Desktop Viewport
+              </span>
+            </div>
+
+            <CloudinaryUploader
+              label=""
+              currentImageUrl={roleImageUrl}
+              onUploadSuccess={(url) => {
+                setRoleImageUrl(url);
+                handleSaveSectionImage(url, undefined);
+              }}
+              aspectRatio="square"
+              compact={true}
+              folder="audiences"
+            />
+
+            <div className="text-[11px] text-warm-grey leading-relaxed">
+              Recommended upload ratio: <strong className="text-near-black">1:1 (Square)</strong>. Appears on the right side of the 4 audience cards on desktop screens.
+            </div>
+          </div>
+
+          {/* Mobile Supporting Image (Ratio 16:9 Landscape) */}
+          <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                  Mobile Supporting Image
+                </h3>
+                <span className="text-[11px] text-warm-grey font-mono">
+                  Ratio: 16:9 Landscape
+                </span>
+              </div>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                Mobile Viewport
+              </span>
+            </div>
+
+            <CloudinaryUploader
+              label=""
+              currentImageUrl={roleMobileImageUrl}
+              onUploadSuccess={(url) => {
+                setRoleMobileImageUrl(url);
+                handleSaveSectionImage(undefined, url);
+              }}
+              aspectRatio="video"
+              compact={false}
+              folder="audiences"
+            />
+
+            <div className="text-[11px] text-warm-grey leading-relaxed">
+              Recommended upload ratio: <strong className="text-near-black">16:9 (Landscape)</strong>. Appears directly underneath the audience cards on mobile devices.
+            </div>
+          </div>
+        </div>
       </div>
 
       {isEditing ? (

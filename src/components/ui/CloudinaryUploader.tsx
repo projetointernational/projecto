@@ -9,7 +9,7 @@ interface CloudinaryUploaderProps {
   onUploadSuccess: (url: string) => void;
   folder?: string;
   label?: string;
-  aspectRatio?: 'video' | 'square' | 'wide' | 'portrait' | 'tall';
+  aspectRatio?: 'video' | 'square' | 'wide' | 'portrait' | 'tall' | 'classic' | 'standard';
   compact?: boolean;
 }
 
@@ -38,6 +38,8 @@ export const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
     wide: 'aspect-[21/9]',
     portrait: 'aspect-[4/5]',
     tall: 'aspect-[9/16]',
+    classic: 'aspect-[4/3]',
+    standard: 'aspect-[4/3]',
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

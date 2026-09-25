@@ -12,12 +12,14 @@ interface ProcurementProcessProps {
   processData?: ProcessContent | null;
   procurementService?: Service | null;
   imageUrl?: string | null;
+  mobileImageUrl?: string | null;
 }
 
 export const ProcurementProcess: React.FC<ProcurementProcessProps> = ({
   processData,
   procurementService,
   imageUrl,
+  mobileImageUrl,
 }) => {
   if (processData && processData.is_active === false) {
     return null;
@@ -39,41 +41,45 @@ export const ProcurementProcess: React.FC<ProcurementProcessProps> = ({
       ? procurementService!.features
       : [];
 
-  const resolvedImage = imageUrl || procurementService?.image_url || '';
+  const resolvedDesktopImage = imageUrl || procurementService?.image_url || '';
+  const resolvedMobileImage = mobileImageUrl || resolvedDesktopImage || '';
 
   return (
     <section className="py-16 sm:py-24 bg-off-white border-b border-sand/60 overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-12 sm:space-y-16">
         {/* Split Layout: Left Image (approx 45%), Right Content & 7 Steps (approx 55%) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-10 items-stretch">
-          {/* LEFT COLUMN: Large Supporting Project / Procurement Image (approx 45%) */}
+          {/* LEFT COLUMN: Large Supporting Project / Procurement Image (approx 45%) — 4:3 Desktop, 16:9 Mobile */}
           <div className="lg:col-span-5 flex flex-col order-2 lg:order-1">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative w-full h-[280px] sm:h-[360px] lg:h-full min-h-[340px] rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/30"
+              className="relative w-full aspect-[16/9] lg:aspect-auto lg:h-full min-h-[260px] sm:min-h-[340px] rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/30"
             >
-              {resolvedImage && (
+              {resolvedDesktopImage && (
                 <Image
-                  src={resolvedImage}
+                  src={resolvedDesktopImage}
                   alt={heading}
                   fill
                   sizes="(max-width: 1024px) 100vw, 45vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className={`${resolvedMobileImage && resolvedMobileImage !== resolvedDesktopImage ? 'hidden lg:block' : ''} object-cover transition-transform duration-700 group-hover:scale-105`}
+                  priority={false}
+                />
+              )}
+              {resolvedMobileImage && resolvedMobileImage !== resolvedDesktopImage && (
+                <Image
+                  src={resolvedMobileImage}
+                  alt={heading}
+                  fill
+                  sizes="100vw"
+                  className="block lg:hidden object-cover transition-transform duration-700 group-hover:scale-105"
                   priority={false}
                 />
               )}
               {/* Subtle architectural vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-near-black/60 via-transparent to-transparent opacity-80" />
-
-              {/* Top-Left Architectural Badge (Matches Reference Image 1) */}
-              <div className="absolute top-5 left-5 z-10 bg-near-black/85 backdrop-blur-xs px-3.5 py-2.5 rounded-xs border border-white/10 text-left">
-                <span className="block font-mono text-[10px] tracking-[0.25em] uppercase text-warm-beige leading-tight font-medium">
-                  PRECISION<br />IN EVERY<br />DETAIL
-                </span>
-              </div>
             </motion.div>
           </div>
 
