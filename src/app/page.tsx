@@ -142,6 +142,13 @@ export default async function HomePage() {
     settings?.navigation_labels?.section_images?.about_section_image ||
     null;
 
+  const sectionTwoMobileImage =
+    (settings?.navigation_labels?.section_images?.about_mobile_section_image &&
+     settings.navigation_labels.section_images.about_mobile_section_image.trim() !== '' &&
+     settings.navigation_labels.section_images.about_mobile_section_image.trim() !== sectionTwoImage)
+      ? settings.navigation_labels.section_images.about_mobile_section_image.trim()
+      : null;
+
   const sectionThreeImage =
     procurementService?.image_url ||
     settings?.navigation_labels?.section_images?.procurement_section_image ||
@@ -175,6 +182,7 @@ export default async function HomePage() {
             subtitle={about?.subtitle || "ABOUT PROJETO"}
             title={about?.title || "One Project. One Coordinated Partner."}
             imageUrl={sectionTwoImage}
+            mobileImageUrl={sectionTwoMobileImage}
           />
         )}
 

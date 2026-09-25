@@ -44,7 +44,7 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
 
   return (
     <section className="py-16 sm:py-24 bg-white border-b border-sand/80 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-8 lg:px-12">
         {/* Connected composition: Heading on top left, 4 cards in one horizontal row, and right image starting at heading level with card 4 overlapping */}
         <div className="relative">
           {/* Header */}
@@ -83,10 +83,12 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
             </div>
           )}
 
-          {/* 4 Cards Grid: Single Horizontal Row on Desktop (w-[78%] so Card 4 overlaps into the right image), 2-Col Grid on Mobile */}
-          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-3 xl:gap-4 lg:w-[78%] xl:w-[76%] items-stretch">
+          {/* 4 Cards Grid: 2 boxes in 1 row on mobile (grid-cols-2), 1 row of 4 boxes on desktop (lg:grid-cols-4 lg:w-[78%] overlapping background image with glass effect) */}
+          <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-3 xl:gap-4 auto-rows-fr lg:w-[78%] xl:w-[76%] items-stretch">
             {audienceCards.slice(0, 4).map((card, idx) => {
               const linkInfo = getCardLink(card.title);
+              const defaultIcons = ['Building2', 'Compass', 'HardHat', 'Layers'];
+              const iconName = card.icon_name || defaultIcons[idx % defaultIcons.length];
 
               return (
                 <motion.div
@@ -95,39 +97,41 @@ export const AudienceSection: React.FC<AudienceSectionProps> = ({
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: idx * 0.08 }}
-                  className="group relative flex flex-col justify-between p-5 sm:p-6 lg:p-4 xl:p-5 bg-[#FAF9F5]/80 backdrop-blur-md border border-sand/80 hover:border-olive/60 hover:bg-[#FAF9F5]/92 transition-all duration-300 shadow-2xs rounded-xs h-full"
+                  className="group relative flex flex-col justify-between h-full min-h-[235px] sm:min-h-[260px] lg:min-h-0 p-3.5 sm:p-5 lg:p-4 xl:p-5 bg-white lg:bg-[#FAF9F5]/85 lg:backdrop-blur-md border border-sand/80 hover:border-olive/60 lg:hover:bg-[#FAF9F5]/95 transition-all duration-300 shadow-2xs rounded-xs text-left"
                 >
-                  <div className="space-y-4">
-                    {/* Top Icon & Index */}
+                  <div className="space-y-2.5 sm:space-y-3.5 flex-1 flex flex-col">
+                    {/* Top Row: Left Icon, Right Number */}
                     <div className="flex items-center justify-between">
-                      <div className="w-8 h-8 rounded-full bg-[#EAE6DE]/80 text-near-black/75 flex items-center justify-center group-hover:bg-olive group-hover:text-white transition-colors duration-200">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#FAF9F5] border border-sand/80 flex items-center justify-center text-warm-grey shrink-0 group-hover:border-olive/40 transition-colors">
                         <IconResolver
-                          name={card.icon_name || 'Building2'}
-                          className="w-4 h-4"
+                          name={iconName}
+                          className="w-4 h-4 text-warm-grey"
                           strokeWidth={1.5}
                         />
                       </div>
-                      <span className="text-[11px] font-mono text-warm-grey font-medium">
+                      <span className="text-[11px] sm:text-xs font-mono text-warm-grey/60 font-medium">
                         0{idx + 1}
                       </span>
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-serif text-sm sm:text-base lg:text-[13px] xl:text-sm font-semibold uppercase tracking-wider text-near-black leading-snug">
-                      {card.title}
-                    </h3>
+                    <div className="min-h-[28px] sm:min-h-[36px] lg:min-h-0 flex items-start pt-1">
+                      <h3 className="font-sans font-bold text-xs sm:text-base text-near-black uppercase tracking-wider leading-snug">
+                        {card.title}
+                      </h3>
+                    </div>
 
                     {/* Description */}
-                    <p className="text-xs lg:text-[11px] xl:text-xs text-near-black/75 font-light leading-relaxed">
+                    <p className="text-[10.5px] sm:text-xs text-warm-grey font-light leading-relaxed flex-1">
                       {card.description}
                     </p>
                   </div>
 
                   {/* Divider Line & CTA Link */}
-                  <div className="pt-4 border-t border-sand/60 mt-5">
+                  <div className="pt-3 sm:pt-4 border-t border-sand/60 mt-auto">
                     <Link
                       href={linkInfo.href}
-                      className="inline-flex items-center space-x-1.5 text-xs font-semibold text-olive group-hover:text-near-black transition-colors uppercase tracking-wider"
+                      className="inline-flex items-center space-x-1.5 text-[11px] sm:text-xs font-semibold text-near-black group-hover:text-olive transition-colors uppercase tracking-wider"
                     >
                       <span>{linkInfo.label}</span>
                       <ArrowRight

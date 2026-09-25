@@ -108,7 +108,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
   };
 
   return (
-    <section className="relative h-[calc(100svh-68px)] sm:h-[calc(100dvh-76px)] min-h-[calc(100svh-68px)] sm:min-h-[calc(100dvh-76px)] flex items-end pb-8 sm:pb-14 pt-16 sm:pt-20 overflow-hidden bg-white">
+    <section className="relative h-[calc(100svh-68px)] sm:h-[calc(100dvh-76px)] min-h-[calc(100svh-68px)] sm:min-h-[calc(100dvh-76px)] flex items-end pb-6 sm:pb-14 pt-12 sm:pt-20 overflow-hidden bg-white">
       {/* Background Architectural Imagery (Desktop & Mobile Responsive) */}
       {mobileImageUrl ? (
         <div className="absolute inset-0 z-0">
@@ -118,7 +118,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
               alt="Hero Architectural Milestone Mobile"
               fill
               priority
-              className="object-cover object-center"
+              className="object-cover object-[65%_top]"
               sizes="100vw"
             />
           </div>
@@ -129,7 +129,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
                 alt="Hero Architectural Milestone"
                 fill
                 priority
-                className="object-cover object-top"
+                className="object-cover object-[center_bottom] lg:object-[82%_bottom] xl:object-[85%_bottom]"
                 sizes="100vw"
               />
             </div>
@@ -143,7 +143,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
               alt="Hero Architectural Milestone"
               fill
               priority
-              className="object-cover object-top"
+              className="object-cover object-[65%_top] sm:object-[center_bottom] lg:object-[82%_bottom] xl:object-[85%_bottom]"
               sizes="100vw"
             />
           </div>
@@ -155,27 +155,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full mb-32"
+        className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full mb-2 sm:mb-12 lg:mb-20 xl:mb-24"
       >
-        <div className="max-w-3xl space-y-3 sm:space-y-4">
+        <div className="max-w-3xl space-y-2.5 sm:space-y-4">
           {/* Eyebrow / Subheadline */}
           {content.subheadline && (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
               <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-olive" />
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.22em] sm:tracking-[0.25em] text-olive font-semibold">
+              <span className="text-[9px] sm:text-xs uppercase tracking-[0.22em] sm:tracking-[0.25em] text-olive font-semibold font-mono">
                 {content.subheadline}
               </span>
             </div>
           )}
 
           {/* Heading in Dark / Near-Black breaking into 2 lines */}
-          <h1 className="font-serif text-2xl sm:text-3xl lg:text-[52px] font-normal text-near-black leading-[1.18] sm:leading-[1.14] tracking-tight max-w-xl sm:max-w-2xl">
+          <h1 className="font-serif text-xl sm:text-3xl lg:text-[52px] font-normal text-near-black leading-[1.2] sm:leading-[1.14] tracking-tight max-w-xl sm:max-w-2xl">
             {formatHeadline(content.headline)}
           </h1>
 
           {/* Intro Paragraph in Near-Black */}
           {content.intro_text && (
-            <p className="text-xs sm:text-[13px] lg:text-sm text-near-black/75 font-light max-w-lg sm:max-w-xl leading-relaxed pt-0.5">
+            <p className="text-xs sm:text-[13px] lg:text-sm text-near-black/80 font-light max-w-lg sm:max-w-xl leading-relaxed pt-0.5">
               {content.intro_text}
             </p>
           )}
@@ -186,7 +186,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
               href={content.cta_primary_link || '/contact'}
               variant="olive"
               size="lg"
-              className="text-xs sm:text-sm py-3 sm:py-3.5 px-6 sm:px-8"
+              className="text-xs sm:text-sm py-3 sm:py-3.5 px-6 sm:px-8 w-full sm:w-auto justify-center"
               icon={<ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />}
             >
               {content.cta_primary_text || 'DISCUSS YOUR PROJECT'}
@@ -196,7 +196,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
               href={content.cta_secondary_link || '/services/procurement'}
               variant="outline"
               size="lg"
-              className="text-xs sm:text-sm py-3 sm:py-3.5 px-6 sm:px-8 text-near-black border-near-black/40 hover:bg-near-black hover:!text-white hover:border-near-black bg-white/90 shadow-2xs"
+              className="text-xs sm:text-sm py-3 sm:py-3.5 px-6 sm:px-8 text-near-black border-near-black/40 hover:bg-near-black hover:!text-white hover:border-near-black bg-white/90 shadow-2xs w-full sm:w-auto justify-center"
               icon={<ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />}
             >
               {content.cta_secondary_text || 'REQUEST PROCUREMENT SUPPORT'}

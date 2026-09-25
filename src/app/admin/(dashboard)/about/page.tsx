@@ -21,6 +21,7 @@ export default function AdminAboutPage() {
     mission_text: 'To execute every architectural blueprint with absolute structural precision, uncompromised material honesty, and responsible stewardship of the built environment.',
     vision_text: 'To remain the preeminent construction partner for complex, design-forward architectural projects globally.',
     main_image_url: '',
+    mobile_image_url: '',
     secondary_image_url: '',
     stats: [
       { label: 'Years in Practice', value: '24+' },
@@ -40,8 +41,25 @@ export default function AdminAboutPage() {
           .maybeSingle();
 
         if (error) throw error;
+
+        let mobileImg = '';
+        try {
+          const { data: sData } = await supabase
+            .from('site_settings')
+            .select('navigation_labels')
+            .limit(1)
+            .maybeSingle();
+          mobileImg = sData?.navigation_labels?.section_images?.about_mobile_section_image || '';
+        } catch (sErr) {
+          console.warn('Could not fetch mobile image from site_settings:', sErr);
+        }
+
         if (data) {
-          setAbout(data);
+          setAbout({
+            ...data,
+            mobile_image_url: mobileImg || '',
+            secondary_image_url: null,
+          });
         }
       } catch (err) {
         console.error('Error fetching about:', err);
@@ -78,11 +96,14 @@ export default function AdminAboutPage() {
     setFeedback(null);
 
     try {
+      const { mobile_image_url, ...aboutDbPayload } = about;
+
       if (about.id) {
         const { error } = await supabase
           .from('about_content')
           .update({
-            ...about,
+            ...aboutDbPayload,
+            secondary_image_url: null,
             updated_at: new Date().toISOString(),
           })
           .eq('id', about.id);
@@ -91,15 +112,20 @@ export default function AdminAboutPage() {
       } else {
         const { data, error } = await supabase
           .from('about_content')
-          .insert([about])
+          .insert([
+            {
+              ...aboutDbPayload,
+              secondary_image_url: null,
+            },
+          ])
           .select()
           .single();
 
         if (error) throw error;
-        if (data) setAbout(data);
+        if (data) setAbout((prev) => ({ ...prev, ...data, mobile_image_url }));
       }
 
-      // Sync section image to site_settings for instant global access
+      // Sync section images to site_settings for instant global access
       try {
         const { data: sData } = await supabase.from('site_settings').select('id, navigation_labels').single();
         if (sData) {
@@ -107,6 +133,7 @@ export default function AdminAboutPage() {
           nav.section_images = {
             ...(nav.section_images || {}),
             about_section_image: about.main_image_url || '',
+            about_mobile_section_image: mobile_image_url || '',
           };
           await supabase.from('site_settings').update({ navigation_labels: nav }).eq('id', sData.id);
         }
@@ -114,7 +141,7 @@ export default function AdminAboutPage() {
         console.warn('Sync warning:', syncErr);
       }
 
-      setFeedback({ type: 'success', message: 'About content and section supporting image successfully saved.' });
+      setFeedback({ type: 'success', message: 'About content and visual assets successfully saved.' });
     } catch (err) {
       setFeedback({
         type: 'error',
@@ -214,22 +241,80 @@ export default function AdminAboutPage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-sand space-y-3">
-            <CloudinaryUploader
-              label='"One Project. One Coordinated Partner." Section Supporting Visual (Recommended Ratio: 4:5 Portrait)'
-              currentImageUrl={about.main_image_url}
-              onUploadSuccess={(url) => setAbout({ ...about, main_image_url: url })}
-              aspectRatio="portrait"
-              compact={true}
-              folder="about"
-            />
-            <div className="p-3 bg-sand/30 rounded-xs text-[11px] text-near-black/80 space-y-1 max-w-md">
-              <p className="font-medium text-near-black">
-                Recommended upload ratio: <strong>4:5 (portrait)</strong>
+          {/* Independent Desktop & Mobile Image Controls */}
+          <div className="pt-6 border-t border-sand space-y-6">
+            <div>
+              <span className="text-[11px] uppercase tracking-[0.2em] text-olive font-semibold block mb-1">
+                ABOUT PROJETO
+              </span>
+              <h3 className="font-serif text-lg text-near-black font-normal">
+                &ldquo;One Project. One Coordinated Partner.&rdquo; Section Imagery
+              </h3>
+              <p className="text-xs text-warm-grey font-light mt-0.5">
+                Manage independent visual assets for desktop and mobile viewports.
               </p>
-              <p className="text-warm-grey">
-                This image appears on the right side of the &quot;One Project. One Coordinated Partner.&quot; section on the homepage, spanning from the heading level down to the bottom of the two content cards.
-              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Desktop Image (4:5 Portrait) */}
+              <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                      Desktop Image
+                    </h4>
+                    <span className="text-[11px] text-warm-grey font-mono">
+                      Ratio: 4:5 Portrait
+                    </span>
+                  </div>
+                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                    Desktop / Tablet
+                  </span>
+                </div>
+
+                <CloudinaryUploader
+                  label="Upload Desktop Image"
+                  currentImageUrl={about.main_image_url}
+                  onUploadSuccess={(url) => setAbout((prev) => ({ ...prev, main_image_url: url }))}
+                  aspectRatio="portrait"
+                  compact={true}
+                  folder="about"
+                />
+
+                <div className="text-[11px] text-warm-grey leading-relaxed">
+                  Recommended upload ratio: <strong className="text-near-black">4:5 (portrait)</strong>. Displayed on the left side of the About section on desktop and tablet devices.
+                </div>
+              </div>
+
+              {/* Mobile Image (16:9 Landscape) */}
+              <div className="p-5 bg-sand/20 rounded-sm border border-sand/70 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs uppercase tracking-wider text-near-black font-semibold">
+                      Mobile Image
+                    </h4>
+                    <span className="text-[11px] text-warm-grey font-mono">
+                      Ratio: 16:9 Landscape
+                    </span>
+                  </div>
+                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-sand/60 text-near-black/70 rounded-xs">
+                    Mobile Viewport
+                  </span>
+                </div>
+
+                <CloudinaryUploader
+                  label="Upload Mobile Image"
+                  currentImageUrl={about.mobile_image_url}
+                  onUploadSuccess={(url) => setAbout((prev) => ({ ...prev, mobile_image_url: url }))}
+                  aspectRatio="video"
+                  compact={true}
+                  folder="about"
+                />
+
+                <div className="text-[11px] text-warm-grey leading-relaxed">
+                  Recommended upload ratio: <strong className="text-near-black">16:9 (landscape)</strong>. Displayed directly beneath the narrative on mobile screens.
+                </div>
+              </div>
             </div>
           </div>
 

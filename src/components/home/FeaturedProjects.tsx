@@ -51,9 +51,9 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
           </Link>
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-          {projects.map((project) => (
+        {/* Projects Grid: 3 in 1 row on mobile, standard grid on desktop */}
+        <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-8 lg:gap-10">
+          {projects.slice(0, 6).map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>

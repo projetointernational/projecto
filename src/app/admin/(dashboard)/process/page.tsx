@@ -186,11 +186,13 @@ export default function AdminProcessPage() {
         if (data) setActiveProcess(data);
       }
 
-      // If active process is Procurement, save section supporting image
-      if (
-        activeProcess.subtitle?.toUpperCase() === 'PROCUREMENT' ||
-        activeProcess.title?.toLowerCase().includes('requirement')
-      ) {
+      // Save section supporting image ONLY if active process is strictly the Procurement section (never Project Workflow)
+      const subUpper = (activeProcess.subtitle || '').trim().toUpperCase();
+      const ttlLower = (activeProcess.title || '').trim().toLowerCase();
+      const isWorkflow = subUpper === 'PROJECT WORKFLOW' || ttlLower.includes('completion');
+      const isProcurement = !isWorkflow && (subUpper === 'PROCUREMENT' || ttlLower.includes('delivery'));
+
+      if (isProcurement) {
         try {
           await supabase
             .from('services')
@@ -228,6 +230,10 @@ export default function AdminProcessPage() {
   if (loading) return <LoadingSpinner text="Loading Process Workflows..." />;
 
   const stepsList = activeProcess.steps || [];
+  const subtitleUpper = (activeProcess.subtitle || '').trim().toUpperCase();
+  const titleLower = (activeProcess.title || '').trim().toLowerCase();
+  const isProjectWorkflow = subtitleUpper === 'PROJECT WORKFLOW' || titleLower.includes('completion');
+  const isProcurementProcess = !isProjectWorkflow && (subtitleUpper === 'PROCUREMENT' || titleLower.includes('delivery'));
 
   return (
     <div className="space-y-8 max-w-4xl">
@@ -346,9 +352,8 @@ export default function AdminProcessPage() {
             />
           </div>
 
-          {/* Section Supporting Image Control for Procurement Workflow */}
-          {(activeProcess.subtitle?.toUpperCase() === 'PROCUREMENT' ||
-            activeProcess.title?.toLowerCase().includes('requirement')) && (
+          {/* Section Supporting Image Control for Procurement Workflow ONLY (Completely excluded for Project Workflow) */}
+          {isProcurementProcess && (
             <div className="pt-4 border-t border-sand space-y-2">
               <CloudinaryUploader
                 label='"From Requirement to Delivery. Coordinated." Section Supporting Image'
@@ -358,7 +363,7 @@ export default function AdminProcessPage() {
                 folder="procurement"
               />
               <p className="text-[11px] text-warm-grey">
-                This image occupies approximately 45% of the split layout beside the 6 process steps on the homepage.
+                This image occupies approximately 45% of the split layout beside the process steps in the Procurement section.
               </p>
             </div>
           )}
