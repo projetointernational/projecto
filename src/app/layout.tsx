@@ -21,7 +21,8 @@ const montserrat = Montserrat({
   subsets: ['latin'],
   variable: '--font-montserrat',
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
+  // Only load weights actually used in the UI (removed 300 — not measurably different from 400 at small sizes)
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -45,6 +46,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Preconnect to Cloudinary CDN — eliminates DNS + TLS setup on first image request */}
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        {/* Preconnect to Supabase — eliminates connection overhead on first API call */}
+        {process.env.NEXT_PUBLIC_SUPABASE_URL && (
+          <>
+            <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+            <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+          </>
+        )}
+      </head>
       <body
         className="min-h-screen bg-off-white text-near-black antialiased flex flex-col font-sans selection:bg-olive selection:text-white"
         suppressHydrationWarning

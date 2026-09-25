@@ -53,9 +53,8 @@ export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
     },
   ];
 
-  const resolvedImage =
-    imageUrl ||
-    'https://res.cloudinary.com/qnlgrbhb/image/upload/v1788763067/projecto/about/dtc7ot9bkiy1bczrm9mm.png';
+  // No hardcoded fallback: image only renders when CMS has one set
+  const resolvedImage = imageUrl || null;
 
   return (
     <section className="py-16 sm:py-24 bg-white border-b border-sand/60">
@@ -134,22 +133,24 @@ export const TwoCoreServices: React.FC<TwoCoreServicesProps> = ({
 
           {/* RIGHT: Clean Vertical Image Area starting at Heading Level on Desktop (Hidden on mobile) */}
           <div className="hidden lg:flex lg:col-span-4 flex-col h-full">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="relative w-full h-full min-h-[280px] rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/20"
-            >
-              <Image
-                src={resolvedImage}
-                alt={title}
-                fill
-                sizes="35vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                priority={false}
-              />
-            </motion.div>
+            {resolvedImage ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="relative w-full h-full min-h-[280px] rounded-sm overflow-hidden border border-sand/80 shadow-2xs group bg-sand/20"
+              >
+                <Image
+                  src={resolvedImage}
+                  alt={title}
+                  fill
+                  sizes="(max-width: 1280px) 33vw, 25vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </motion.div>
+            ) : null}
           </div>
 
           {/* Mobile Image: Only renders if dedicated mobileImageUrl exists; NEVER fallback to desktop image */}

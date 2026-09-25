@@ -70,6 +70,7 @@ export const ClientsSection: React.FC<ClientsSectionProps> = ({ clients }) => {
                   alt="Client Logo"
                   width={160}
                   height={64}
+                  loading="lazy"
                   className="max-h-12 sm:max-h-14 w-auto object-contain transition-all duration-300 opacity-90 group-hover:opacity-100 group-hover:scale-105"
                 />
               </div>

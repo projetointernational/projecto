@@ -1,4 +1,4 @@
-import { createPublicServerClient } from '@/lib/supabase/server';
+import { getSiteSettings, getServices } from '@/lib/supabase/queries';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -7,33 +7,14 @@ import { EnquiryCta } from '@/components/home/EnquiryCta';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { MotionSection } from '@/components/ui/MotionSection';
 import { Wrench } from 'lucide-react';
-import { SiteSettings, Service } from '@/lib/supabase/types';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function ServicesPage() {
-  let settings: SiteSettings | null = null;
-  let services: Service[] = [];
-
-  try {
-    const supabase = createPublicServerClient();
-
-    const { data: settingsData } = await supabase
-      .from('site_settings')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-    settings = settingsData;
-
-    const { data: servicesData } = await supabase
-      .from('services')
-      .select('*')
-      .order('display_order', { ascending: true });
-    services = servicesData || [];
-  } catch (err) {
-    console.error('[ServicesPage] Error fetching services:', err);
-  }
+  const [settings, services] = await Promise.all([
+    getSiteSettings(),
+    getServices(),
+  ]);
 
   return (
     <div className="flex flex-col min-h-screen">
