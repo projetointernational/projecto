@@ -20,8 +20,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
           <span className="text-xs uppercase tracking-[0.2em] text-olive font-semibold">
             PROJETO INTERNATIONAL
           </span>
-          <h1 className="font-serif text-3xl sm:text-4xl text-near-black font-normal">
-            Procurement &amp; Project<br />Coordination, <span className="text-olive">Simplified.</span>
+          <h1 className="font-serif text-3xl sm:text-4xl text-near-black font-medium">
+            Procurement &amp; Project<br />Coordination, Simplified.
           </h1>
           <p className="text-sm text-near-black/80 font-light">
             From sourcing the right materials to coordinating the right people, we help you keep your project on track with efficiency and transparency.
@@ -36,7 +36,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
     );
   }
 
-  // Dynamic headline formatter: splits into balanced lines and highlights accent words or the final punchline word
+  // Dynamic headline formatter: splits into balanced lines and renders cleanly in black
   const formatHeadline = (headline: string) => {
     if (!headline) return null;
 
@@ -62,47 +62,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
       }
     }
 
-    // 2. Format words: highlight explicit accents (*word* or [word]), "simplified", or the last word of the headline
+    // 2. Render all lines in uniform headline color (near-black) without hardcoding any word to green
     return (
       <>
-        {lines.map((line, lineIdx) => {
-          const isLastLine = lineIdx === lines.length - 1;
-          const words = line.split(/\s+/);
-
-          return (
-            <span key={lineIdx} className="block">
-              {words.map((word, wordIdx) => {
-                const isLastWordOfHeadline = isLastLine && wordIdx === words.length - 1;
-                const hasExplicitAccent =
-                  (word.startsWith('*') && word.endsWith('*') && word.length > 2) ||
-                  (word.startsWith('[') && word.endsWith(']') && word.length > 2);
-                const isSimplified =
-                  word.toLowerCase().replace(/[^a-z]/g, '') === 'simplified';
-
-                let cleanWord = word;
-                if (hasExplicitAccent) {
-                  cleanWord = word.slice(1, -1);
-                }
-
-                if (isLastWordOfHeadline || hasExplicitAccent || isSimplified) {
-                  return (
-                    <React.Fragment key={wordIdx}>
-                      <span className="text-olive">{cleanWord}</span>
-                      {wordIdx < words.length - 1 ? ' ' : ''}
-                    </React.Fragment>
-                  );
-                }
-
-                return (
-                  <React.Fragment key={wordIdx}>
-                    {cleanWord}
-                    {wordIdx < words.length - 1 ? ' ' : ''}
-                  </React.Fragment>
-                );
-              })}
-            </span>
-          );
-        })}
+        {lines.map((line, lineIdx) => (
+          <span key={lineIdx} className="block">
+            {line.replace(/\*([^*]+)\*/g, '$1').replace(/\[([^\]]+)\]/g, '$1')}
+          </span>
+        ))}
       </>
     );
   };
@@ -169,7 +136,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ content, mobileImageUr
           )}
 
           {/* Heading in Dark / Near-Black breaking into 2 lines */}
-          <h1 className="font-serif text-xl sm:text-3xl lg:text-[52px] font-normal text-near-black leading-[1.2] sm:leading-[1.14] tracking-tight max-w-xl sm:max-w-2xl">
+          <h1 className="font-serif text-xl sm:text-3xl lg:text-[52px] font-medium text-near-black leading-[1.2] sm:leading-[1.14] tracking-tight max-w-xl sm:max-w-2xl">
             {formatHeadline(content.headline)}
           </h1>
 
