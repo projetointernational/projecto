@@ -146,23 +146,25 @@ export default async function HomePage() {
           />
         )}
 
-        {/* Section 03: Procurement Process (Split Layout with Supporting Image & 6 Steps + Support Scope) */}
+        {/* Section 03: Procurement Process (Split Layout with Supporting Image & Support Scope - Steps hidden on homepage) */}
         {procurementProcess && (
           <ProcurementProcess
             processData={procurementProcess}
             procurementService={procurementService}
             imageUrl={sectionThreeImage}
             mobileImageUrl={sectionThreeMobileImage}
+            showSteps={false}
           />
         )}
 
-        {/* Section 04: Project Coordination Ecosystem & Coordination Support */}
+        {/* Section 04: Project Coordination Ecosystem (Coordination Support section hidden on homepage) */}
         <CoordinationSection
           coordinationService={coordinationService}
           coordinationSupport={coordinationSupport}
           feature={editorialFeature}
           desktopBackgroundImage={coordinationDesktopImage}
           mobileBackgroundImage={coordinationMobileImage}
+          showSupportSection={false}
         />
 
         {/* Section 05: Core Project Workflow (7 Stages + Supporting Note) */}

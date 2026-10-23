@@ -13,6 +13,7 @@ interface CoordinationSectionProps {
   feature?: EditorialFeature | null;
   desktopBackgroundImage?: string | null;
   mobileBackgroundImage?: string | null;
+  showSupportSection?: boolean;
 }
 
 export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
@@ -21,6 +22,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
   feature,
   desktopBackgroundImage,
   mobileBackgroundImage,
+  showSupportSection = true,
 }) => {
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
 
@@ -71,7 +73,11 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
     <section className="py-20 sm:py-18 bg-white border-b border-sand/80 overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         {/* PART 1: Project Coordination Ecosystem */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-24 sm:mb-32">
+        <div
+          className={`grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start ${
+            showSupportSection ? 'mb-24 sm:mb-32' : 'mb-0'
+          }`}
+        >
           {/* Left Column: Narrative */}
           <div className="lg:col-span-5 space-y-6">
             <div className="flex items-center space-x-2.5">
@@ -238,7 +244,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
         </div>
 
         {/* PART 2: Coordination Support Cards Grid (Clean 3-col on Desktop, 2-col on Mobile) */}
-        {milestones.length > 0 && (
+        {showSupportSection && milestones.length > 0 && (
           <div>
             <div className="max-w-3xl mb-8 sm:mb-12">
               <div className="flex items-center space-x-2.5 mb-3">

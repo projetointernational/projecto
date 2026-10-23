@@ -166,27 +166,47 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 )}
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-7 gap-3">
-                {procurementProcess.steps?.map((step: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className="p-3.5 sm:p-5 bg-white rounded-sm border border-sand/70 shadow-sm flex flex-col justify-between"
-                  >
-                    <div>
-                      <span className="text-[10px] font-mono text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block mb-2 sm:mb-3">
-                        0{idx + 1}
-                      </span>
-                      <h4 className="font-serif text-xs font-semibold uppercase tracking-wider text-near-black mb-1.5 sm:mb-2 break-normal">
-                        {step.title}
-                      </h4>
+              <div className="grid grid-cols-2 lg:grid-cols-7 gap-3 sm:gap-3.5">
+                {procurementProcess.steps?.map((step: any, idx: number) => {
+                  const isLastOdd =
+                    idx === 6 ||
+                    (idx === (procurementProcess.steps?.length || 0) - 1 &&
+                      (procurementProcess.steps?.length || 0) % 2 !== 0);
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-3.5 sm:p-4 bg-white rounded-sm border border-sand/70 shadow-2xs flex flex-col justify-between hover:border-olive/60 hover:bg-[#FAF9F5] transition-colors ${
+                        isLastOdd ? 'col-span-2 lg:col-span-1' : 'col-span-1'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-2.5">
+                          <span className="text-[10px] font-mono text-warm-beige bg-near-black px-2 py-0.5 rounded-sm inline-block">
+                            0{idx + 1}
+                          </span>
+                          {step.icon_name && (
+                            <div className="w-6 h-6 rounded-full bg-sand/30 text-olive flex items-center justify-center">
+                              <IconResolver
+                                name={step.icon_name}
+                                className="w-3.5 h-3.5"
+                                strokeWidth={1.5}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <h4 className="font-sans text-xs font-semibold uppercase tracking-wider text-near-black mb-1.5 break-normal">
+                          {step.title}
+                        </h4>
+                      </div>
+                      {step.description && (
+                        <p className="text-[10.5px] sm:text-[11px] text-warm-grey font-light pt-2 mt-1 border-t border-sand/40 break-normal">
+                          {step.description}
+                        </p>
+                      )}
                     </div>
-                    {step.description && (
-                      <p className="text-[10.5px] sm:text-[11px] text-warm-grey font-light pt-2 border-t border-sand/40 break-normal">
-                        {step.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </MotionSection>
           </section>
