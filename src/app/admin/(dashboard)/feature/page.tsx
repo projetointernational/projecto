@@ -8,6 +8,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EditorialFeature } from '@/lib/supabase/types';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { Check, AlertCircle, Plus, Trash2, Eye, Monitor, Smartphone } from 'lucide-react';
+import { CoordinationWheel } from '@/components/home/CoordinationWheel';
 
 export default function AdminEditorialFeaturePage() {
   const supabase = createClient();
@@ -498,65 +499,24 @@ export default function AdminEditorialFeaturePage() {
                 </div>
               ) : null}
 
-              {/* Concentric rings */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 z-0">
-                <div className="w-[300px] h-[300px] rounded-full border border-sand-dark/50" />
-                <div className="absolute w-[200px] h-[200px] rounded-full border border-sand-dark/40" />
-                <div className="absolute w-[100px] h-[100px] rounded-full border border-sand-dark/30" />
-              </div>
 
-              {/* Central PROJETO Hub */}
-              <div className="relative z-10 flex flex-col items-center justify-center mb-6">
-                <div className="inline-flex items-center space-x-2 px-5 py-2 bg-[#171717] rounded-full text-warm-beige shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-olive animate-pulse" />
-                  <span className="font-mono text-xs font-semibold tracking-[0.25em] text-warm-beige">
-                    PROJETO
-                  </span>
-                </div>
-                <p className="text-[10px] uppercase font-mono tracking-[0.2em] text-near-black/80 font-medium mt-2">
-                  CENTRAL COORDINATION CORE
-                </p>
-              </div>
+              {/* Central Coordination Wheel Chart (Image 2 Design) */}
+              <div className="relative z-10 w-full flex flex-col items-center justify-center">
+                <CoordinationWheel customHighlights={feature.highlights} />
 
-              {/* Disciplines */}
-              <div
-                className={`relative z-10 grid gap-2.5 ${
-                  previewDevice === 'desktop' ? 'grid-cols-2' : 'grid-cols-1'
-                }`}
-              >
-                {(feature.highlights && feature.highlights.length > 0
-                  ? feature.highlights
-                  : [
-                      'ARCHITECTS',
-                      'STRUCTURAL / CIVIL ENGINEERS',
-                      'INTERIOR DESIGNERS',
-                      'MEP CONSULTANTS',
-                      'VAASTHU CONSULTANTS WHERE REQUIRED',
-                      'MAIN & SPECIALIST CONTRACTORS',
-                      'MATERIAL SUPPLIERS & VENDORS',
-                      'CIVIL CONSTRUCTION TEAMS',
-                      'INTERIOR & FINISHING TEAMS',
-                      'ELECTRICAL & PLUMBING TEAMS',
-                      'LANDSCAPING TEAMS',
-                      'SPECIALIST PROJECT RESOURCES',
-                    ]
-                ).map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center space-x-2.5 px-3 py-2 rounded-sm border bg-white/90 backdrop-blur-xs text-near-black border-sand/80 shadow-2xs"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-olive" />
-                    <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider leading-snug break-words">
-                      {item}
+                {/* Bottom metadata */}
+                <div className="w-full pt-4 mt-3 flex items-center justify-between text-[10px] sm:text-[11px] text-near-black/75 font-mono">
+                  <div className="flex items-center space-x-2 flex-1">
+                    <span className="shrink-0 font-medium">
+                      {feature.highlights && feature.highlights.length > 0 ? `${feature.highlights.length} Project Disciplines` : '12 Project Disciplines'}
                     </span>
+                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[80px]" />
                   </div>
-                ))}
-              </div>
-
-              {/* Bottom metadata */}
-              <div className="relative z-10 pt-4 mt-5 border-t border-sand/70 flex items-center justify-between text-[10px] text-near-black/75 font-mono">
-                <span>{feature.highlights && feature.highlights.length > 0 ? `${feature.highlights.length} Project Disciplines` : '12 Project Disciplines'}</span>
-                <span>Single Coordinated Point of Contact</span>
+                  <div className="flex items-center justify-end space-x-2 flex-1">
+                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[80px]" />
+                    <span className="shrink-0 text-right font-medium">Single Coordinated Point of Contact</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

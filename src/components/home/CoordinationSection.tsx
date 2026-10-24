@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Hexagon } from 'lucide-react';
 import { ProcessContent, Service, EditorialFeature } from '@/lib/supabase/types';
 import { motion } from 'framer-motion';
+import { CoordinationWheel } from './CoordinationWheel';
 
 interface CoordinationSectionProps {
   coordinationService?: Service | null;
@@ -24,8 +25,6 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
   mobileBackgroundImage,
   showSupportSection = true,
 }) => {
-  const [hoveredNode, setHoveredNode] = useState<number | null>(null);
-
   const eyebrow = feature?.subtitle || 'PROJECT COORDINATION';
   const heading =
     feature?.title || 'The Right People. The Right Resources. One Coordinated Process.';
@@ -54,10 +53,6 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
     Array.isArray(feature?.highlights) && feature!.highlights.length > 0
       ? feature!.highlights
       : [];
-
-  const mid = Math.ceil(highlightsList.length / 2);
-  const leftColumnNodes = highlightsList.slice(0, mid);
-  const rightColumnNodes = highlightsList.slice(mid);
 
   // Coordination milestones — all from DB (coordinationSupport.steps)
   const supportEyebrow = coordinationSupport?.subtitle || 'COORDINATION SUPPORT';
@@ -116,7 +111,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
 
           {/* Right Column: Visual Coordination Ecosystem (Central Coordination Core) */}
           <div className="lg:col-span-7">
-            <div className="relative w-full rounded-sm bg-off-white/40 border border-sand/80 p-6 sm:p-8 lg:p-10 shadow-2xs overflow-hidden">
+            <div className="relative w-full rounded-sm bg-off-white/40 border border-sand/80 p-3.5 sm:p-5 lg:p-6 shadow-2xs overflow-hidden">
               {/* Desktop/Tablet Background Image Layer */}
               {desktopBg && (
                 <div className="hidden md:block absolute inset-0 pointer-events-none z-0">
@@ -149,95 +144,25 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
                 </div>
               )}
 
-              {/* Subtle background radar/grid concentric rings */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 z-0">
-                <div className="w-[360px] h-[360px] rounded-full border border-sand-dark/50" />
-                <div className="absolute w-[240px] h-[240px] rounded-full border border-sand-dark/40" />
-                <div className="absolute w-[120px] h-[120px] rounded-full border border-sand-dark/30" />
-                <div className="absolute w-full h-[1px] bg-sand/60" />
-                <div className="absolute h-full w-[1px] bg-sand/60" />
-              </div>
+              {/* Central Coordination Wheel Chart (Image 2 Design) */}
+              <div className="relative z-10 w-full flex flex-col items-center justify-center">
+                <CoordinationWheel customHighlights={highlightsList} />
 
-              {/* Central PROJETO Hub (Top Center of diagram) */}
-              <div className="relative z-10 flex flex-col items-center justify-center mb-8">
-                <div className="inline-flex items-center space-x-2 px-6 py-2.5 bg-[#171717] rounded-full text-warm-beige shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-olive animate-pulse" />
-                  <span className="font-mono text-xs sm:text-sm font-semibold tracking-[0.25em] text-warm-beige">
-                    PROJETO
-                  </span>
+                {/* Bottom Line: Project Disciplines & Single Coordinated Point */}
+                <div className="w-full pt-3 mt-1.5 flex items-center justify-between text-xs sm:text-[13px] text-near-black/80 font-mono">
+                  <div className="flex items-center space-x-3 flex-1">
+                    <span className="shrink-0 font-medium">
+                      {highlightsList.length > 0 ? `${highlightsList.length} Project Disciplines` : '12 Project Disciplines'}
+                    </span>
+                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[140px]" />
+                  </div>
+                  <div className="flex items-center justify-end space-x-3 flex-1">
+                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[140px]" />
+                    <span className="shrink-0 text-right font-medium">
+                      Single Coordinated Point of Contact
+                    </span>
+                  </div>
                 </div>
-                <p className="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.2em] text-near-black/80 font-medium mt-2">
-                  CENTRAL COORDINATION CORE
-                </p>
-              </div>
-
-              {/* 12 Disciplines in 2 columns of 6 on Desktop/Tablet, 1 column on Mobile */}
-              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                {/* Left Column of 6 */}
-                <div className="space-y-2.5 sm:space-y-3">
-                  {leftColumnNodes.map((item, idx) => {
-                    const nodeIndex = idx;
-                    const isHovered = hoveredNode === nodeIndex;
-
-                    return (
-                      <div
-                        key={idx}
-                        onMouseEnter={() => setHoveredNode(nodeIndex)}
-                        onMouseLeave={() => setHoveredNode(null)}
-                        className={`flex items-center space-x-2.5 px-3.5 py-2.5 rounded-sm border transition-all duration-200 cursor-default ${
-                          isHovered
-                            ? 'bg-near-black text-white border-near-black shadow-sm'
-                            : 'bg-white/90 backdrop-blur-xs text-near-black border-sand/80 shadow-2xs hover:border-olive/50 hover:bg-white'
-                        }`}
-                      >
-                        <span
-                          className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${
-                            isHovered ? 'bg-warm-beige' : 'bg-olive'
-                          }`}
-                        />
-                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider leading-snug break-words">
-                          {item}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Right Column of 6 */}
-                <div className="space-y-2.5 sm:space-y-3">
-                  {rightColumnNodes.map((item, idx) => {
-                    const nodeIndex = idx + 6;
-                    const isHovered = hoveredNode === nodeIndex;
-
-                    return (
-                      <div
-                        key={idx}
-                        onMouseEnter={() => setHoveredNode(nodeIndex)}
-                        onMouseLeave={() => setHoveredNode(null)}
-                        className={`flex items-center space-x-2.5 px-3.5 py-2.5 rounded-sm border transition-all duration-200 cursor-default ${
-                          isHovered
-                            ? 'bg-near-black text-white border-near-black shadow-sm'
-                            : 'bg-white/90 backdrop-blur-xs text-near-black border-sand/80 shadow-2xs hover:border-olive/50 hover:bg-white'
-                        }`}
-                      >
-                        <span
-                          className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${
-                            isHovered ? 'bg-warm-beige' : 'bg-olive'
-                          }`}
-                        />
-                        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider leading-snug break-words">
-                          {item}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Bottom Line: Project Disciplines & Single Coordinated Point */}
-              <div className="relative z-10 pt-6 mt-6 border-t border-sand/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-near-black/75 font-mono">
-                <span>{highlightsList.length > 0 ? `${highlightsList.length} Project Disciplines` : '12 Project Disciplines'}</span>
-                <span className="text-right sm:text-left">Single Coordinated Point of Contact</span>
               </div>
             </div>
           </div>
