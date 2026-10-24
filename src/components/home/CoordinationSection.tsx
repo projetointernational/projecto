@@ -111,7 +111,7 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
 
           {/* Right Column: Visual Coordination Ecosystem (Central Coordination Core) */}
           <div className="lg:col-span-7">
-            <div className="relative w-full rounded-sm bg-off-white/40 border border-sand/80 p-3.5 sm:p-5 lg:p-6 shadow-2xs overflow-hidden">
+            <div className="relative w-full rounded-sm bg-off-white/40 border border-sand/80 p-2.5 sm:p-5 lg:p-6 shadow-2xs overflow-hidden">
               {/* Desktop/Tablet Background Image Layer */}
               {desktopBg && (
                 <div className="hidden md:block absolute inset-0 pointer-events-none z-0">
@@ -148,17 +148,18 @@ export const CoordinationSection: React.FC<CoordinationSectionProps> = ({
               <div className="relative z-10 w-full flex flex-col items-center justify-center">
                 <CoordinationWheel customHighlights={highlightsList} />
 
-                {/* Bottom Line: Project Disciplines & Single Coordinated Point */}
-                <div className="w-full pt-3 mt-1.5 flex items-center justify-between text-xs sm:text-[13px] text-near-black/80 font-mono">
-                  <div className="flex items-center space-x-3 flex-1">
-                    <span className="shrink-0 font-medium">
+                {/* Bottom Line: Project Disciplines & Single Coordinated Point (Responsive Stack on Mobile) */}
+                <div className="w-full pt-3.5 mt-2 border-t border-sand/50 sm:border-0 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-xs sm:text-[13px] text-near-black/80 font-mono text-center sm:text-left">
+                  <div className="flex items-center space-x-2.5 w-full sm:w-auto justify-center sm:justify-start">
+                    <span className="w-1.5 h-1.5 rounded-full bg-olive shrink-0" />
+                    <span className="font-semibold tracking-wider text-near-black">
                       {highlightsList.length > 0 ? `${highlightsList.length} Project Disciplines` : '12 Project Disciplines'}
                     </span>
-                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[140px]" />
+                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[120px]" />
                   </div>
-                  <div className="flex items-center justify-end space-x-3 flex-1">
-                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[140px]" />
-                    <span className="shrink-0 text-right font-medium">
+                  <div className="flex items-center space-x-2.5 w-full sm:w-auto justify-center sm:justify-end">
+                    <span className="h-[1px] bg-sand-dark/40 flex-1 hidden sm:block max-w-[120px]" />
+                    <span className="text-warm-grey font-medium tracking-wide">
                       Single Coordinated Point of Contact
                     </span>
                   </div>
