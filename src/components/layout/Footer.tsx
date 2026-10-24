@@ -27,8 +27,21 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
           {/* Brand & Narrative */}
           <div className="md:col-span-4 space-y-5">
-            <Link href="/" className="inline-block group">
-              <Image src="/logo/logo-footer.png" alt={companyName} width={80} height={80} />
+            {/* Brand Logo: Emblem + Separately Adjustable White Text */}
+            <Link href="/" className="inline-flex items-center gap-2.5 sm:gap-3 group" aria-label={companyName || 'Projeto'}>
+              {/* Logo Emblem Icon */}
+              <img
+                src="/projecto-emblem.png"
+                alt="Projeto Emblem"
+                className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+              />
+
+              {/* Logo Text Only - White text with gold bar (Adjustable: change height here) */}
+              <img
+                src="/project-white-text-with-bar.png"
+                alt={companyName || 'Projeto'}
+                className="h-3.5 sm:h-4 md:h-4.5 w-auto max-w-[135px] sm:max-w-[165px] object-contain transition-opacity duration-200 group-hover:opacity-90"
+              />
             </Link>
             <p className="text-xs uppercase tracking-[0.2em] text-warm-beige font-mono">
               {tagline}
@@ -194,7 +207,15 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-warm-grey gap-4">
           <p>© {currentYear} {companyName}. Procurement & Project Coordination. All rights reserved.</p>
           <p className="text-warm-grey/80">
-            Crafted with precision
+            Crafted by{' '}
+            <a
+              href="https://www.ekodrix.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-warm-beige hover:text-white transition-colors underline underline-offset-2 decoration-warm-beige/40 hover:decoration-white font-medium"
+            >
+              Ekodrix
+            </a>
           </p>
         </div>
       </div>

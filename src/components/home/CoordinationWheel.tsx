@@ -498,14 +498,21 @@ export const CoordinationWheel: React.FC<CoordinationWheelProps> = ({
             const { centerX, iconY, startTextY } = getSectorLayout(idx);
 
             const linesCount = item.lines.length;
-            // Clean legible font sizes: 13.5px for 1-2 lines, 12px for 3 lines
-            const fontSize = linesCount === 3 ? '12px' : linesCount === 2 ? '13px' : '14px';
-            const lineHeight = linesCount === 3 ? 16 : 18;
+            // Larger, bolder font sizes for high mobile clarity
+            const fontSize = linesCount === 3 ? '15px' : linesCount === 2 ? '16.5px' : '18px';
+            const lineHeight = linesCount === 3 ? 18.5 : 20.5;
+
+            // Radial pop-up offset outward from center
+            const midDeg = -90 + idx * 30;
+            const midRad = (midDeg * Math.PI) / 180;
+            const popDist = isHovered ? 12 : 0;
+            const popX = Math.round(popDist * Math.cos(midRad));
+            const popY = Math.round(popDist * Math.sin(midRad));
 
             return (
               <g
                 key={item.id}
-                className="transition-all duration-200 cursor-pointer"
+                className="transition-all duration-300 ease-out cursor-pointer"
                 onMouseEnter={() => {
                   setHoveredIdx(idx);
                   if (onDisciplineHover) onDisciplineHover(item.label);
@@ -514,8 +521,17 @@ export const CoordinationWheel: React.FC<CoordinationWheelProps> = ({
                   setHoveredIdx(null);
                   if (onDisciplineHover) onDisciplineHover(null);
                 }}
+                onClick={() => {
+                  setHoveredIdx(hoveredIdx === idx ? null : idx);
+                }}
                 style={{
                   transformOrigin: `${cx}px ${cy}px`,
+                  transform: isHovered
+                    ? `translate(${popX}px, ${popY}px) scale(1.025)`
+                    : 'translate(0px, 0px) scale(1)',
+                  filter: isHovered
+                    ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.22))'
+                    : 'none',
                 }}
               >
                 {/* Sector Wedge */}
@@ -527,35 +543,35 @@ export const CoordinationWheel: React.FC<CoordinationWheelProps> = ({
                   strokeLinejoin="round"
                   className="transition-all duration-200"
                   style={{
-                    filter: isHovered ? 'brightness(1.08)' : 'none',
-                    opacity: hoveredIdx !== null && !isHovered ? 0.92 : 1,
+                    filter: isHovered ? 'brightness(1.12)' : 'none',
+                    opacity: hoveredIdx !== null && !isHovered ? 0.88 : 1,
                   }}
                 />
 
                 {/* Vector Icon */}
                 <g
-                  transform={`translate(${centerX}, ${iconY}) scale(0.96)`}
+                  transform={`translate(${centerX}, ${iconY}) scale(1.08)`}
                   className="pointer-events-none transition-transform duration-200"
                   style={{
                     transformOrigin: '0 0',
                     transform: isHovered
-                      ? `translate(${centerX}px, ${iconY}px) scale(1.05)`
-                      : `translate(${centerX}px, ${iconY}px) scale(0.96)`,
+                      ? `translate(${centerX}px, ${iconY}px) scale(1.2)`
+                      : `translate(${centerX}px, ${iconY}px) scale(1.08)`,
                   }}
                 >
                   {renderIcon(item.icon, item.iconStroke)}
                 </g>
 
-                {/* Multiline Text Label - perfectly centered on centerX */}
+                {/* Multiline Text Label - High clarity & bold weight */}
                 <text
                   x={centerX}
                   textAnchor="middle"
-                  className="pointer-events-none select-none uppercase font-semibold"
+                  className="pointer-events-none select-none uppercase font-extrabold"
                   style={{
                     fontFamily:
                       'var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)',
                     fontSize,
-                    fontWeight: 700,
+                    fontWeight: 800,
                     letterSpacing: '0.04em',
                     fill: item.textColor,
                   }}
@@ -605,9 +621,10 @@ export const CoordinationWheel: React.FC<CoordinationWheelProps> = ({
           cy={cy}
           r={rInner}
           fill="url(#hubGradient)"
-          stroke="#E2DDD2"
-          strokeWidth="2"
-          className="shadow-inner"
+          stroke={hoveredIdx !== null ? '#5A663E' : '#E2DDD2'}
+          strokeWidth={hoveredIdx !== null ? '3' : '2'}
+          className="shadow-inner cursor-pointer transition-colors duration-300"
+          onClick={() => setHoveredIdx(null)}
         />
 
         {/* Inner Hub Subtle Ring */}
@@ -616,56 +633,139 @@ export const CoordinationWheel: React.FC<CoordinationWheelProps> = ({
           cy={cy}
           r={rInner - 6}
           fill="none"
-          stroke="#EFEBE3"
+          stroke={hoveredIdx !== null ? '#5A663E/30' : '#EFEBE3'}
           strokeWidth="1"
+          className="transition-colors duration-300"
         />
 
-        {/* Center Olive Dot */}
-        <circle
-          cx={cx}
-          cy={cy - 48}
-          r={6.5}
-          fill="#5A663E"
-          className="transition-transform duration-300"
+        {/* Central Content 1: Default State (PROJETO Brand + Central Coordination Core) */}
+        <g
+          className="pointer-events-none transition-all duration-300"
           style={{
-            transformOrigin: `${cx}px ${cy - 48}px`,
-            transform: hoveredIdx !== null ? 'scale(1.25)' : 'scale(1)',
-          }}
-        />
-
-        {/* Central PROJETO Hub Brand */}
-        <text
-          x={cx}
-          y={cy + 6}
-          textAnchor="middle"
-          style={{
-            fontFamily:
-              'var(--font-serif, "Cinzel", "Playfair Display", "Times New Roman", serif, sans-serif)',
-            fontSize: '32px',
-            fontWeight: 700,
-            letterSpacing: '0.28em',
-            fill: '#1A1D1A',
+            opacity: hoveredIdx === null ? 1 : 0,
+            transformOrigin: `${cx}px ${cy}px`,
+            transform: hoveredIdx === null ? 'scale(1)' : 'scale(0.9)',
           }}
         >
-          PROJETO
-        </text>
+          {/* Logo image */}
+          <image
+            href="/projecto-logo-dark.png"
+            x={cx - 120}
+            y={cy - 44}
+            width={240}
+            height={52}
+            preserveAspectRatio="xMidYMid meet"
+          />
 
-        {/* Subtitle CENTRAL COORDINATION CORE */}
-        <text
-          x={cx}
-          y={cy + 42}
-          textAnchor="middle"
-          style={{
-            fontFamily:
-              'var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)',
-            fontSize: '11.5px',
-            fontWeight: 600,
-            letterSpacing: '0.2em',
-            fill: '#3F443F',
-          }}
-        >
-          CENTRAL COORDINATION CORE
-        </text>
+          {/* Subtitle CENTRAL COORDINATION CORE with high contrast and legible mobile sizing */}
+          <text
+            x={cx}
+            y={cy + 34}
+            textAnchor="middle"
+            style={{
+              fontFamily:
+                'var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)',
+              fontSize: '13px',
+              fontWeight: 800,
+              letterSpacing: '0.24em',
+              fill: '#1B1E1B',
+            }}
+          >
+            CENTRAL COORDINATION CORE
+          </text>
+
+          {/* Micro tag underneath for extra clarity */}
+          <text
+            x={cx}
+            y={cy + 56}
+            textAnchor="middle"
+            style={{
+              fontFamily: 'var(--font-mono, monospace)',
+              fontSize: '9.5px',
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              fill: '#6F756B',
+            }}
+          >
+            SINGLE POINT OF CONTACT
+          </text>
+        </g>
+
+        {/* Central Content 2: Hovered/Tapped Discipline Pop-Up Card */}
+        {hoveredIdx !== null && disciplines[hoveredIdx] && (
+          <g
+            className="pointer-events-none transition-all duration-300"
+            style={{
+              transformOrigin: `${cx}px ${cy}px`,
+              animation: 'fadeIn 0.25s ease-out',
+            }}
+          >
+            {/* Subtle background glow circle in discipline color */}
+            <circle
+              cx={cx}
+              cy={cy}
+              r={rInner - 12}
+              fill={disciplines[hoveredIdx].bgColor}
+              opacity={0.14}
+            />
+
+            {/* Discipline enlarged icon */}
+            <g
+              transform={`translate(${cx}, ${cy - 52}) scale(1.45)`}
+              style={{ transformOrigin: '0 0' }}
+            >
+              {renderIcon(disciplines[hoveredIdx].icon, '#5A663E')}
+            </g>
+
+            {/* Discipline index pill badge */}
+            <rect
+              x={cx - 60}
+              y={cy - 20}
+              width={120}
+              height={20}
+              rx={10}
+              fill="#222724"
+            />
+            <text
+              x={cx}
+              y={cy - 6}
+              textAnchor="middle"
+              style={{
+                fontFamily: 'var(--font-mono, monospace)',
+                fontSize: '9px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                fill: '#FFFFFF',
+              }}
+            >
+              {`DISCIPLINE ${((hoveredIdx ?? 0) + 1).toString().padStart(2, '0')}/12`}
+            </text>
+
+            {/* Discipline full title in large bold letters */}
+            <text
+              x={cx}
+              textAnchor="middle"
+              style={{
+                fontFamily:
+                  'var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)',
+                fontSize: disciplines[hoveredIdx].lines.length === 3 ? '15px' : '17px',
+                fontWeight: 800,
+                letterSpacing: '0.04em',
+                fill: '#181B18',
+              }}
+            >
+              {disciplines[hoveredIdx].lines.map((line, lIdx) => (
+                <tspan
+                  key={lIdx}
+                  x={cx}
+                  y={cy + 18 + lIdx * (disciplines[hoveredIdx].lines.length === 3 ? 17 : 20)}
+                >
+                  {line}
+                </tspan>
+              ))}
+            </text>
+          </g>
+        )}
       </svg>
     </div>
   );
