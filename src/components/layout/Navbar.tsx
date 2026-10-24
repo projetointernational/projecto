@@ -110,25 +110,21 @@ export const Navbar: React.FC<NavbarProps> = ({
       }`}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center space-x-3 group">
-          {logoUrl && !logoError ? (
-            <img
-              src={logoUrl}
-              alt={companyName}
-              onError={() => setLogoError(true)}
-              className="h-11 sm:h-12 w-auto max-w-[200px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-            />
-          ) : (
-            <div className="flex flex-col">
-              <span className="font-serif text-2xl tracking-[0.18em] font-normal text-near-black uppercase">
-                {companyName}
-              </span>
-              <span className="text-[9px] uppercase tracking-[0.25em] text-warm-grey -mt-0.5 font-sans">
-                Procurement & Project Coordination
-              </span>
-            </div>
-          )}
+        {/* Brand Logo: Emblem + Separately Adjustable Text */}
+        <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group py-0.5" aria-label={companyName || 'Projeto'}>
+          {/* Logo Emblem Icon */}
+          <img
+            src="/projecto-emblem.png"
+            alt="Projeto Emblem"
+            className="h-8 sm:h-9 md:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+          />
+
+          {/* Logo Text Only - Adjust text size directly using height class (e.g. h-3, h-3.5, h-4) */}
+          <img
+            src="/project-black-text-with-bar.png"
+            alt={companyName || 'Projeto'}
+            className="h-3 sm:h-3.5 md:h-4 w-auto max-w-[125px] sm:max-w-[150px] md:max-w-[170px] object-contain transition-opacity duration-200 group-hover:opacity-90"
+          />
         </Link>
 
         {/* Desktop Navigation */}

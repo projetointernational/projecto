@@ -78,16 +78,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       }`}
     >
       {/* Brand Header */}
-      <div className="h-16 px-6 border-b border-white/10 flex items-center justify-between shrink-0">
+      <div className="h-20 px-5 border-b border-white/10 flex items-center justify-between shrink-0">
         <Link
           href="/admin/dashboard"
-          className="flex flex-col justify-center group"
+          className="flex flex-col justify-center group min-w-0"
           onClick={() => onClose?.()}
         >
-          <span className="font-serif text-xl tracking-[0.2em] font-normal uppercase text-off-white group-hover:text-warm-beige transition-colors leading-none">
-            PROJECTO
-          </span>
-          <span className="text-[9px] uppercase tracking-[0.25em] text-warm-beige font-sans mt-1">
+          <img
+            src="/projecto-logo-light.png"
+            alt="Projeto"
+            className="h-9 sm:h-10 w-auto max-w-[185px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+          />
+          <span className="text-[9px] uppercase tracking-[0.24em] text-warm-beige/90 font-sans mt-1.5 font-medium">
             Management Portal
           </span>
         </Link>

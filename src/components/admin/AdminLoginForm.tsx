@@ -96,11 +96,15 @@ export const AdminLoginForm: React.FC = () => {
   return (
     <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-sm shadow-sm border border-sand">
       {/* Brand Header */}
-      <div className="text-center space-y-2 mb-8">
-        <span className="font-serif text-3xl tracking-[0.25em] font-normal uppercase text-near-black block">
-          PROJECTO
-        </span>
-        <div className="flex items-center justify-center space-x-2">
+      <div className="text-center space-y-4 mb-8">
+        <div className="flex justify-center">
+          <img
+            src="/projecto-logo-dark.png"
+            alt="Projeto International"
+            className="h-14 sm:h-16 md:h-20 w-auto max-w-[300px] object-contain"
+          />
+        </div>
+        <div className="flex items-center justify-center space-x-2 pt-1">
           <span className="h-px w-6 bg-warm-grey/30" />
           <span className="text-[11px] uppercase tracking-[0.2em] text-warm-grey font-medium">
             Administrative Access
