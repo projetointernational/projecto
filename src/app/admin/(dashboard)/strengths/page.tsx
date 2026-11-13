@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Strength } from '@/lib/supabase/types';
 import { IconResolver } from '@/components/ui/IconResolver';

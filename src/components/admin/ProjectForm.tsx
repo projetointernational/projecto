@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { ProjectGalleryManager } from '@/components/admin/ProjectGalleryManager';
 import { Project, Category } from '@/lib/supabase/types';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { Check, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Project } from '@/lib/supabase/types';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { Building2, Plus, Edit3, Trash2, ExternalLink, Star } from 'lucide-react';
 
 export default function AdminProjectsPage() {

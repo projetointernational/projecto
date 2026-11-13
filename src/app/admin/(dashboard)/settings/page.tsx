@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { SiteSettings } from '@/lib/supabase/types';
 import { Check, AlertCircle, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
