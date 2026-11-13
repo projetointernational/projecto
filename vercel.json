@@ -2,8 +2,10 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "env": {
-    "NEXT_DISABLE_TURBOPACK": "1"
+  "build": {
+    "env": {
+      "NEXT_DISABLE_TURBOPACK": "1"
+    }
   }
 }
 

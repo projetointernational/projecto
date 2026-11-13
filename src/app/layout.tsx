@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Playfair_Display, Montserrat } from 'next/font/google';
 import './globals.css';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 
@@ -9,21 +8,6 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
 };
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-});
-
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  variable: '--font-montserrat',
-  display: 'swap',
-  // Only load weights actually used in the UI (removed 300 — not measurably different from 400 at small sizes)
-  weight: ['400', '500', '600', '700'],
-});
 
 export const metadata: Metadata = {
   title: 'Projecto — Architectural Construction & Engineering Excellence',
@@ -45,8 +29,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Google Fonts — loaded via CDN to avoid next/font/google Turbopack bug */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        {/* Define CSS variables for font families */}
+        <style>{`
+          :root {
+            --font-playfair: 'Playfair Display', Georgia, serif;
+            --font-montserrat: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          }
+        `}</style>
         {/* Preconnect to Cloudinary CDN — eliminates DNS + TLS setup on first image request */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
