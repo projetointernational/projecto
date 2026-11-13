@@ -1,6 +1,9 @@
 {
-  "framework": "nextjs",
   "buildCommand": "npm run build",
   "installCommand": "npm install",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_DISABLE_TURBOPACK": "1"
+  }
 }
+
