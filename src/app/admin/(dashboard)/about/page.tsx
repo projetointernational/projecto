@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { AboutContent } from '@/lib/supabase/types';
 import { Check, AlertCircle, Plus, Trash2 } from 'lucide-react';
 

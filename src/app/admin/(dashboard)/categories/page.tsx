@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Category } from '@/lib/supabase/types';
 import { Tag, Plus, Trash2, Check, AlertCircle } from 'lucide-react';

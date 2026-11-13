@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { EditorialFeature } from '@/lib/supabase/types';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { Check, AlertCircle, Plus, Trash2, Eye, Monitor, Smartphone } from 'lucide-react';

@@ -8,7 +8,7 @@ import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Client } from '@/lib/supabase/types';
-import { revalidateSiteAction } from '@/app/actions/revalidate';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import {
   Handshake,
   Plus,
