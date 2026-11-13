@@ -105,25 +105,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-50 py-3 sm:py-3.5 transition-shadow duration-200 ${
+      className={`sticky top-0 z-50 py-2.5 sm:py-3 transition-shadow duration-200 ${
         scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white'
       }`}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between">
-        {/* Brand Logo: Emblem + Separately Adjustable Text */}
-        <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group py-0.5" aria-label={companyName || 'Projeto'}>
-          {/* Logo Emblem Icon */}
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center group py-0.5 shrink-0" aria-label={companyName || 'Projeto'}>
           <img
-            src="/projecto-emblem.png"
-            alt="Projeto Emblem"
-            className="h-8 sm:h-9 md:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
-          />
-
-          {/* Logo Text Only - Adjust text size directly using height class (e.g. h-3, h-3.5, h-4) */}
-          <img
-            src="/project-black-text-with-bar.png"
+            src="/projeto_original_logo_black_text_transparent.png"
             alt={companyName || 'Projeto'}
-            className="h-3 sm:h-3.5 md:h-4 w-auto max-w-[125px] sm:max-w-[150px] md:max-w-[170px] object-contain transition-opacity duration-200 group-hover:opacity-90"
+            className="h-9 sm:h-9 md:h-14 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
           />
         </Link>
 

@@ -1,8 +1,20 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Mail, Phone, MapPin, Instagram, Linkedin, Twitter, MessageSquare } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Mail,
+  Phone,
+  MapPin,
+  Instagram,
+  Linkedin,
+  Twitter,
+  MessageSquare,
+  Plus,
+  Minus,
+} from 'lucide-react';
 import { SiteSettings } from '@/lib/supabase/types';
-import Image from 'next/image';
 
 interface FooterProps {
   settings?: SiteSettings | null;
@@ -20,27 +32,26 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
   const address = settings?.address || 'Kochi, Kerala';
   const whatsapp = settings?.social_links?.whatsapp || 'https://wa.me/919072873225';
 
+  const [openVerticals, setOpenVerticals] = useState(false);
+  const [openCompany, setOpenCompany] = useState(false);
+
   return (
-    <footer className="bg-black text-off-white pt-20 pb-12 mt-auto">
+    <footer className="bg-black text-off-white pt-16 sm:pt-20 pb-12 mt-auto">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         {/* Top Section */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 pb-14 sm:pb-16 border-b border-white/10">
           {/* Brand & Narrative */}
-          <div className="md:col-span-4 space-y-5">
-            {/* Brand Logo: Emblem + Separately Adjustable White Text */}
-            <Link href="/" className="inline-flex items-center gap-2.5 sm:gap-3 group" aria-label={companyName || 'Projeto'}>
-              {/* Logo Emblem Icon */}
+          <div className="md:col-span-4 space-y-4 sm:space-y-5">
+            {/* Brand Logo */}
+            <Link
+              href="/"
+              className="inline-flex items-center group py-0.5"
+              aria-label={companyName || 'Projeto'}
+            >
               <img
-                src="/projecto-emblem.png"
-                alt="Projeto Emblem"
-                className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
-              />
-
-              {/* Logo Text Only - White text with gold bar (Adjustable: change height here) */}
-              <img
-                src="/project-white-text-with-bar.png"
+                src="/projeto_original_logo_white_text_transparent.png"
                 alt={companyName || 'Projeto'}
-                className="h-3.5 sm:h-4 md:h-4.5 w-auto max-w-[135px] sm:max-w-[165px] object-contain transition-opacity duration-200 group-hover:opacity-90"
+                className="h-10 sm:h-11 md:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
               />
             </Link>
             <p className="text-xs uppercase tracking-[0.2em] text-warm-beige font-mono">
@@ -49,7 +60,7 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
             <p className="text-sm text-warm-grey font-light leading-relaxed max-w-sm">
               {description}
             </p>
-            <div className="pt-2 flex items-center space-x-4 text-warm-grey">
+            <div className="pt-1 flex items-center space-x-4 text-warm-grey">
               {settings?.social_links?.instagram && (
                 <a
                   href={settings.social_links.instagram}
@@ -95,48 +106,66 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
             </div>
           </div>
 
-          {/* Navigation Links: 2-column grid on mobile, distributed on desktop */}
-          <div className="col-span-1 md:col-span-5 grid grid-cols-2 gap-6 sm:gap-8">
-            {/* Core Verticals & Capabilities */}
+          {/* Desktop Navigation Links (Visible on Tablet & Desktop) */}
+          <div className="hidden md:grid md:col-span-5 md:grid-cols-2 md:gap-8">
+            {/* Core Verticals */}
             <div className="space-y-4">
               <h4 className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
                 Core Verticals
               </h4>
               <ul className="space-y-2.5 text-xs sm:text-sm font-light">
                 <li>
-                  <Link href="/services/procurement" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/services/procurement"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     01 — Procurement
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/project-coordination" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/services/project-coordination"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     02 — Project Coordination
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/materials-project-supplies" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/services/materials-project-supplies"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     Materials & Supplies
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/for-architects-designers" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/services/for-architects-designers"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     For Architects & Designers
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/for-builders-contractors" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/services/for-builders-contractors"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     For Builders & Contractors
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/how-we-work" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/services/how-we-work"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     How We Work
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Quick Navigation / Company */}
+            {/* Company Links */}
             <div className="space-y-4">
               <h4 className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
                 Company
@@ -148,22 +177,34 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/about"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     About Projeto
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/services"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     Services
                   </Link>
                 </li>
                 <li>
-                  <Link href="/projects" className="text-off-white/80 hover:text-white transition-colors">
+                  <Link
+                    href="/projects"
+                    className="text-off-white/80 hover:text-white transition-colors"
+                  >
                     Selected Projects
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="text-olive-light hover:text-warm-beige transition-colors flex items-center">
+                  <Link
+                    href="/contact"
+                    className="text-olive-light hover:text-warm-beige transition-colors flex items-center"
+                  >
                     <span>Discuss Project</span>
                     <ArrowUpRight className="w-3.5 h-3.5 ml-1" strokeWidth={1.5} />
                   </Link>
@@ -172,8 +213,150 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
             </div>
           </div>
 
-          {/* Contact Directives */}
-          <div className="md:col-span-3 space-y-4">
+          {/* Mobile Accordions (Only on Mobile) */}
+          <div className="md:hidden space-y-2 border-t border-white/10 pt-2">
+            {/* Core Verticals Accordion */}
+            <div className="border-b border-white/10">
+              <button
+                type="button"
+                onClick={() => setOpenVerticals(!openVerticals)}
+                className="w-full flex items-center justify-between py-3.5 text-left focus:outline-none"
+                aria-expanded={openVerticals}
+              >
+                <span className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
+                  Core Verticals
+                </span>
+                <span className="p-1 rounded-sm text-warm-beige">
+                  {openVerticals ? (
+                    <Minus className="w-4 h-4" strokeWidth={1.5} />
+                  ) : (
+                    <Plus className="w-4 h-4" strokeWidth={1.5} />
+                  )}
+                </span>
+              </button>
+              {openVerticals && (
+                <ul className="space-y-2.5 pb-4 pt-1 text-xs font-light pl-2">
+                  <li>
+                    <Link
+                      href="/services/procurement"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      01 — Procurement
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/project-coordination"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      02 — Project Coordination
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/materials-project-supplies"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      Materials & Supplies
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/for-architects-designers"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      For Architects & Designers
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/for-builders-contractors"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      For Builders & Contractors
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/how-we-work"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      How We Work
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </div>
+
+            {/* Company Accordion */}
+            <div className="border-b border-white/10">
+              <button
+                type="button"
+                onClick={() => setOpenCompany(!openCompany)}
+                className="w-full flex items-center justify-between py-3.5 text-left focus:outline-none"
+                aria-expanded={openCompany}
+              >
+                <span className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
+                  Company
+                </span>
+                <span className="p-1 rounded-sm text-warm-beige">
+                  {openCompany ? (
+                    <Minus className="w-4 h-4" strokeWidth={1.5} />
+                  ) : (
+                    <Plus className="w-4 h-4" strokeWidth={1.5} />
+                  )}
+                </span>
+              </button>
+              {openCompany && (
+                <ul className="space-y-2.5 pb-4 pt-1 text-xs font-light pl-2">
+                  <li>
+                    <Link
+                      href="/"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/about"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      About Projeto
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      Services
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/projects"
+                      className="text-off-white/80 hover:text-white transition-colors block py-1"
+                    >
+                      Selected Projects
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/contact"
+                      className="text-olive-light hover:text-warm-beige transition-colors flex items-center py-1"
+                    >
+                      <span>Discuss Project</span>
+                      <ArrowUpRight className="w-3.5 h-3.5 ml-1" strokeWidth={1.5} />
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Central Office Section */}
+          <div className="md:col-span-3 space-y-4 pt-2 md:pt-0">
             <h4 className="text-xs uppercase tracking-[0.2em] text-warm-beige font-medium">
               Central Office
             </h4>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { ProjectGalleryManager } from '@/components/admin/ProjectGalleryManager';
 import { Project, Category } from '@/lib/supabase/types';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import { Check, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -123,6 +124,8 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, isEdit = 
         const { error } = await supabase.from('projects').insert([payload]);
         if (error) throw error;
       }
+
+      await revalidateSiteAction();
 
       setFeedback({
         type: 'success',
