@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { AboutContent } from '@/lib/supabase/types';
 import { Check, AlertCircle, Plus, Trash2 } from 'lucide-react';
 
@@ -140,6 +141,8 @@ export default function AdminAboutPage() {
       } catch (syncErr) {
         console.warn('Sync warning:', syncErr);
       }
+
+      await revalidateSiteAction();
 
       setFeedback({ type: 'success', message: 'About content and visual assets successfully saved.' });
     } catch (err) {

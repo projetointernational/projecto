@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Service } from '@/lib/supabase/types';
 import { IconResolver } from '@/components/ui/IconResolver';
@@ -123,6 +124,8 @@ export default function AdminServicesPage() {
         if (error) throw error;
       }
 
+      await revalidateSiteAction();
+
       setFeedback({ type: 'success', message: 'Service discipline saved.' });
       setIsEditing(false);
       loadServices();
@@ -142,6 +145,7 @@ export default function AdminServicesPage() {
     try {
       const { error } = await supabase.from('services').delete().eq('id', id);
       if (error) throw error;
+      await revalidateSiteAction();
       setServices(services.filter((s) => s.id !== id));
       setFeedback({ type: 'success', message: 'Service removed.' });
     } catch (err) {

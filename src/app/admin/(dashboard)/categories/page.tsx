@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { revalidateSiteAction } from '@/actions/revalidate';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Category } from '@/lib/supabase/types';
 import { Tag, Plus, Trash2, Check, AlertCircle } from 'lucide-react';
@@ -61,6 +62,8 @@ export default function AdminCategoriesPage() {
 
       if (error) throw error;
 
+      await revalidateSiteAction();
+
       setNewCategoryName('');
       setFeedback({ type: 'success', message: 'Category added successfully.' });
       loadCategories();
@@ -80,6 +83,7 @@ export default function AdminCategoriesPage() {
     try {
       const { error } = await supabase.from('categories').delete().eq('id', id);
       if (error) throw error;
+      await revalidateSiteAction();
       setCategories(categories.filter((c) => c.id !== id));
       setFeedback({ type: 'success', message: 'Category deleted.' });
     } catch (err) {
