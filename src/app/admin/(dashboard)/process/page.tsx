@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ProcessContent, WorkflowStep } from '@/lib/supabase/types';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
@@ -220,6 +221,8 @@ export default function AdminProcessPage() {
           console.warn('Procurement image sync warning:', imgErr);
         }
       }
+
+      await revalidateSiteAction();
 
       setFeedback({ type: 'success', message: 'Process collection successfully saved to database.' });
       await loadProcesses();

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
-import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { SiteSettings } from '@/lib/supabase/types';
 import { Check, AlertCircle, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
@@ -85,6 +85,7 @@ export default function AdminSettingsPage() {
         const { data, error } = await supabase
           .from('site_settings')
           .select('*')
+          .order('updated_at', { ascending: false })
           .limit(1)
           .maybeSingle();
 
@@ -198,6 +199,9 @@ export default function AdminSettingsPage() {
         if (error) throw error;
         if (data) setSettings(data);
       }
+
+      // Bust frontend cache immediately so updates reflect instantly in the UI
+      await revalidateSiteAction();
 
       setFeedback({ type: 'success', message: 'Site settings and navigation updated successfully.' });
     } catch (err) {
@@ -324,16 +328,6 @@ export default function AdminSettingsPage() {
                 value={settings.company_description || ''}
                 onChange={(e) => setSettings({ ...settings, company_description: e.target.value })}
                 className="w-full bg-sand/20 focus:bg-white text-sm p-4 rounded-sm ring-1 ring-sand focus:ring-2 focus:ring-olive outline-none"
-              />
-            </div>
-
-            <div>
-              <CloudinaryUploader
-                label="Primary Brand Logo (Cloudinary)"
-                currentImageUrl={settings.logo_url}
-                onUploadSuccess={(url) => setSettings({ ...settings, logo_url: url })}
-                aspectRatio="wide"
-                folder="branding"
               />
             </div>
 

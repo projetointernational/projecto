@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Project } from '@/lib/supabase/types';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import { Building2, Plus, Edit3, Trash2, ExternalLink, Star } from 'lucide-react';
 
 export default function AdminProjectsPage() {
@@ -42,6 +43,7 @@ export default function AdminProjectsPage() {
     try {
       const { error } = await supabase.from('projects').delete().eq('id', id);
       if (error) throw error;
+      await revalidateSiteAction();
       setProjects((prev) => prev.filter((p) => p.id !== id));
       setFeedback(`Project "${title}" deleted.`);
     } catch (err) {

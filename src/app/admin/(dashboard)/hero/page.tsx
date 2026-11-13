@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import { HeroContent } from '@/lib/supabase/types';
 import { Check, AlertCircle } from 'lucide-react';
 
@@ -109,6 +110,8 @@ export default function AdminHeroPage() {
       } catch (syncErr) {
         console.warn('Sync hero mobile image warning:', syncErr);
       }
+
+      await revalidateSiteAction();
 
       setFeedback({ type: 'success', message: 'Hero content and background imagery successfully saved.' });
     } catch (err: unknown) {

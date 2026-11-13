@@ -8,6 +8,7 @@ import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Client } from '@/lib/supabase/types';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import {
   Handshake,
   Plus,
@@ -88,6 +89,8 @@ export default function AdminClientsPage() {
         .insert([payload]);
       if (error) throw error;
 
+      await revalidateSiteAction();
+
       setFeedback({ type: 'success', message: 'Client logo uploaded successfully.' });
       setIsEditing(false);
       loadClients();
@@ -110,6 +113,7 @@ export default function AdminClientsPage() {
     try {
       const { error } = await supabase.from('clients').delete().eq('id', id);
       if (error) throw error;
+      await revalidateSiteAction();
       setFeedback({ type: 'success', message: 'Client logo removed successfully.' });
       loadClients();
     } catch (err: unknown) {

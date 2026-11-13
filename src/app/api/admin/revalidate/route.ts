@@ -34,6 +34,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Invalidate root layout (purges all nested pages across the whole site)
+    revalidatePath('/', 'layout');
+
     // Revalidate all public-facing pages
     const paths = [
       '/',
@@ -41,6 +44,7 @@ export async function POST(request: Request) {
       '/services',
       '/projects',
       '/contact',
+      '/enquire',
     ];
 
     for (const path of paths) {

@@ -39,6 +39,7 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings | null> => {
       .select(
         'id,company_name,tagline,logo_url,email,phone,address,working_hours,social_links,navigation_labels,company_description'
       )
+      .order('updated_at', { ascending: false })
       .limit(1)
       .maybeSingle();
     return data;

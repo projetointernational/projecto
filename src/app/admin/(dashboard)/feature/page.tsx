@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import { EditorialFeature } from '@/lib/supabase/types';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { Check, AlertCircle, Plus, Trash2, Eye, Monitor, Smartphone } from 'lucide-react';
@@ -152,6 +153,8 @@ export default function AdminEditorialFeaturePage() {
       } catch (syncErr) {
         console.warn('Sync warning:', syncErr);
       }
+
+      await revalidateSiteAction();
 
       setFeedback({ type: 'success', message: 'Coordination showcase content and background imagery saved successfully.' });
     } catch (err: unknown) {

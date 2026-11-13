@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUploader } from '@/components/ui/CloudinaryUploader';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { revalidateSiteAction } from '@/app/actions/revalidate';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Strength } from '@/lib/supabase/types';
 import { IconResolver } from '@/components/ui/IconResolver';
@@ -116,6 +117,7 @@ export default function AdminStrengthsPage() {
           .eq('id', sData.id);
 
         if (error) throw error;
+        await revalidateSiteAction();
         setRoleImageUrl(desktopToSave);
         setRoleMobileImageUrl(mobileToSave);
         setFeedback({ type: 'success', message: 'Section supporting images successfully saved.' });
@@ -154,6 +156,8 @@ export default function AdminStrengthsPage() {
         if (error) throw error;
       }
 
+      await revalidateSiteAction();
+
       setFeedback({ type: 'success', message: 'Audience card successfully saved.' });
       setIsEditing(false);
       loadStrengths();
@@ -173,6 +177,7 @@ export default function AdminStrengthsPage() {
     try {
       const { error } = await supabase.from('strengths').delete().eq('id', id);
       if (error) throw error;
+      await revalidateSiteAction();
       setStrengths(strengths.filter((s) => s.id !== id));
       setFeedback({ type: 'success', message: 'Audience card removed.' });
     } catch (err) {
